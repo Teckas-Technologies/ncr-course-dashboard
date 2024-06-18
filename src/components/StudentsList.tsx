@@ -249,9 +249,9 @@ export default function StudentsList() {
                         </TableHeader>
                         <TableBody>
                             {studentList.map((student,i) => (
-                                <AlertDialog>
+                                <AlertDialog key={i}>
                                     <AlertDialogTrigger asChild>
-                                        <TableRow key={i} className="student-table-row">
+                                        <TableRow className="student-table-row">
                                             <TableCell>{student.id}</TableCell>
                                             <TableCell className="font-medium">{student.name}</TableCell>
                                             <TableCell className="text-center">{student.currentModule}</TableCell>
@@ -280,7 +280,7 @@ export default function StudentsList() {
                                                 </TableHeader>
                                                 <TableBody>
                                                     {student.homework.map((lesson, i) => (
-                                                        <TableRow>
+                                                        <TableRow key={i}>
                                                             <TableCell className="text-center">{lesson.lesson}</TableCell>
                                                             <TableCell className="font-medium text-center">{student.currentModule}</TableCell>
                                                             <TableCell className="text-center">{lesson.lesson}</TableCell>

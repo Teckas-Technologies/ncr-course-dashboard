@@ -137,8 +137,8 @@ export default function CourseCard({ setSelectedLesson, updateSelectedLesson }: 
                                                             studentCurrentModule={student.currentModule}
                                                             studentCurrentLesson={student.currentModule}
                                                             studentProgress={student.progress}
-                                                            module={moduleIndex }
-                                                            lesson={lessonIndex }
+                                                            currentModule={moduleIndex }
+                                                            currentLesson={lessonIndex }
                                                             courseModules={courseModules}
                                                         />
                                                     </AccordionContent>

@@ -57,8 +57,8 @@ export default function HomeworkSubmissionMobileMenu({ student, courseModules, c
                         studentCurrentModule={student.currentModule}
                         studentCurrentLesson={student.currentLesson}
                         studentProgress={student.progress}
-                        module={currentModuleIndex }
-                        lesson={currentLessonIndex }
+                        currentModule={currentModuleIndex }
+                        currentLesson={currentLessonIndex }
                         courseModules={courseModules}
                     />
                     {/* <div className="grid gap-4 py-4">

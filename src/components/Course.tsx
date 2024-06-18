@@ -17,6 +17,10 @@ interface CourseProps {
 }
 
 export default function Course({ selectedLesson, onNextLesson, onPreviousLesson, isFirstLesson, isLastLesson }: CourseProps) {
+
+    const courseCompleted = () => {
+
+    }
     return (
         <>
             <div className="course-learn-page pt-4">
@@ -32,8 +36,8 @@ export default function Course({ selectedLesson, onNextLesson, onPreviousLesson,
                             <Button onClick={onPreviousLesson} disabled={isFirstLesson}>
                                 Previous
                             </Button>
-                            <Button onClick={onNextLesson} disabled={isLastLesson}>
-                                Next
+                            <Button onClick={isLastLesson ? courseCompleted : onNextLesson}>
+                                {isLastLesson ? "Finish" : "Next"}
                             </Button>
                         </div>
                     </CardContent>

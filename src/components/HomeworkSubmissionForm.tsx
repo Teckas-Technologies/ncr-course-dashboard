@@ -14,8 +14,8 @@ interface HomeworkSubmissionFormProps {
     studentCurrentModule: number;
     studentCurrentLesson: number;
     studentProgress: number;
-    module: number;
-    lesson: number;
+    currentModule: number;
+    currentLesson: number;
     courseModules: {
         title: string;
         lessons: {
@@ -25,7 +25,7 @@ interface HomeworkSubmissionFormProps {
       }[],
   }
 
-export default function HomeworkSubmissionForm({ studentId, studentName, studentCurrentModule, studentCurrentLesson, studentProgress, module, lesson, courseModules }: HomeworkSubmissionFormProps) {
+export default function HomeworkSubmissionForm({ studentId, studentName, studentCurrentModule, studentCurrentLesson, studentProgress, currentModule, currentLesson, courseModules }: HomeworkSubmissionFormProps) {
     const [selectedOption, setSelectedOption] = useState<string>("text");
     const [homeworkContent, setHomeworkContent] = useState<string>("");
     const [file, setFile] = useState<File | null>(null);
@@ -50,20 +50,20 @@ export default function HomeworkSubmissionForm({ studentId, studentName, student
         if(selectedOption && homeworkContent || file ) {
             try {
                 if (
-                    module < 0 ||
-                    module >= courseModules.length ||
-                    lesson < 0 ||
-                    lesson >= courseModules[module].lessons.length
+                    currentModule < 0 ||
+                    currentModule >= courseModules.length ||
+                    currentLesson < 0 ||
+                    currentLesson >= courseModules[currentModule].lessons.length
                   ) {
-                    console.log("Module :",module)
-                    console.log("Lesson :", lesson)
+                    console.log("Module :",currentModule)
+                    console.log("Lesson :", currentLesson)
                     throw new Error("Invalid module or lesson index");
                   }
                 const formData = new FormData();
                 formData.append("studentId", studentId.toString());
                 formData.append("name", studentName);
-                formData.append("currentModule", module.toString());
-                formData.append("currentLesson", lesson.toString());
+                formData.append("currentModule", currentModule.toString());
+                formData.append("currentLesson", currentLesson.toString());
                 formData.append("progress", studentProgress.toString());
                 formData.append("homeworkType", selectedOption);
           
@@ -141,8 +141,8 @@ export default function HomeworkSubmissionForm({ studentId, studentName, student
         studentCurrentModule,
         studentCurrentLesson,
         studentProgress,
-        module,
-        lesson,
+        currentModule,
+        currentLesson,
       });
 
     return (

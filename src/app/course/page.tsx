@@ -96,12 +96,12 @@ export default function CoursePage() {
     });
 
     const updateSelectedLesson = (moduleIndex: number, lessonIndex: number) => {
-      const module = courseModules[moduleIndex];
-      const lesson = module.lessons[lessonIndex];
+      const theModule = courseModules[moduleIndex];
+      const lesson = theModule.lessons[lessonIndex];
       setSelectedLesson({
-        moduleTitle: module.title,
+        moduleTitle: theModule.title,
         lessonTitle: lesson.title,
-        description: module.description,
+        description: theModule.description,
         activities: "<div><br/>  <b>Activities Details :</b> <br/><br/> \
                       1. Tools for Data Retrieval <br/><br/>\
                       Introduction to nearblocks.io, focusing on its capabilities and applications in the context of NEAR Protocol. <br/><br/>\
