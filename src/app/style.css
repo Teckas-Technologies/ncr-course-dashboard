@@ -1,0 +1,477 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap');
+
+.dashboard {
+    width: 100%;
+    height: 100%;
+    box-sizing: border-box;
+}
+.main-header{
+    /* max-width: 1920px; */
+    margin-left: auto;
+    margin-right: auto;
+    width: 100%;
+    background-color: #151718;
+    font-family: Open Sans, sans-serif;
+    font-size: 0.9375rem;
+    font-weight: 400;
+    line-height: 1.25rem;
+    box-shadow: 0 0.5rem 1rem 0 rgb(44 51 73 / 10%);
+    height: 12%;
+    padding: 1rem;
+    display: flex;
+    justify-content: space-between;
+    position: fixed;
+    z-index: 100;
+}
+.main-header-logo-icon{
+    display: flex;
+    align-items: center;
+}
+.header-logo{
+    
+}
+.hamburger, .facilitator-mobile-menu{
+    display: none;
+}
+.header-right{
+    display: flex;
+    align-items: center;
+    padding: 0 0;
+}
+
+.side-bar-open, .side-bar-close {
+    width: 100%;
+}
+
+.side-bar{
+    position: fixed;
+    width: 60%;
+    height: 100vh;
+    box-shadow: rgba(0, 0, 0, 0.15) 1.95px 1.95px 2.6px;
+    background-color: #fff;
+    padding-top: 25%;
+    border-radius: 8px;
+    padding-left: 5px;
+    padding-right: 5px;
+    padding-bottom: 5px;
+    transition: 0.4s;
+    z-index: 99;
+}
+
+.side-bar-list {
+    padding: 0.5rem;
+    /* border-bottom: 0.5px solid black; */
+    background-color: #fff;
+}
+
+.menu-item{
+    padding: 10px;
+    border-radius: 8px;
+    transition: 0.4s;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.menu-item:hover {
+    background-color: #b3b3b3;
+    padding-right: 20px;
+}
+
+.menu-item:hover .arrow {
+    background-color: #3D7FFF;
+    border-radius: 50%;
+}
+
+.menu-item .arrow{
+    padding: 5px;
+}
+
+.sidebar-main::-webkit-scrollbar {
+    width: 3px;
+    background: #e4e9f2;
+  }
+
+  .sidebar-main::-webkit-scrollbar-thumb {
+    background: #e4e9f2;
+    cursor: pointer;
+    border-radius: 0.15625rem;
+}
+::-webkit-scrollbar-thumb {
+    background: #b3b3b3 !important;
+    border-radius: 0.063rem !important;
+}
+::-webkit-scrollbar {
+    width: 0.188rem !important;
+    height: 0.188rem !important;
+}
+
+.side-bar-open .side-bar {
+    display: block;
+    transition: 0.4s;
+}
+
+.side-bar-close .side-bar {
+    display: none;
+    transition: 0.4s;
+}
+
+.main-page {
+    width: 100%;
+    height: auto;
+    padding-top: 7%;
+    padding-left: 1rem;
+    padding-right: 1rem;
+    padding-bottom: 1rem;
+    background-color: #F2F1EA;
+}
+
+.banner {
+    width: 100%;
+    height: 23rem;
+    padding-top: 8%;
+    background-color: #121D42;
+    display: flex;
+    align-items: center;
+    padding-left: 5rem;
+    position: relative;
+}
+
+.banner-content h2{
+    font-size: 2rem;
+    color: #fff;
+    font-weight: 900;
+    font-family: "Roboto", sans-serif;
+    letter-spacing: 0.05rem;
+}
+
+.analytics{
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.analytics .analytics-grp{
+    display: flex;
+    color: #fff;
+    align-items: center;
+    gap: 0.3rem;
+    color: #cdcdcd;
+    font-size: 0.7rem;
+}
+
+.analytics .analytics-grp .analytics-icon{
+    width: 1.2rem;
+    height: 1rem;
+    color: #cdcdcd;
+}
+
+.coding-icon{
+    position: absolute;
+    width: 8rem;
+    height: 8rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    right: 0.5rem;
+    top: 33%;
+}
+
+.coding-icon .code-ic{
+    width: 4rem;
+    height: 4rem;
+    color: #DF3276;
+}
+
+.welcome-box{
+    position: absolute;
+    width: 80%;
+    bottom: -50%;
+    right: 10%;
+}
+
+.welcome-card-action {
+    position: absolute;
+    width: 2rem;
+    height: 2rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 1rem;
+    top:33.33%;
+    bottom: 33.33%;
+    right: 1rem;
+    border: 0.1rem solid #121D42;
+    border-radius: 50%;
+}
+
+.welcome-card-action .syllabus-icon{
+    width: 2rem;
+    height: 2rem;
+    color: #121D42;
+}
+
+.course-completion .completion-fields {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-top: 0.7rem;
+    padding-bottom: 0.7rem;
+}
+
+.social-media-icons{
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.course-overview h2{
+    font-size: 1.5rem;
+    padding-bottom: 0.5rem;
+    font-weight: 600;
+}
+
+.course-overview p{
+    text-align: justify;
+    padding-bottom: 0.5rem;
+}
+
+.course-card{
+    margin-top: 1rem;
+}
+
+.course-content{
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.module-trigger {
+    padding-left: 1rem;
+    padding-right: 1rem;
+    text-align: left;
+}
+
+.lesson-trigger {
+    padding-left: 1.6rem; 
+    padding-right: 1rem; 
+    text-align: left;
+}
+
+.lesson-content {
+    padding-left: 1.6rem; 
+    padding-right: 1rem;
+    text-align: left;
+}
+
+.reference-link {
+    color: #3D7FFF;
+}
+
+.options {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+}
+
+.input-field {
+    padding: 1rem;
+}
+
+.course-learn-page h2 {
+    font-size: 1.3rem;
+    font-weight: 500;
+}
+
+.facilitator-menu-list li, .menu-icon {
+    transition: 0.5s;
+    cursor: pointer;
+}
+
+.facilitator-menu-list li:hover .menu-icon{
+    color: #DF3276;
+}
+
+.scroll {
+    max-height: 30vh;
+}
+
+.student-table-row:hover {
+    cursor: pointer;
+}
+
+/* .add-new-module {
+    display: flex;
+} */
+
+/* .hm-submit-btn {
+    width: 100%;
+    height: auto;
+    display: flex;
+    justify-content: flex-end;
+    padding-right: 1rem;
+} */
+
+/* Mobile Size */
+@media only screen and (max-width: 667px) {
+    .hamburger{
+        display: block;
+        cursor: pointer;
+        transition: 0.4s;
+    }
+    .facilitator-mobile-menu{
+        display: block;
+        cursor: pointer;
+        transition: 0.4s;
+        position: relative;
+        margin-top: 1rem;
+    }
+    .hamburger1{
+        position: absolute;
+        right: 0;
+        bottom: 50%;
+    }
+    .header-logo{
+        display: none;
+    }
+
+    .main-page {
+        padding-top: 24%;
+        width: 100%;
+    }
+
+    .discout-card {
+        padding-top: 24%;
+    }
+
+    .banner {
+        width: 100%;
+        height: 23rem;
+        padding-top: 23%;
+        background-color: #121D42;
+        display: flex;
+        align-items: center;
+        padding-left: 3rem;
+        position: relative;
+    }
+    
+    .banner-content h2{
+        font-size: 2rem;
+        color: #fff;
+        font-weight: 600;
+        font-family: "Roboto", sans-serif;
+        letter-spacing: 0.05rem;
+    }
+    
+    .analytics{
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+    }
+    
+    .analytics .analytics-grp{
+        display: flex;
+        color: #fff;
+        align-items: center;
+        gap: 0.3rem;
+        color: #cdcdcd;
+        font-size: 0.7rem;
+    }
+    
+    .analytics .analytics-grp .analytics-icon{
+        width: 1.2rem;
+        height: 1rem;
+        color: #cdcdcd;
+    }
+    
+    .coding-icon{
+        position: absolute;
+        width: 8rem;
+        height: 8rem;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        right: 0.5rem;
+        top: 45%;
+    }
+    
+    .coding-icon .code-ic{
+        width: 4rem;
+        height: 4rem;
+        color: #DF3276;
+    }
+    
+    .welcome-box{
+        position: absolute;
+        width: 80%;
+        bottom: -15%;
+        right: 10%;
+    }
+
+    .scroll {
+        max-height: 35vh;
+    }
+    
+}
+
+/* Tab Medium devices Size */
+@media only screen and (min-width: 668px) and (max-width: 960px) {
+    .main-page {
+        padding-top: 15%;
+        padding-left: 1.5rem;
+        padding-right: 1.5rem;
+        padding-bottom: 1.5rem;
+        width: 100%;
+    }
+
+    .welcome-box{
+        position: absolute;
+        width: 80%;
+        bottom: -15%;
+        right: 10%;
+    }
+
+    .banner {
+        padding-left: 5rem;
+        width: 100%;
+    }
+
+    .coding-icon{
+        right: 8rem;
+        top: 41%;
+    }
+
+    
+}
+
+@media only screen and (min-width: 960px){
+    .main-header{
+        padding-left: 12rem;
+        padding-right: 12rem;
+        width: 100%;
+    }
+    .main-page {
+        padding-top: 8%;
+        padding-left: 2rem;
+        padding-right: 2rem;
+        padding-bottom: 2rem;
+        width: 100%;
+    }
+
+    .welcome-box{
+        position: absolute;
+        width: 70%;
+        bottom: -15%;
+        right: 15%;
+    }
+
+    .banner {
+        padding-left: 14rem;
+        width: 100%;
+    }
+
+    .coding-icon{
+        right: 15rem;
+        top: 45%;
+    }
+}
