@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "./ui/alert-dialog";
 import { Button } from "./ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
@@ -5,6 +6,7 @@ import { Pagination, PaginationContent, PaginationEllipsis, PaginationItem, Pagi
 import { Progress } from "./ui/progress";
 import { ScrollArea } from "./ui/scroll-area";
 import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from "./ui/table";
+import StudentCourseCard from "./StudentCourseCard";
 
 const studentList = [
     {
@@ -12,7 +14,7 @@ const studentList = [
         name: "Johnson",
         currentModule: 2,
         currentLesson: 3,
-        progress: 30,
+        progress: 10,
         homework: [
             {
                 lesson: 1,
@@ -22,7 +24,12 @@ const studentList = [
             },
             {
                 lesson: 2,
-                text: "Text Submission",
+                text: "Network Delays and Packet Loss \
+                    Explain how network delays and packet losses affect the stability of Networked Control Systems.\
+                    Describe the difference between deterministic and stochastic delays. Provide examples of each in the context of NCR.\
+                    Control Strategies \
+                    Compare and contrast state feedback control and output feedback control in NCR. \
+                    Discuss the challenges of implementing a state feedback controller over a network with variable delays.",
                 link: "",
                 document: ""
             },
@@ -135,7 +142,7 @@ const studentList = [
         name: "Johnson2",
         currentModule: 2,
         currentLesson: 4,
-        progress: 40,
+        progress: 0,
         homework: [
             {
                 lesson: 1,
@@ -228,7 +235,44 @@ const studentList = [
     }
 ];
 
-export default function StudentsList() {
+interface Lesson {
+    title: string;
+    link: string;
+  }
+  
+  interface Module {
+    title: string;
+    description: string;
+    lessons: Lesson[];
+  }
+  
+  interface Student {
+    id: number;
+    name: string;
+    currentModule: number;
+    currentLesson: number;
+    progress: number;
+    homework: {
+      lesson: number;
+      text: string;
+      link: string;
+      document: any;
+    }[];
+  }
+  
+  interface StudentsListProps {
+    courseModules: Module[];
+    // students: Student[];
+  }
+
+export default function StudentsList({courseModules}: StudentsListProps ) {
+
+    const totalLessons = courseModules.reduce((total: number, theModule: any) => total + theModule.lessons.length, 0);
+    studentList.forEach(student => {
+        student.progress = Math.round((student.currentLesson / totalLessons) * 100);
+    });
+    
+
     return (
         <>
         <div className="student-list" id="student-list">
@@ -268,7 +312,15 @@ export default function StudentsList() {
                                             <div className="current-progress">
                                                 <Progress value={student.progress}/> {student.progress}%
                                             </div>
+
                                             <ScrollArea className="scroll w-full rounded-md border">
+                                                <StudentCourseCard
+                                                    courseModules={courseModules}
+                                                    student={student}
+                                                />
+                                            </ScrollArea>
+
+                                            {/* <ScrollArea className="scroll w-full rounded-md border">
                                             <Table>
                                                 <TableHeader>
                                                     <TableRow>
@@ -284,14 +336,24 @@ export default function StudentsList() {
                                                             <TableCell className="text-center">{lesson.lesson}</TableCell>
                                                             <TableCell className="font-medium text-center">{student.currentModule}</TableCell>
                                                             <TableCell className="text-center">{lesson.lesson}</TableCell>
-                                                            <TableCell className="text-center">{lesson.text ? lesson.text : lesson.link ? lesson.link : lesson.document}</TableCell>
+                                                            <AlertDialog>
+                                                                <AlertDialogTrigger>
+                                                                    <TableCell className="text-center text-primary">See the homework</TableCell>
+                                                                </AlertDialogTrigger>
+                                                                <AlertDialogContent>
+                                                                    <p>{lesson.text ? 
+                                                                    <div className="homework-content"><h2 className="font-bold py-2">Homework Content!</h2><p>{lesson.text}</p></div> : lesson.link ? <div className="py-2"><Link href={lesson.link} className="text-primary">Click Here</Link> - to see the homework!</div> : lesson.document}</p>
+                                                                    <AlertDialogAction>Done</AlertDialogAction>
+                                                                </AlertDialogContent>
+                                                                
+                                                            </AlertDialog>
                                                         </TableRow>
                                                     ))}
                                                 </TableBody>
                                             </Table>
-                                            </ScrollArea>
+                                            </ScrollArea> */}
                                         </AlertDialogDescription>
-                                        </AlertDialogHeader>
+                                        </AlertDialogHeader> 
                                         <AlertDialogFooter>
                                         {/* <AlertDialogCancel>Cancel</AlertDialogCancel> */}
                                         <AlertDialogAction>Done</AlertDialogAction>
