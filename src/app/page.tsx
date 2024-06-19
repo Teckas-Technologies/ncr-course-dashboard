@@ -7,6 +7,23 @@ import CourseOverview from "@/components/CourseOverview";
 import ProgressComp from "@/components/Progress";
 import SocialMedia from "@/components/SocialMedia"
 import { useEffect, useState } from "react";
+import { useMbWallet } from "@mintbase-js/react";
+import { Button } from "@/components/ui/button";
+
+// import { MintbaseWalletContextProvider } from '@mintbase-js/react'
+// import '@near-wallet-selector/modal-ui/styles.css';
+// import type { AppProps } from 'next/app'
+
+// export default function App({ Component, pageProps }: AppProps) {
+//   return (
+// <MintbaseWalletContextProvider
+// contractAddress="mycontract.mintbase1.near"
+// network="mainnet"
+// callbackUrl="https://www.mywebsite.com/callback">
+//    <Component {...pageProps} />
+// </MintbaseWalletContextProvider>)
+// }
+
 
 
 const courseModules = [
@@ -92,6 +109,8 @@ export default function Home() {
     updateSelectedLesson(currentModuleIndex, currentLessonIndex);
   }, [currentModuleIndex, currentLessonIndex]);
 
+  const { isConnected, connect, activeAccountId } = useMbWallet();
+
 
   return (
     <>
@@ -104,7 +123,8 @@ export default function Home() {
             <SocialMedia />
           </div>
           <div className="w-full md:w-9/12 grid grid-cols-1 gap-4">
-            <CourseOverview />
+            {isConnected ? <p>connected as {activeAccountId}</p> : <Button onClick={connect}>Connect</Button>}
+            {isConnected ? <CourseOverview /> : "Not Connected"}
             <CourseCard setSelectedLesson={setSelectedLesson} updateSelectedLesson={updateSelectedLesson}/>
           </div>
         </div>
