@@ -237,7 +237,7 @@ const studentList = [
 
 interface Lesson {
     title: string;
-    link: string;
+    content: string;
   }
   
   interface Module {
@@ -261,16 +261,18 @@ interface Lesson {
   }
   
   interface StudentsListProps {
-    courseModules: Module[];
+    courseModules: Module[] | null;
     // students: Student[];
   }
 
 export default function StudentsList({courseModules}: StudentsListProps ) {
 
-    const totalLessons = courseModules.reduce((total: number, theModule: any) => total + theModule.lessons.length, 0);
-    studentList.forEach(student => {
-        student.progress = Math.round((student.currentLesson / totalLessons) * 100);
-    });
+    const totalLessons = courseModules?.reduce((total: number, theModule: any) => total + theModule.lessons.length, 0);
+    if(totalLessons) {
+        studentList.forEach(student => {
+            student.progress = Math.round((student.currentLesson / totalLessons) * 100);
+        });
+    }
     
 
     return (
@@ -292,7 +294,7 @@ export default function StudentsList({courseModules}: StudentsListProps ) {
                             </TableRow>
                         </TableHeader>
                         <TableBody>
-                            {studentList.map((student,i) => (
+                            {studentList?.map((student,i) => (
                                 <AlertDialog key={i}>
                                     <AlertDialogTrigger asChild>
                                         <TableRow className="student-table-row">

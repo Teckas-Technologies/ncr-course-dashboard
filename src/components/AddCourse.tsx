@@ -12,10 +12,10 @@ import { PlusCircleIcon } from "lucide-react";
 import TipTap from "./TipTap";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "./ui/alert-dialog";
 import { useToast } from "./ui/use-toast";
+import { useSaveCourseModule } from "@/hook/CourseModuleHook";
 
 interface Lesson {
     title: string;
-    link: string;
     content:string;
 }
   
@@ -26,20 +26,21 @@ interface Module {
 }
 
 interface AddCourseProps {
-    courseModules: Module[];
+    courseModules: Module[] | null;
     // students: Student[];
 }
 
 
 export default function AddCourse({ courseModules } : AddCourseProps) {
 
-    const [selectedModule, setSelectedModule] = useState(courseModules[0]?.title || "");
-    const [selectedLessonTitle, setSelectedLessonTitle] = useState(courseModules[0]?.lessons[0]?.title || "");
+    const [selectedModule, setSelectedModule] = useState("");
+    const [selectedLessonTitle, setSelectedLessonTitle] = useState("");
     const [newModule, setNewModule] = useState("");
     const [newModuleDes, setNewModuleDes] = useState("");
     const [newLesson, setNewLesson] = useState("");
-    const [modules, setModules] = useState(courseModules);
+    const [modules, setModules] = useState<Module[] | null>(courseModules && courseModules.length ? courseModules : null);
     const { toast } = useToast();
+    const { saveCourseModule, loading, error } = useSaveCourseModule();
 
     const formSchema = z.object({
         module: z.string().min(5, { message: "Hey the module is not long enough!" }).trim(),
@@ -51,9 +52,9 @@ export default function AddCourse({ courseModules } : AddCourseProps) {
         resolver: zodResolver(formSchema),
         mode: 'onChange',
         defaultValues: {
-            module: courseModules[0]?.title || "",
-            lesson: courseModules[0]?.lessons[0]?.title || "",
-            content: courseModules[0]?.lessons[0]?.content || ""
+            module: "",
+            lesson: "",
+            content: ""
         }
     });
 
@@ -66,7 +67,7 @@ export default function AddCourse({ courseModules } : AddCourseProps) {
     useEffect(() => {
         if (selectedLessonTitle) {
             form.setValue('lesson', selectedLessonTitle);
-            const selectedLesson = modules.find(module => module.title === selectedModule)?.lessons.find(lesson => lesson.title === selectedLessonTitle);
+            const selectedLesson = modules?.find(module => module.title === selectedModule)?.lessons.find(lesson => lesson.title === selectedLessonTitle);
             if (selectedLesson) {
                 form.setValue('content', selectedLesson.content);
             }
@@ -82,17 +83,38 @@ export default function AddCourse({ courseModules } : AddCourseProps) {
 
         console.log("Submitted Course Module :", submittedValues);
         if (submittedValues) {
-            toast({
-                title: "Course Lesson Added Successfully!",
-                description: JSON.stringify(submittedValues)
-            });
+            // const theLesson: Lesson[] = [
+            //     { title: submittedValues.lesson, content: submittedValues.content },
+            // ]
+            const theModule: Module = {
+                title: submittedValues.module,
+                description: newModuleDes,
+                lessons: [
+                    { title: submittedValues.lesson, content: submittedValues.content },
+                ]
+            };
+            saveCourseModule(theModule)
+                .then((res) => {
+                    toast({
+                        title: "Course Lesson Added Successfully!",
+                        description: JSON.stringify(submittedValues)
+                    });
+                })
+                .catch(err => {
+                    toast({
+                        title: "Error Adding Course Lesson",
+                        description: err.message
+                    });
+                });
+        } else {
+            console.log("Error", error)
         }
     }
 
     const addModule = () => {
         if (newModule) {
             const newModuleObject = { title: newModule, description: newModuleDes, lessons: [] };
-            setModules([...modules, newModuleObject]);
+            setModules(modules ? [...modules, newModuleObject] : [newModuleObject]);
             toast({
                 title: `${newModule} has been added successfully!`,
                 description: `Please select or add your lesson!`,
@@ -103,13 +125,13 @@ export default function AddCourse({ courseModules } : AddCourseProps) {
 
     const addLesson = () => {
         if (newLesson && selectedModule) {
-            const updatedModules = modules.map(module => {
+            const updatedModules = modules?.map(module => {
                 if (module.title === selectedModule) {
-                    return { ...module, lessons: [...module.lessons, { title: newLesson, link: "", content: "" }] };
+                    return { ...module, lessons: [...module.lessons, { title: newLesson, content: "" }] };
                 }
                 return module;
             });
-            setModules(updatedModules);
+            setModules(updatedModules || []);
             toast({
                 title: `${newLesson} has been added successfully!`,
                 description: `Please add or edit the lesson content!`,
@@ -144,7 +166,7 @@ export default function AddCourse({ courseModules } : AddCourseProps) {
                                                         </SelectTrigger>
                                                     </FormControl>
                                                     <SelectContent>
-                                                        {modules.map((module, i) => (
+                                                        {modules?.map((module, i) => (
                                                             <SelectItem key={i} value={module.title}>{module.title}</SelectItem>
                                                         ))}
                                                     </SelectContent>
@@ -202,7 +224,7 @@ export default function AddCourse({ courseModules } : AddCourseProps) {
                                                         </SelectTrigger>
                                                     </FormControl>
                                                     <SelectContent>
-                                                        {modules.find(module => module.title === selectedModule)?.lessons.map((lesson, i) => (
+                                                        {modules?.find(module => module.title === selectedModule)?.lessons.map((lesson, i) => (
                                                             <SelectItem key={i} value={lesson.title}>{lesson.title}</SelectItem>
                                                         ))}
                                                     </SelectContent>

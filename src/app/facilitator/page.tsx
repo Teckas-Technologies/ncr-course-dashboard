@@ -47,7 +47,6 @@ import { useFetchCourseModules } from "@/hook/CourseModuleHook";
 
 interface Lesson {
     title: string;
-    link: string;
     content:string;
 }
   

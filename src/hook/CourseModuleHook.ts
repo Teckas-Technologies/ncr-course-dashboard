@@ -13,7 +13,7 @@ interface Module  {
 }
 
 export const useFetchCourseModules = () => {
-        const [courseModules, setCourseModules] = useState<Module[] | null>([])
+        const [courseModules, setCourseModules] = useState<Module[] | null>(null)
         const [loading, setLoading] = useState<boolean>(false);
         const [error, setError] = useState<string | null>(null);
 
@@ -39,4 +39,36 @@ export const useFetchCourseModules = () => {
        
   
     return { courseModules, loading, error };
+};
+
+export const useSaveCourseModule = () => {
+    const [loading, setLoading] = useState<boolean>(false);
+    const [error, setError] = useState<string | null>(null);
+
+    const saveCourseModule = async (data: Module): Promise<void> => {
+      setLoading(true);
+      setError(null);
+  
+      try {
+        console.log("Hook Module :", data)
+        const response = await fetch('/api/CourseModule', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(data),
+        });
+  
+        if (!response.ok) {
+          throw new Error('Failed to save data');
+        }
+      } catch (error) {
+        console.error('Error saving data:', error);
+        setError('Failed to save course module');
+      } finally {
+        setLoading(false);
+      }
+    };
+  
+    return { saveCourseModule, loading, error };
   };

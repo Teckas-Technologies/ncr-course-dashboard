@@ -11,16 +11,6 @@ interface CourseModules extends Document {
   lessons: Lesson[];
 }
 
-const lessonSchema = new mongoose.Schema({
-  title: {
-    type: String,
-    required: true,
-  },
-  content: {
-    type: String,
-    required: true,
-  },
-});
 
 const courseModulesSchema = new mongoose.Schema({
   title: {
@@ -29,12 +19,19 @@ const courseModulesSchema = new mongoose.Schema({
   },
   description: {
     type: String,
-    required: true,
   },
-  lessons: {
-    type: [lessonSchema],
-    required: true,
-  },
+  lessons: [
+      {
+        title: {
+          type: String,
+          required: true,
+        },
+        content: {
+          type: String,
+          required: true,
+        },
+      }
+    ]
 }, { timestamps: true });
 
 const CourseModules: Model<CourseModules> = mongoose.models.CourseModules || mongoose.model<CourseModules>('CourseModules', courseModulesSchema);
