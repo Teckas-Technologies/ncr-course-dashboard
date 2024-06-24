@@ -37,8 +37,10 @@ export default function CoursePage() {
     });
 
     useEffect(() => {
-      updateSelectedLesson(currentModuleIndex, currentLessonIndex);
-    }, [currentModuleIndex, currentLessonIndex]);
+      if (courseModules && courseModules.length > 0) {
+          updateSelectedLesson(currentModuleIndex, currentLessonIndex);
+      }
+    }, [courseModules, currentModuleIndex, currentLessonIndex]);
 
     useEffect(()=> {
       if(isConnected) {
@@ -105,8 +107,8 @@ export default function CoursePage() {
             <CourseCard setSelectedLesson={setSelectedLesson} updateSelectedLesson={updateSelectedLesson} student={student} courseModules={courseModules}/>
           </div>
           <div className="w-full md:w-9/12 grid grid-cols-1 gap-4">
-            {courseModules?.length ? <HomeworkSubmissionMobileMenu student={student} courseModules={courseModules} currentModuleIndex={currentModuleIndex} currentLessonIndex={currentLessonIndex}  /> : ""}
-            {courseModules?.length ? 
+            {courseModules ? <HomeworkSubmissionMobileMenu student={student} courseModules={courseModules} currentModuleIndex={currentModuleIndex} currentLessonIndex={currentLessonIndex}  /> : ""}
+            {courseModules ? 
             <Course 
             selectedLesson={selectedLesson}
             onNextLesson={handleNextLesson}
