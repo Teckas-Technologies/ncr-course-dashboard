@@ -121,6 +121,7 @@
 .main-page {
     width: 100%;
     height: auto;
+    min-height: 70vh;
     padding-top: 7%;
     padding-left: 1rem;
     padding-right: 1rem;

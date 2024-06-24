@@ -4,31 +4,25 @@ import { Button } from "./ui/button";
 import { Input } from "./ui/input";
 import { RadioGroup, RadioGroupItem } from "./ui/radio-group";
 import { Label } from "./ui/label";
-import axios from "axios";
 import { useToast } from "./ui/use-toast";
-import { ToastAction } from "./ui/toast";
+import { useSaveStudent } from "@/hook/StudentHook";
+import { Module, Student, HomeworkSubmission } from "@/types/types";
 
 interface HomeworkSubmissionFormProps {
-    studentId: number;
-    studentName: string;
+    studentId: string | null;
     studentCurrentModule: number;
     studentCurrentLesson: number;
     studentProgress: number;
     currentModule: number;
     currentLesson: number;
-    courseModules: {
-        title: string;
-        lessons: {
-          title: string;
-          link: string;
-        }[];
-      }[],
-  }
+    courseModules: Module[] | null
+}
 
-export default function HomeworkSubmissionForm({ studentId, studentName, studentCurrentModule, studentCurrentLesson, studentProgress, currentModule, currentLesson, courseModules }: HomeworkSubmissionFormProps) {
+export default function HomeworkSubmissionForm({ studentId, studentCurrentModule, studentCurrentLesson, studentProgress, currentModule, currentLesson, courseModules }: HomeworkSubmissionFormProps) {
     const [selectedOption, setSelectedOption] = useState<string>("text");
     const [homeworkContent, setHomeworkContent] = useState<string>("");
     const [file, setFile] = useState<File | null>(null);
+    const {saveStudent} = useSaveStudent();
 
     const { toast } = useToast();
 
@@ -49,49 +43,73 @@ export default function HomeworkSubmissionForm({ studentId, studentName, student
     const handleSubmit = async () => {
         if(selectedOption && homeworkContent || file ) {
             try {
-                if (
-                    currentModule < 0 ||
-                    currentModule >= courseModules.length ||
-                    currentLesson < 0 ||
-                    currentLesson >= courseModules[currentModule].lessons.length
-                  ) {
-                    console.log("Module :",currentModule)
-                    console.log("Lesson :", currentLesson)
-                    throw new Error("Invalid module or lesson index");
-                  }
-                const formData = new FormData();
-                formData.append("studentId", studentId.toString());
-                formData.append("name", studentName);
-                formData.append("currentModule", currentModule.toString());
-                formData.append("currentLesson", currentLesson.toString());
-                formData.append("progress", studentProgress.toString());
-                formData.append("homeworkType", selectedOption);
-          
-                if (selectedOption === "document" && file) {
-                  formData.append("homeworkContent", file);
-                } else {
-                  formData.append("homeworkContent", homeworkContent);
+                if(courseModules) {
+                    if (
+                        currentModule < 0 ||
+                        currentModule >= courseModules.length ||
+                        currentLesson < 0 ||
+                        currentLesson >= courseModules[currentModule].lessons.length
+                      ) {
+                        console.log("Module :",currentModule)
+                        console.log("Lesson :", currentLesson)
+                        throw new Error("Invalid module or lesson index");
+                    }
                 }
-          
-              //   await axios.post("http://localhost:3000/submit-homework", formData, {
-              //     headers: {
-              //       "Content-Type": "multipart/form-data",
-              //     },
-              //   });
-      
-                  const homeworkData: { [key: string]: any } = {};
-                  formData.forEach((value, key) => {
-                  homeworkData[key] = value;
-              });
-      
-              console.log("Homework Data:", homeworkData);
-              toast({
-                  title: `${courseModules[homeworkData.currentModule].lessons[homeworkData.currentLesson].title} homework has been submitted successfully!`,
-                  description: `Great Achievement ${homeworkData.name}!`,
-                  // action: (
-                  //   <ToastAction altText="Goto schedule to undo">Next</ToastAction>
-                  // ),
-              })
+
+                if (studentId && courseModules) {
+                    // const formData = new FormData();
+                    // formData.append("id", studentId);
+                    // formData.append("currentModule", currentModule.toString());
+                    // formData.append("currentLesson", currentLesson.toString());
+                    // formData.append("progress", studentProgress.toString());
+
+                    // const homeworkType = selectedOption;
+                    // let homeworkContentValue = "";
+
+                    // if (homeworkType === "document" && file) {
+                    //     homeworkContentValue = file.name;
+                    //     // formData.append("homeworkContent", file);
+                    // } else {
+                    //     homeworkContentValue = homeworkContent;
+                    //     // formData.append("homeworkContent", homeworkContent);
+                    // }
+
+                    const homeworkType = selectedOption;
+                    let homeworkContentValue = "";
+                    if (homeworkType === "document" && file) {
+                        homeworkContentValue = file.name;
+                    } else {
+                        homeworkContentValue = homeworkContent;
+                    }
+
+                    const homeworkSubmission: HomeworkSubmission = {
+                        title: courseModules[currentModule].lessons[currentLesson].title,
+                        type: homeworkType,
+                        lessonIndex: currentLesson,
+                        moduleIndex: currentModule,
+                        data: homeworkContentValue,
+                        completed: true
+                    };
+
+                    const student: Student = {
+                        id: studentId,
+                        currentModule: currentModule,
+                        currentLesson: currentLesson,
+                        progress: studentProgress,
+                        homework: [homeworkSubmission]
+                    }
+
+                    // formData.append("homework", JSON.stringify(homeworkSubmission));
+
+                    saveStudent(student).then(()=>{
+                        console.log("Student saved with hw")
+                        toast({
+                            title: `${courseModules[currentModule].lessons[currentLesson].title} homework has been submitted successfully!`,
+                            description: `Great Achievement ${student.id}!`,
+                        })
+                    })
+                }
+                
             } catch (error) {
                 toast({
                     title: `An error occured while submitting the homework!`,
@@ -137,7 +155,6 @@ export default function HomeworkSubmissionForm({ studentId, studentName, student
 
     console.log("Props received in HomeworkSubmissionForm:", {
         studentId,
-        studentName,
         studentCurrentModule,
         studentCurrentLesson,
         studentProgress,

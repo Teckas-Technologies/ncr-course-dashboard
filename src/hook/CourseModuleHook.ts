@@ -1,16 +1,6 @@
 import { useEffect, useState } from "react";
+import { Module } from "@/types/types";
 
-
-interface Lesson {
-    title: string;
-    content: string;
-}
-  
-interface Module  {
-    title: string;
-    description: string;
-    lessons: Lesson[];
-}
 
 export const useFetchCourseModules = () => {
         const [courseModules, setCourseModules] = useState<Module[] | null>(null)
@@ -25,8 +15,8 @@ export const useFetchCourseModules = () => {
                 console.log(" Modules : ", modules)
                 setCourseModules(modules)
             } catch (err) {
-                console.error('Error fetching battles:', err);
-                setError("Error fetching battles!");
+                console.error('Error fetching modules:', err);
+                setError("Error fetching modules!");
             } finally {
                 setLoading(false);
             }

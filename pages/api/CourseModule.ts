@@ -1,27 +1,17 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { findAllCourseModules, saveCourseModule } from '../../utils/CourseModuleUtil';
-
-interface Lesson {
-  title: string;
-  content: string;
-}
-
-interface Module  {
-  title: string;
-  description: string;
-  lessons: Lesson[];
-}
+import { Module } from "@/types/types";
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   try {
     switch (req.method) {
-      //POST method is used for creating battle
+      //POST method is used for creating module
       case 'POST':
         const theModule = req.body;
         console.log("API Module :", theModule)
         const savedCourseModule = await saveCourseModule(theModule);
         return res.status(201).json(savedCourseModule);
-      //GET method is used for fetching battles
+      //GET method is used for fetching module
       case 'GET':
           const courseModules: Module[] = await findAllCourseModules();
           return res.status(200).json(courseModules);

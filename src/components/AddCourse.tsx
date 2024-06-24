@@ -38,9 +38,11 @@ export default function AddCourse({ courseModules } : AddCourseProps) {
     const [newModule, setNewModule] = useState("");
     const [newModuleDes, setNewModuleDes] = useState("");
     const [newLesson, setNewLesson] = useState("");
-    const [modules, setModules] = useState<Module[] | null>(courseModules && courseModules.length ? courseModules : null);
+    const [modules, setModules] = useState<Module[]>([]);
     const { toast } = useToast();
     const { saveCourseModule, loading, error } = useSaveCourseModule();
+
+    console.log("Course Modules From Add course Page : ", courseModules)
 
     const formSchema = z.object({
         module: z.string().min(5, { message: "Hey the module is not long enough!" }).trim(),
@@ -63,6 +65,12 @@ export default function AddCourse({ courseModules } : AddCourseProps) {
             form.setValue('module', selectedModule);
         }
     }, [selectedModule]);
+
+    useEffect(() => {
+        if (courseModules && courseModules.length) {
+            setModules(courseModules);
+        }
+    }, [courseModules]);
 
     useEffect(() => {
         if (selectedLessonTitle) {
@@ -99,6 +107,11 @@ export default function AddCourse({ courseModules } : AddCourseProps) {
                         title: "Course Lesson Added Successfully!",
                         description: JSON.stringify(submittedValues)
                     });
+                    setSelectedModule("");
+                    setSelectedLessonTitle("");
+                    form.setValue("module", "")
+                    form.setValue("lesson", "")
+                    form.setValue("content", "")
                 })
                 .catch(err => {
                     toast({
