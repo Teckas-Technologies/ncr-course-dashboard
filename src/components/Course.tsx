@@ -1,12 +1,7 @@
 import { Button } from "./ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "./ui/card";
+import { SelectedLesson } from "@/types/types";
 
-interface SelectedLesson {
-    moduleTitle: string;
-    lessonTitle: string;
-    description: string;
-    activities: string;
-}
 
 interface CourseProps {
     selectedLesson: SelectedLesson;
@@ -31,7 +26,7 @@ export default function Course({ selectedLesson, onNextLesson, onPreviousLesson,
                     </CardHeader>
                     <CardContent>
                         <h2>{selectedLesson.lessonTitle}</h2>
-                        <p dangerouslySetInnerHTML={{ __html: selectedLesson.activities }}></p>
+                        <p dangerouslySetInnerHTML={{ __html: selectedLesson.content }}></p>
                         <div className="flex justify-between mt-4">
                             <Button onClick={onPreviousLesson} disabled={isFirstLesson}>
                                 Previous

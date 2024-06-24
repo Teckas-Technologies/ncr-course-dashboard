@@ -1,12 +1,15 @@
 'use client';
 import { ArrowRightCircleIcon, MenuIcon, MenuSquareIcon, PanelRightCloseIcon, ShieldCloseIcon, SidebarCloseIcon, SidebarOpen, SidebarOpenIcon, XIcon } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import '../app/style.css'
 import ProgressComp from "./Progress";
 import SocialMedia from "./SocialMedia";
 import Link from "next/link";
 import { useMbWallet } from "@mintbase-js/react";
+import { useFetchStudentById, useSaveStudent } from "@/hook/StudentHook";
+import { Student } from "@/types/types";
 
+type PartialStudent = Pick<Student, 'id'>;
 
 export default function TopBar() {
 
@@ -27,6 +30,9 @@ export default function TopBar() {
     const [isOpen, setIsOpen] = useState(false);
 
     const { isConnected, selector, connect, activeAccountId } = useMbWallet();
+    const { saveStudent } = useSaveStudent();
+    const { fetchStudentById } = useFetchStudentById();
+    const [ student, setStudent ] =useState<Student | null | undefined>(null);
 
     const handleSignout = async () => {
         console.log("clicked logout");
@@ -38,6 +44,40 @@ export default function TopBar() {
         console.log("clicked login");
         return connect();
     };
+
+    useEffect(() => {
+        if(activeAccountId){
+            const student: PartialStudent = {
+                id: activeAccountId.toString()
+            };
+            console.log("Active Account : ", activeAccountId);
+            saveStudent(student);
+        }
+    }, [activeAccountId])
+
+    useEffect(()=> {
+        if(isConnected) {
+          if(activeAccountId) {
+            fetchStudentById(activeAccountId.toString()).then((res)=> {
+              setStudent(res);
+            });
+          }
+        }
+      }, [activeAccountId, isConnected])
+
+    // const handleSignIn = async () => {
+    //     console.log("clicked login", activeAccountId);
+    //     await connect().then(() => {
+    //         if(activeAccountId){
+    //             const student: PartialStudent = {
+    //                 id: activeAccountId.toString()
+    //             };
+    //             console.log("Active Account : ", activeAccountId);
+    //             saveStudent(student);
+    //         }
+    //     });
+    //     return;
+    // };
 
     return (
         <>
@@ -83,7 +123,7 @@ export default function TopBar() {
                 ))}
                 </div>
                 <div className="top-bar-progress">
-                    <ProgressComp />
+                    {isConnected ? <ProgressComp value={student?.progress} currentModule={student?.currentModule} currentLesson={student?.currentLesson} /> : ""}
                     <SocialMedia />
                 </div>
                 </div>

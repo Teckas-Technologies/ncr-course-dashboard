@@ -9,6 +9,7 @@ import Table from '@tiptap/extension-table';
 import TableRow from '@tiptap/extension-table-row';
 import TableCell from '@tiptap/extension-table-cell';
 import TableHeader from '@tiptap/extension-table-header';
+import { useEffect } from "react";
 
 export default function TipTap({
     content,
@@ -74,6 +75,12 @@ export default function TipTap({
             console.log(editor.getHTML());
         }
     })
+
+    useEffect(() => {
+        if (editor) {
+          editor.commands.setContent(content);
+        }
+      }, [content, editor]);
 
     return (
         <>
