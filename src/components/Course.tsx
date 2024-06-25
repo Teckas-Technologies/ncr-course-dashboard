@@ -53,6 +53,10 @@ export default function Course({ selectedLesson, onNextLesson, onPreviousLesson,
         }
     };
 
+    const preprocessHTMLContent = (html: string) => {
+        return html.replace(/<p><\/p>/g, '<br/>');
+    };
+
     return (
         <>
             <div className="course-learn-page pt-4">
@@ -62,8 +66,8 @@ export default function Course({ selectedLesson, onNextLesson, onPreviousLesson,
                         <CardDescription>{selectedLesson.description}</CardDescription>
                     </CardHeader>
                     <CardContent>
-                        <h2>{selectedLesson.lessonTitle}</h2>
-                        <p className="text-justify content" dangerouslySetInnerHTML={{ __html: selectedLesson.content }}></p>
+                        <h2>{selectedLesson.lessonTitle}</h2><br />
+                        <p className="text-justify content" dangerouslySetInnerHTML={{ __html: preprocessHTMLContent(selectedLesson.content) }}></p>
                         <div className="flex justify-between mt-4">
                             <Button onClick={onPreviousLesson} disabled={isFirstLesson}>
                                 Previous

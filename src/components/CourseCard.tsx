@@ -6,6 +6,7 @@ import Link from "next/link";
 import { Notebook, NotebookPenIcon } from "lucide-react";
 import HomeworkSubmissionForm from "./HomeworkSubmissionForm";
 import { Module, Student, SelectedLesson } from "@/types/types";
+import { useState } from "react";
   
   interface CourseCardProps {
     setSelectedLesson: (lesson: SelectedLesson) => void;
@@ -23,11 +24,20 @@ export default function CourseCard({ setSelectedLesson, updateSelectedLesson, st
         progress = Math.round((completedLessons / totalLessons) * 100);
     }
 
+    const [submittedHomework, setSubmittedHomework] = useState<{ [key: string]: boolean }>({});
+    const handleHomeworkSubmit = (moduleIndex: number, lessonIndex: number) => {
+        setSubmittedHomework((prev) => ({
+            ...prev,
+            [`${moduleIndex}-${lessonIndex}`]: true
+        }));
+    };
+
     return (
         <>
+        {courseModules && 
         <Card className="course-card">
             <CardHeader>
-                {courseModules?.length ? <CardTitle className="course-content"><Notebook/>Course Content</CardTitle> : <CardTitle className="course-content"><Notebook/> Course Not Updated</CardTitle>}
+                <CardTitle className="course-content"><Notebook/>Course Content</CardTitle>
             </CardHeader>
             <Accordion type="single" collapsible>
             {courseModules?.map((module, moduleIndex) => (
@@ -44,6 +54,9 @@ export default function CourseCard({ setSelectedLesson, updateSelectedLesson, st
                                 hw.lessonIndex === lessonIndex
                             );
 
+                            const homeworkKey = `${moduleIndex}-${lessonIndex}`;
+                            const isSubmitted = submittedHomework[homeworkKey];
+
                             return (
                             <AccordionItem 
                                 key={lessonIndex} 
@@ -59,8 +72,8 @@ export default function CourseCard({ setSelectedLesson, updateSelectedLesson, st
                                 <AccordionTrigger className="lesson-trigger">{lesson.title}</AccordionTrigger>
                                 <AccordionContent className="lesson-content">
                                     <Accordion type="single" collapsible>
-                                        <Link href={"/course"} className="reference-link">Start Learn</Link>
-                                        {student && isHomeworkCompleted ? (
+                                        <Link href={"/course"} className="reference-link">Start Learning</Link>
+                                        {student && (isHomeworkCompleted || isSubmitted) ? (
                                             <h2 className="pt-4">Homework Already Submitted!</h2>
                                         ) : (
                                         <div>
@@ -75,6 +88,7 @@ export default function CourseCard({ setSelectedLesson, updateSelectedLesson, st
                                                         currentModule={moduleIndex }
                                                         currentLesson={lessonIndex }
                                                         courseModules={courseModules}
+                                                        handleHomeworkSubmit={() => handleHomeworkSubmit(moduleIndex, lessonIndex)}
                                                     />
                                                 </AccordionContent>
                                             </AccordionItem>
@@ -91,6 +105,7 @@ export default function CourseCard({ setSelectedLesson, updateSelectedLesson, st
             </Accordion>
 
         </Card>
+        }
         </>
     )
 }

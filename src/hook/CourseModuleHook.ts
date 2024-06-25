@@ -8,6 +8,8 @@ export const useFetchCourseModules = () => {
         const [error, setError] = useState<string | null>(null);
 
         const fetchCourseModules = async () => {
+            setLoading(true);
+            setError(null);
             try {
                 const response = await fetch(`/api/CourseModule`);
                 if (!response.ok) throw new Error('Network response was not ok');

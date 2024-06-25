@@ -77,10 +77,10 @@ export default function TipTap({
     })
 
     useEffect(() => {
-        if (editor) {
-          editor.commands.setContent(content);
+        if (editor && content !== editor.getHTML()) {
+            editor.commands.setContent(content, false); // Prevents resetting the cursor
         }
-      }, [content, editor]);
+    }, [content, editor]);
 
     return (
         <>

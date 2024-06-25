@@ -10,6 +10,7 @@ import { useMbWallet } from "@mintbase-js/react";
 import { useFetchCourseModules } from "@/hook/CourseModuleHook";
 import { Module, Student } from "@/types/types";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Skeleton } from "@/components/ui/skeleton";
 
 // const getLessonNumber = (moduleIndex, lessonIndex) => {
 //   let lessonNumber = 0;
@@ -104,7 +105,7 @@ export default function CoursePage() {
       <div className="main-page">
         <div className="flex flex-col md:flex-row gap-4">
           <div className="hidden md:block w-full md:w-3/12 side-course">
-            <CourseCard setSelectedLesson={setSelectedLesson} updateSelectedLesson={updateSelectedLesson} student={student} courseModules={courseModules}/>
+            {courseModules ? <CourseCard setSelectedLesson={setSelectedLesson} updateSelectedLesson={updateSelectedLesson} student={student} courseModules={courseModules}/> : <Skeleton className="h-[300px] w-full rounded-xl" /> }
           </div>
           <div className="w-full md:w-9/12 grid grid-cols-1 gap-4">
             {courseModules ? <HomeworkSubmissionMobileMenu student={student} courseModules={courseModules} currentModuleIndex={currentModuleIndex} currentLessonIndex={currentLessonIndex}  /> : ""}
@@ -117,12 +118,7 @@ export default function CoursePage() {
             isLastLesson={isLastLesson}
             courseModules={courseModules}
             student={student} />
-            : <Card>
-              <CardHeader>
-                <CardTitle>Not Found</CardTitle>
-                <CardDescription>Check later!</CardDescription>
-              </CardHeader>
-              </Card>}
+            : <Skeleton className="h-[300px] w-full rounded-xl" />}
           </div>
         </div>
       </div>

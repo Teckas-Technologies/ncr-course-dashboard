@@ -319,6 +319,43 @@
     padding-right: 1rem;
 } */
 
+/* Add this CSS to your styles */
+.toolbar {
+    display: flex;
+    flex-direction: row;
+    gap: 0.25rem;
+    padding: 0.25rem;
+    background: transparent;
+    border-radius: 0.25rem;
+}
+
+.submenu {
+    display: none; /* Hide by default */
+}
+
+.more-btn {
+    display: none;
+}
+
+@media (max-width: 768px) {
+    .toolbar {
+        flex-wrap: wrap;
+    }
+    .more-btn {
+        display: inline-flex;
+    }
+    .submenu {
+        display: flex;
+        flex-direction: row;
+        gap: 0.25rem;
+        padding: 0.25rem;
+        background: transparent;
+        border-radius: 0.25rem;
+        margin-top: 0.25rem;
+    }
+}
+
+
 /* Mobile Size */
 @media only screen and (max-width: 667px) {
     .hamburger{
