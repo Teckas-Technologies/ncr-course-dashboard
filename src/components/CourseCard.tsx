@@ -59,7 +59,7 @@ export default function CourseCard({ setSelectedLesson, updateSelectedLesson, st
                                 <AccordionTrigger className="lesson-trigger">{lesson.title}</AccordionTrigger>
                                 <AccordionContent className="lesson-content">
                                     <Accordion type="single" collapsible>
-                                        <Link href={"/course"} className="reference-link">Reference Link</Link>
+                                        <Link href={"/course"} className="reference-link">Start Learn</Link>
                                         {student && isHomeworkCompleted ? (
                                             <h2 className="pt-4">Homework Already Submitted!</h2>
                                         ) : (
@@ -67,7 +67,6 @@ export default function CourseCard({ setSelectedLesson, updateSelectedLesson, st
                                             <AccordionItem value="homework-1">
                                                 <AccordionTrigger className="homework-trigger"><NotebookPenIcon />Submit Homework</AccordionTrigger>
                                                 <AccordionContent className="homework-content">
-                                                    <p>{moduleIndex},{lessonIndex}</p>
                                                     <HomeworkSubmissionForm
                                                         studentId={student ? student.id : ""}
                                                         studentCurrentModule={student ? student.currentModule : 0}

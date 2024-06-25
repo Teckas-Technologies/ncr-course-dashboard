@@ -99,3 +99,40 @@ export async function saveStudent(data: Student | PartialStudent): Promise<any> 
         return newStudent.save();
     }
 }
+
+export async function updateStudent(id: string, data: Partial<Student>): Promise<any> {
+    await connectToDatabase();
+
+    // const { completed } = data;
+  
+    try {
+      const updatedStudent = await Students.findOneAndUpdate({ id }, data, { new: true });
+      return updatedStudent;
+    } catch (error) {
+      console.error('Error updating student:', error);
+      throw new Error('Failed to update student');
+    }
+}
+
+// export async function updateStudent(id: string, data: Partial<Student>): Promise<any> {
+//     await connectToDatabase();
+  
+//     try {
+//         let existingStudent = await Students.findOne({ id });
+
+//         if (!existingStudent) {
+//           throw new Error('Student not found');
+//         }
+
+//         if ('completed' in data) {
+//           existingStudent.completed = data.completed || false;
+//         }
+//         const updatedStudent = await existingStudent.save();
+    
+//         return updatedStudent;
+//     } catch (error) {
+//       console.error('Error updating student:', error);
+//       throw new Error('Failed to update student');
+//     }
+//   }
+  

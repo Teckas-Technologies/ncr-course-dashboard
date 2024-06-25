@@ -105,7 +105,7 @@ export default function AddCourse({ courseModules } : AddCourseProps) {
                 .then((res) => {
                     toast({
                         title: "Course Lesson Added Successfully!",
-                        description: JSON.stringify(submittedValues)
+                        description: submittedValues.lesson
                     });
                     setSelectedModule("");
                     setSelectedLessonTitle("");

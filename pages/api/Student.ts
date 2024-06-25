@@ -1,5 +1,5 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
-import { findAllStudents, findStudentById, saveStudent } from '../../utils/StudentUtil';
+import { findAllStudents, findStudentById, saveStudent, updateStudent } from '../../utils/StudentUtil';
 import { Student } from "@/types/types";
 
 type PartialStudent = Pick<Student, 'id'>;
@@ -27,8 +27,22 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             const students: Student[] = await findAllStudents();
             return res.status(200).json(students);
         }
+      case 'PUT':
+          const { id: updateId } = req.query; 
+          if (!updateId) {
+            return res.status(400).json({ error: 'Student ID is required' });
+          }
+          
+          const updateData: Partial<Student> = req.body;
+          console.log("API Update Student :", updateId, updateData)
+          const updatedStudent = await updateStudent(updateId.toString(), updateData);
+          if (updatedStudent) {
+            return res.status(200).json(updatedStudent);
+          } else {
+            return res.status(404).json({ error: 'Student not found' });
+          }
       default:
-        res.setHeader('Allow', ['POST', 'GET', 'DELETE']);
+        res.setHeader('Allow', ['POST', 'GET', 'PUT', 'DELETE']);
         return res.status(405).end(`Method ${req.method} Not Allowed`);
     }
   } catch (error) {

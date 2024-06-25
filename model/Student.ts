@@ -14,6 +14,7 @@ interface Students extends Document {
     currentModule: number;
     currentLesson: number;
     progress: number;
+    completed: boolean;
     homework: HomeworkSubmission[];
 }
 
@@ -34,6 +35,10 @@ const studentsSchema = new mongoose.Schema({
     progress: {
         type: Number,
         default: 0, 
+    },
+    completed: {
+        type: Boolean,
+        default: false, 
     },
     homework: [{
         title:{

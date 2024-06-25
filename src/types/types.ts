@@ -23,6 +23,7 @@ export interface Student {
     currentModule: number;
     currentLesson: number;
     progress: number;
+    completed: boolean;
     homework: HomeworkSubmission[];
 }
 

@@ -8,6 +8,7 @@ import Link from "next/link";
 import { useMbWallet } from "@mintbase-js/react";
 import { useFetchStudentById, useSaveStudent } from "@/hook/StudentHook";
 import { Student } from "@/types/types";
+import { useFetchCourseModules } from "@/hook/CourseModuleHook";
 
 type PartialStudent = Pick<Student, 'id'>;
 
@@ -32,7 +33,15 @@ export default function TopBar() {
     const { isConnected, selector, connect, activeAccountId } = useMbWallet();
     const { saveStudent } = useSaveStudent();
     const { fetchStudentById } = useFetchStudentById();
+    const { courseModules, error, loading } = useFetchCourseModules();
     const [ student, setStudent ] =useState<Student | null | undefined>(null);
+    const completedHomework = student?.homework.filter(lesson => lesson.completed).length || 0;
+    const totalLessons = courseModules?.reduce((total: number, theModule: any) => total + theModule.lessons.length, 0);
+    let progress = 0;
+    if (totalLessons) {
+        let completedLessons: number = student?.homework.length || 0;
+        progress = Math.round((completedLessons / totalLessons) * 100);
+    }
 
     const handleSignout = async () => {
         console.log("clicked logout");
@@ -123,7 +132,7 @@ export default function TopBar() {
                 ))}
                 </div>
                 <div className="top-bar-progress">
-                    {isConnected ? <ProgressComp value={student?.progress} currentModule={student?.currentModule} currentLesson={student?.currentLesson} /> : ""}
+                    {isConnected ? <ProgressComp value={progress} currentModule={student?.currentModule} currentLesson={student?.currentLesson} homework={completedHomework}/> : ""}
                     <SocialMedia />
                 </div>
                 </div>

@@ -4,7 +4,7 @@ import { Progress } from "@/components/ui/progress"
 import { Label } from './ui/label';
 import { ArrowRightIcon } from 'lucide-react';
 
-export default function ProgressComp({value, currentModule, currentLesson}: any) {
+export default function ProgressComp({value, currentModule, currentLesson, homework}: any) {
     return (
         <>
             <Card>
@@ -20,17 +20,17 @@ export default function ProgressComp({value, currentModule, currentLesson}: any)
                         <div className="completion-fields">
                             <h1>Current Modules</h1>
                             <ArrowRightIcon/>
-                            <h1>{currentModule}</h1>
+                            <h1>{currentModule+1}</h1>
                         </div>
                         <div className="completion-fields">
                             <h1>Completed Lessons</h1>
                             <ArrowRightIcon/>
-                            <h1>{currentLesson}</h1>
+                            <h1>{currentLesson+1}</h1>
                         </div>
                         <div className="completion-fields">
                             <h1>Home Work  Done !</h1>
                             <ArrowRightIcon/>
-                            <h1>{currentLesson}</h1>
+                            <h1>{homework}</h1>
                         </div>
                     </div>
                 </CardContent>

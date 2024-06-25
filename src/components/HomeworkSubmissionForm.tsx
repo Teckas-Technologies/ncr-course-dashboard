@@ -96,6 +96,7 @@ export default function HomeworkSubmissionForm({ studentId, studentCurrentModule
                         currentModule: currentModule,
                         currentLesson: currentLesson,
                         progress: studentProgress,
+                        completed: false,
                         homework: [homeworkSubmission]
                     }
 
@@ -134,19 +135,19 @@ export default function HomeworkSubmissionForm({ studentId, studentCurrentModule
                 return <>
                 <div className="hw-input-field mx-2">
                     <Textarea value={homeworkContent} onChange={(e) => setHomeworkContent(e.target.value)} placeholder="Write your homework here..." />
-                </div>;
+                </div>
                 </>
             case 'link':
                 return <>
                 <div className="hw-input-field mx-2">
                     <Input type="text" value={homeworkContent} onChange={(e) => setHomeworkContent(e.target.value)} placeholder="Paste your homework link here..." />
-                </div>;
+                </div>
                 </>
             case 'document':
                 return <>
                 <div className="hw-input-field mx-2">
                     <Input type="file" onChange={handleFileChange} />
-                </div>;
+                </div>
                 </>
             default:
                 return null;
