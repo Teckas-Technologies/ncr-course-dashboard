@@ -13,6 +13,7 @@ import TipTap from "./TipTap";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "./ui/alert-dialog";
 import { useToast } from "./ui/use-toast";
 import { useSaveCourseModule } from "@/hook/CourseModuleHook";
+import { Skeleton } from "./ui/skeleton";
 
 interface Lesson {
     title: string;
@@ -179,9 +180,12 @@ export default function AddCourse({ courseModules } : AddCourseProps) {
                                                         </SelectTrigger>
                                                     </FormControl>
                                                     <SelectContent>
-                                                        {modules?.map((module, i) => (
+                                                        {modules ? 
+                                                        modules?.map((module, i) => (
                                                             <SelectItem key={i} value={module.title}>{module.title}</SelectItem>
-                                                        ))}
+                                                        )) 
+                                                        : "Module Not Found!"
+                                                        }
                                                     </SelectContent>
                                                 </Select>
                                                 <FormMessage />

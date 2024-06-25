@@ -4,6 +4,7 @@ import { Button } from "./ui/button";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "./ui/dialog";
 import HomeworkSubmissionForm from "./HomeworkSubmissionForm";
 import { Module, Student } from "@/types/types";
+import { useState } from "react";
 
 
 interface HomeworkSubmissionMobileMenuProps {
@@ -15,6 +16,8 @@ interface HomeworkSubmissionMobileMenuProps {
 
 export default function HomeworkSubmissionMobileMenu({ student, courseModules, currentModuleIndex, currentLessonIndex }: HomeworkSubmissionMobileMenuProps) {
 
+    const [isDialogOpen, setIsDialogOpen] = useState(false);
+
     const isHomeworkCompleted =
     student &&
     student.homework.some(
@@ -23,10 +26,14 @@ export default function HomeworkSubmissionMobileMenu({ student, courseModules, c
         hw.lessonIndex === currentLessonIndex
     );
 
+    const handleHomeworkSubmit = () => {
+      setIsDialogOpen(false); 
+    };
+
     return (
         <>
          <div className="facilitator-mobile-menu flex flex-row w-full justify-end">
-            <Dialog>
+            <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
                 <DialogTrigger asChild className="hamburger1">
                     <Button variant="outline" className="flex-row gap-2"><NotebookPenIcon /> <p>Home Work</p></Button>
                 </DialogTrigger>
@@ -52,6 +59,7 @@ export default function HomeworkSubmissionMobileMenu({ student, courseModules, c
                             currentModule={currentModuleIndex }
                             currentLesson={currentLessonIndex }
                             courseModules={courseModules}
+                            handleHomeworkSubmit={handleHomeworkSubmit}
                         />
                       </div>
                     )}

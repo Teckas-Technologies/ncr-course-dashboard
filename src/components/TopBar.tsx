@@ -93,7 +93,7 @@ export default function TopBar() {
             <div className="main-header">
                 <div className='main-header-logo-icon'>
                     <div className="hamburger" onClick={()=>setIsOpen(!isOpen)}>{isOpen? <XIcon style={{color:'#fff', height:'42px', width:'52px'}} />: <MenuIcon style={{color:'#fff', height:'42px', width:'52px'}} />} </div>
-                    <h2 style={{fontWeight: 700, fontSize: 25, color: "#fff"}}><span style={{color: "#DF3276"}}> NCR</span> Course</h2>
+                    <h2 style={{fontWeight: 700, fontSize: 25, color: "#fff"}}><span style={{color: "#DF3276"}}> NEAR</span> Social</h2>
                 </div>
                 <div className='header-right'>
                     <div className='profile-pic'>
@@ -101,10 +101,13 @@ export default function TopBar() {
                     </div>
                     <div className='header-profile-details'>
                         {isConnected ? (
+                            <div className="flex items-center gap-1">
+                            <p className="text-white">{activeAccountId}</p>
                             <button className="px-4 py-2 flex action-btn rounded" style={{width: 'auto', display: 'flex', alignItems:'center', gap:8, fontSize:14, fontWeight:400, backgroundColor: "#fff"}} onClick={handleSignout}>
                                 <svg xmlns="http://www.w3.org/2000/svg" height="18px" viewBox="0 -960 960 960" width="17px" fill="#5f6368"><path d="M440-280H280q-83 0-141.5-58.5T80-480q0-83 58.5-141.5T280-680h160v80H280q-50 0-85 35t-35 85q0 50 35 85t85 35h160v80ZM320-440v-80h320v80H320Zm200 160v-80h160q50 0 85-35t35-85q0-50-35-85t-85-35H520v-80h160q83 0 141.5 58.5T880-480q0 83-58.5 141.5T680-280H520Z"/></svg>
                                 Logout
                             </button>
+                            </div>
                         ) : (
                             <button className="px-4 py-2 flex action-btn rounded" style={{width: 'auto', display: 'flex', alignItems:'center', gap:8, fontSize:14, fontWeight:400, backgroundColor: "#fff"}} onClick={handleSignIn}>
                                 <svg xmlns="http://www.w3.org/2000/svg" height="18px" viewBox="0 -960 960 960" width="17px" fill="#5f6368"><path d="M440-280H280q-83 0-141.5-58.5T80-480q0-83 58.5-141.5T280-680h160v80H280q-50 0-85 35t-35 85q0 50 35 85t85 35h160v80ZM320-440v-80h320v80H320Zm200 160v-80h160q50 0 85-35t35-85q0-50-35-85t-85-35H520v-80h160q83 0 141.5 58.5T880-480q0 83-58.5 141.5T680-280H520Z"/></svg>

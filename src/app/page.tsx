@@ -12,6 +12,7 @@ import { Button } from "@/components/ui/button";
 import { useFetchStudentById } from "@/hook/StudentHook";
 import { useFetchCourseModules } from "@/hook/CourseModuleHook";
 import { Module, Student } from "@/types/types";
+import { Skeleton } from "@/components/ui/skeleton";
 
 export default function Home() {
 
@@ -73,12 +74,12 @@ export default function Home() {
       <div className="main-page">
         <div className="flex flex-col md:flex-row gap-4">
           <div className="hidden md:block w-full md:w-3/12">
-            {isConnected && courseModules?.length ? <ProgressComp value={progress} currentModule={student?.currentModule} currentLesson={student?.currentLesson} homework={completedHomework} />  : ""}
+            {isConnected && courseModules?.length ? <ProgressComp value={progress} currentModule={student?.currentModule} currentLesson={student?.currentLesson} homework={completedHomework} /> : <Skeleton className="h-[300px] w-full rounded-xl" /> }
             <SocialMedia />
           </div>
           <div className="w-full md:w-9/12 grid grid-cols-1 gap-4">
             <CourseOverview />
-            {courseModules ? <CourseCard setSelectedLesson={setSelectedLesson} updateSelectedLesson={updateSelectedLesson} student={student} courseModules={courseModules} /> : ""}
+            {courseModules?.length ? <CourseCard setSelectedLesson={setSelectedLesson} updateSelectedLesson={updateSelectedLesson} student={student} courseModules={courseModules} /> : <Skeleton className="h-[300px] w-full rounded-xl" /> }
           </div>
         </div>
       </div>

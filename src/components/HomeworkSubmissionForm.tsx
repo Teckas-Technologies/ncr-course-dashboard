@@ -15,10 +15,11 @@ interface HomeworkSubmissionFormProps {
     studentProgress: number;
     currentModule: number;
     currentLesson: number;
-    courseModules: Module[] | null
+    courseModules: Module[] | null;
+    handleHomeworkSubmit: any
 }
 
-export default function HomeworkSubmissionForm({ studentId, studentCurrentModule, studentCurrentLesson, studentProgress, currentModule, currentLesson, courseModules }: HomeworkSubmissionFormProps) {
+export default function HomeworkSubmissionForm({ studentId, studentCurrentModule, studentCurrentLesson, studentProgress, currentModule, currentLesson, courseModules, handleHomeworkSubmit }: HomeworkSubmissionFormProps) {
     const [selectedOption, setSelectedOption] = useState<string>("text");
     const [homeworkContent, setHomeworkContent] = useState<string>("");
     const [file, setFile] = useState<File | null>(null);
@@ -108,6 +109,8 @@ export default function HomeworkSubmissionForm({ studentId, studentCurrentModule
                             title: `${courseModules[currentModule].lessons[currentLesson].title} homework has been submitted successfully!`,
                             description: `Great Achievement ${student.id}!`,
                         })
+                    }).then(()=>{
+                        handleHomeworkSubmit();
                     })
                 }
                 
