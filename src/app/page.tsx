@@ -22,6 +22,12 @@ export default function Home() {
     const { fetchStudentById } = useFetchStudentById();
     const [ student, setStudent ] =useState<Student | null | undefined>(null);
     const totalLessons = courseModules?.reduce((total: number, theModule: any) => total + theModule.lessons.length, 0);
+    let progress = 0;
+    if (totalLessons) {
+        let completedLessons: number = student?.homework.length || 0;
+        progress = Math.round((completedLessons / totalLessons) * 100);
+    }
+    const completedHomework = student?.homework.filter(lesson => lesson.completed).length || 0;
     const [selectedLesson, setSelectedLesson] = useState({
       moduleTitle: courseModules && courseModules.length > 0 ? courseModules[0]?.title || "" : "",
       lessonTitle: courseModules && courseModules.length > 0 && courseModules[0]?.lessons.length > 0 ? courseModules[0]?.lessons[0]?.title || "" : "",
@@ -67,7 +73,7 @@ export default function Home() {
       <div className="main-page">
         <div className="flex flex-col md:flex-row gap-4">
           <div className="hidden md:block w-full md:w-3/12">
-            {isConnected && courseModules?.length ? <ProgressComp value={student?.progress} currentModule={student?.currentModule} currentLesson={student?.currentLesson} />  : ""}
+            {isConnected && courseModules?.length ? <ProgressComp value={progress} currentModule={student?.currentModule} currentLesson={student?.currentLesson} homework={completedHomework} />  : ""}
             <SocialMedia />
           </div>
           <div className="w-full md:w-9/12 grid grid-cols-1 gap-4">

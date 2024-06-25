@@ -114,15 +114,14 @@ export default function CoursePage() {
             onNextLesson={handleNextLesson}
             onPreviousLesson={handlePreviousLesson}
             isFirstLesson={isFirstLesson}
-            isLastLesson={isLastLesson} />
+            isLastLesson={isLastLesson}
+            courseModules={courseModules}
+            student={student} />
             : <Card>
               <CardHeader>
                 <CardTitle>Not Found</CardTitle>
                 <CardDescription>Check later!</CardDescription>
               </CardHeader>
-              {/* <CardContent>
-                
-              </CardContent> */}
               </Card>}
           </div>
         </div>

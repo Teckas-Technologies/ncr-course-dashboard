@@ -93,3 +93,33 @@ export const useSaveStudent = () => {
   
     return { saveStudent, loading, error };
   };
+
+  export const useUpdateStudent = () => {
+    const [loading, setLoading] = useState<boolean>(false);
+    const [error, setError] = useState<string | null>(null);
+  
+    const updateStudent = async (id: string, data: Partial<Student> | FormData): Promise<void> => {
+      setLoading(true);
+      setError(null);
+  
+      try {
+        console.log("Updating Student:", id, data);
+        const response = await fetch(`/api/Student/?id=${id}`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(data),
+        });
+  
+        if (!response.ok) {
+          throw new Error('Failed to update student');
+        }
+      } catch (error) {
+        console.error('Error updating student:', error);
+        setError('Failed to update student');
+      } finally {
+        setLoading(false);
+      }
+    };
+  
+    return { updateStudent, loading, error };
+  };

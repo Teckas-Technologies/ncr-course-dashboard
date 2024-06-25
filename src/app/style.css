@@ -286,6 +286,10 @@
     font-weight: 500;
 }
 
+.course-learn-page p{
+    overflow: scroll;
+}
+
 .facilitator-menu-list li, .menu-icon {
     transition: 0.5s;
     cursor: pointer;
