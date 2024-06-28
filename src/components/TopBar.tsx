@@ -42,6 +42,12 @@ export default function TopBar() {
         let completedLessons: number = student?.homework.length || 0;
         progress = Math.round((completedLessons / totalLessons) * 100);
     }
+    let currentModule=0;
+    let currentLesson=0;
+    if(student){
+      currentModule = student?.currentModule + 1
+      currentLesson = student?.currentLesson + 1
+    }
 
     const handleSignout = async () => {
         console.log("clicked logout");
@@ -135,7 +141,8 @@ export default function TopBar() {
                 ))}
                 </div>
                 <div className="top-bar-progress">
-                    {isConnected ? <ProgressComp value={progress} currentModule={student?.currentModule} currentLesson={student?.currentLesson} homework={completedHomework}/> : ""}
+                    {isConnected && student ? <ProgressComp value={progress} currentModule={currentModule } currentLesson={currentLesson} homework={completedHomework} /> 
+                     : <ProgressComp value={progress} currentModule={0} currentLesson={0} homework={completedHomework} /> }
                     <SocialMedia />
                 </div>
                 </div>

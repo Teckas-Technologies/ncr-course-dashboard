@@ -28,6 +28,12 @@ export default function Home() {
         let completedLessons: number = student?.homework.length || 0;
         progress = Math.round((completedLessons / totalLessons) * 100);
     }
+    let currentModule=0;
+    let currentLesson=0;
+    if(student){
+      currentModule = student?.currentModule + 1
+      currentLesson = student?.currentLesson + 1
+    }
     const completedHomework = student?.homework.filter(lesson => lesson.completed).length || 0;
     const [selectedLesson, setSelectedLesson] = useState({
       moduleTitle: courseModules && courseModules.length > 0 ? courseModules[0]?.title || "" : "",
@@ -74,7 +80,8 @@ export default function Home() {
       <div className="main-page">
         <div className="flex flex-col md:flex-row gap-4">
           <div className="hidden md:block w-full md:w-3/12">
-            {isConnected ? <ProgressComp value={progress} currentModule={student?.currentModule} currentLesson={student?.currentLesson} homework={completedHomework} /> : "" }
+            {isConnected && student ? <ProgressComp value={progress} currentModule={currentModule } currentLesson={currentLesson} homework={completedHomework} /> 
+            : <ProgressComp value={progress} currentModule={0} currentLesson={0} homework={completedHomework} /> }
             <SocialMedia />
           </div>
           <div className="w-full md:w-9/12 grid grid-cols-1 gap-4">
