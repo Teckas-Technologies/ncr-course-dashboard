@@ -3,7 +3,6 @@ import { useEditor, EditorContent } from "@tiptap/react";
 import StarterKit from '@tiptap/starter-kit';
 import { Toolbar } from "./Toolbar";
 import Heading from '@tiptap/extension-heading';
-import ListItem from '@tiptap/extension-list-item'
 import CodeBlock from '@tiptap/extension-code-block'
 import Table from '@tiptap/extension-table';
 import TableRow from '@tiptap/extension-table-row';

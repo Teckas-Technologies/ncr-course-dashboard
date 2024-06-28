@@ -29,6 +29,8 @@
     "@radix-ui/react-toast": "^1.1.5",
     "@radix-ui/react-toggle": "^1.0.3",
     "@radix-ui/react-tooltip": "^1.0.7",
+    "@tiptap/extension-code-block": "^2.4.0",
+    "@tiptap/extension-heading": "^2.4.0",
     "@tiptap/extension-link": "^2.4.0",
     "@tiptap/extension-table": "^2.4.0",
     "@tiptap/extension-table-cell": "^2.4.0",
