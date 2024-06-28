@@ -12,7 +12,7 @@
     "@hookform/resolvers": "^3.6.0",
     "@mdx-js/loader": "^3.0.1",
     "@mdx-js/react": "^3.0.1",
-    "@mintbase-js/react": "^0.6.0-beta.6",
+    "@mintbase-js/react": "0.5.4-beta.0",
     "@next/mdx": "^14.2.4",
     "@radix-ui/react-accordion": "^1.1.2",
     "@radix-ui/react-alert-dialog": "^1.0.5",

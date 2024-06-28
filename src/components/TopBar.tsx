@@ -99,7 +99,7 @@ export default function TopBar() {
             <div className="main-header">
                 <div className='main-header-logo-icon'>
                     <div className="hamburger" onClick={()=>setIsOpen(!isOpen)}>{isOpen? <XIcon style={{color:'#fff', height:'42px', width:'52px'}} />: <MenuIcon style={{color:'#fff', height:'42px', width:'52px'}} />} </div>
-                    <h2 style={{fontWeight: 700, fontSize: 25, color: "#fff"}}><span style={{color: "#DF3276"}}> NEAR</span> Social</h2>
+                    <h2 style={{fontWeight: 700, fontSize: 25, color: "#fff"}}><span style={{color: "#DF3276"}}> NCR</span> Course</h2>
                 </div>
                 <div className='header-right'>
                     <div className='profile-pic'>
