@@ -9,14 +9,17 @@ import Table from '@tiptap/extension-table';
 import TableRow from '@tiptap/extension-table-row';
 import TableCell from '@tiptap/extension-table-cell';
 import TableHeader from '@tiptap/extension-table-header';
+import Link from '@tiptap/extension-link';
 import { useEffect } from "react";
 
 export default function TipTap({
     content,
-    onChange
+    onChange,
+    disabled
 }: {
     content: string
-    onChange: (richText: string) => void
+    onChange: (richText: string) => void,
+    disabled: boolean
 }) {
     const editor = useEditor({
         extensions: [StarterKit.configure({
@@ -45,7 +48,7 @@ export default function TipTap({
         Table.configure({
             resizable: true,
             HTMLAttributes: {
-                class: 'border border-collapse px-3 py-1 w-full'
+                class: 'border border-collapse px-3 py-1 w-full overflow-scroll'
             }
         }),
         TableRow.configure({
@@ -62,9 +65,16 @@ export default function TipTap({
             HTMLAttributes: {
                 class: 'border border-collapse px-3 py-1'
             }
+        }),
+        Link.configure({
+            HTMLAttributes: {
+                class: 'text-blue-600 underline'
+            },
+            openOnClick: false,
         })
         ],
         content: content,
+        editable: !disabled,
         editorProps: {
             attributes: {
                 class: "rounded-md border min-h-[150px] border-input bg-back disabled:cursor-not-allowed disabled:opacity-50 p-2"
@@ -82,10 +92,18 @@ export default function TipTap({
         }
     }, [content, editor]);
 
+    useEffect(() => {
+        editor?.setOptions({ editable: !disabled });
+    }, [disabled, editor]);
+
+    const setEditable = () => {
+        editor?.setOptions({ editable: true });
+    }
+
     return (
         <>
-        <div className="flex flex-col justify-stretch min-h-[250px] gap-2">
-            <Toolbar editor={editor}/>
+        <div className="flex flex-col justify-stretch min-h-[250px] gap-2 overflow-scroll">
+            <Toolbar editor={editor} setEditable={setEditable} disabled={disabled}/>
             <EditorContent editor={editor}/>
         </div>
         </>

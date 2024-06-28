@@ -74,7 +74,7 @@ export default function Home() {
       <div className="main-page">
         <div className="flex flex-col md:flex-row gap-4">
           <div className="hidden md:block w-full md:w-3/12">
-            {isConnected && courseModules?.length ? <ProgressComp value={progress} currentModule={student?.currentModule} currentLesson={student?.currentLesson} homework={completedHomework} /> : <Skeleton className="h-[300px] w-full rounded-xl" /> }
+            {isConnected ? <ProgressComp value={progress} currentModule={student?.currentModule} currentLesson={student?.currentLesson} homework={completedHomework} /> : "" }
             <SocialMedia />
           </div>
           <div className="w-full md:w-9/12 grid grid-cols-1 gap-4">
