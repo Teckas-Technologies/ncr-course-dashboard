@@ -1,4 +1,4 @@
-import { LeafIcon, Menu, NotebookPenIcon, User } from "lucide-react";
+import { CheckIcon, LeafIcon, Menu, NotebookPenIcon, User } from "lucide-react";
 import { Button } from "./ui/button";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuShortcut, DropdownMenuTrigger } from "./ui/dropdown-menu";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
@@ -47,6 +47,25 @@ export default function FacilitatorMobileMenu({setPageComponent} : any) {
                 </DropdownMenuContent>
             </DropdownMenu>
          </div>
+
+            {/* <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                    <LinkIcon />
+                </DropdownMenuTrigger>
+                <DropdownMenuContent className="w-56 mr-4">
+                    <DropdownMenuGroup>
+                        <DropdownMenuItem>
+                        <FormItem className="py-2">
+                            <FormControl>
+                                <Input type="text" placeholder="Enter the URL here..." value={linkUrl} onChange={(e) => setLinkUrl(e.target.value)} />
+                            </FormControl>
+                            <FormMessage />
+                        </FormItem>
+                        <Button onClick={handleLinkSubmit}><CheckIcon/></Button>
+                        </DropdownMenuItem>
+                    </DropdownMenuGroup>
+                </DropdownMenuContent>
+            </DropdownMenu> */}
         </>
     )
 

@@ -43,12 +43,23 @@ export default function AddCourse({ courseModules } : AddCourseProps) {
     const { toast } = useToast();
     const { saveCourseModule, loading, error } = useSaveCourseModule();
 
+    const [isExistingLesson, setIsExistingLesson] = useState(false);
+
+
+    
+
     console.log("Course Modules From Add course Page : ", courseModules)
 
+    // const formSchema = z.object({
+    //     module: z.string().min(5, { message: "Hey the module is not long enough!" }).trim(),
+    //     lesson: z.string().min(5, { message: "Hey the lesson is not long enough!" }).trim(),
+    //     content: z.string().min(10, { message: "Hey the content is not long enough!" }).trim(),
+    // });
+
     const formSchema = z.object({
-        module: z.string().min(5, { message: "Hey the module is not long enough!" }).trim(),
-        lesson: z.string().min(5, { message: "Hey the lesson is not long enough!" }).trim(),
-        content: z.string().min(10, { message: "Hey the content is not long enough!" }).trim(),
+        module: z.string().trim(),
+        lesson: z.string().trim(),
+        content: z.string().trim(),
     });
 
     const form = useForm<z.infer<typeof formSchema>>({
@@ -72,6 +83,34 @@ export default function AddCourse({ courseModules } : AddCourseProps) {
             setModules(courseModules);
         }
     }, [courseModules]);
+
+    const lesson = form.getValues('lesson');
+
+    useEffect(() => {
+        const existingLesson = Boolean(selectedLessonTitle && courseModules?.find(module => module.title === selectedModule)?.lessons.find(lesson => lesson.title === selectedLessonTitle));
+        const isNewLesson = !isExistingLesson;
+        console.log("Existing 1: ", existingLesson, isExistingLesson)
+        if(existingLesson){
+            setIsExistingLesson(true)
+            console.log("Existing2 : ", existingLesson, isExistingLesson)
+        } else {
+            setIsExistingLesson(false)
+            console.log("Existing3 : ", existingLesson, isExistingLesson)
+        }
+    }, [courseModules, selectedLessonTitle, newLesson, lesson]);
+
+    // useEffect(() => {
+    //     if (selectedLessonTitle) {
+    //         form.setValue('lesson', selectedLessonTitle);
+    //         const selectedLesson = modules?.find(module => module.title === selectedModule)?.lessons.find(lesson => lesson.title === selectedLessonTitle);
+    //         if (selectedLesson) {
+    //             form.setValue('content', selectedLesson.content);
+    //         }
+    //         setIsExistingLesson(!!selectedLesson); // Update existing lesson state
+    //     } else {
+    //         setIsExistingLesson(false); // Reset when no lesson is selected
+    //     }
+    // }, [selectedLessonTitle, modules, selectedModule, form.getValues('lesson')]);
 
     useEffect(() => {
         if (selectedLessonTitle) {
@@ -104,10 +143,18 @@ export default function AddCourse({ courseModules } : AddCourseProps) {
             };
             saveCourseModule(theModule)
                 .then((res) => {
-                    toast({
-                        title: "Course Lesson Added Successfully!",
-                        description: submittedValues.lesson
-                    });
+                    if(isExistingLesson) {
+                        toast({
+                            title: "Course Lesson Updated Successfully!",
+                            description: submittedValues.lesson
+                        });
+                    } else {
+                        toast({
+                            title: "Course Lesson Added Successfully!",
+                            description: submittedValues.lesson
+                        });
+                    }
+                    
                     setSelectedModule("");
                     setSelectedLessonTitle("");
                     form.setValue("module", "")
@@ -284,10 +331,9 @@ export default function AddCourse({ courseModules } : AddCourseProps) {
                                 render={({field}) => (
                                     <FormItem>
                                         <FormLabel>Content</FormLabel>
-                                        <FormControl>
-                                            <TipTap content={field.value} onChange={field.onChange} />
+                                        <FormControl className="overflow-scroll">
+                                            <TipTap content={field.value} onChange={field.onChange} disabled={isExistingLesson}/>
                                         </FormControl>
-                                        <FormMessage/>
                                         {/* <h1>{field.value}</h1> */}
                                     </FormItem>
                                 )} 
