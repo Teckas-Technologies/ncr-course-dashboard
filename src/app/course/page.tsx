@@ -11,6 +11,8 @@ import { useFetchCourseModules } from "@/hook/CourseModuleHook";
 import { Module, Student } from "@/types/types";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
+import Loader from "@/components/Loader";
+
 
 // const getLessonNumber = (moduleIndex, lessonIndex) => {
 //   let lessonNumber = 0;
@@ -100,28 +102,42 @@ export default function CoursePage() {
 
   return (
     <>
-      <TopBar/>
-      <Banner totalModules={courseModules?.length} totalLessons={totalLessons} />
-      <div className="main-page">
+    <TopBar/>
+    <Banner totalModules={courseModules?.length} totalLessons={totalLessons} />
+    <div className="main-page">
+      {!courseModules ? (
+        <Loader/>
+      ) : (
         <div className="flex flex-col md:flex-row gap-4">
           <div className="hidden md:block w-full md:w-3/12 side-course">
-            {courseModules ? <CourseCard setSelectedLesson={setSelectedLesson} updateSelectedLesson={updateSelectedLesson} student={student} courseModules={courseModules}/> : <Skeleton className="h-[300px] w-full rounded-xl" /> }
+            <CourseCard 
+              setSelectedLesson={setSelectedLesson} 
+              updateSelectedLesson={updateSelectedLesson} 
+              student={student} 
+              courseModules={courseModules}
+            />
           </div>
           <div className="w-full md:w-9/12 grid grid-cols-1 gap-4">
-            {courseModules ? <HomeworkSubmissionMobileMenu student={student} courseModules={courseModules} currentModuleIndex={currentModuleIndex} currentLessonIndex={currentLessonIndex}  /> : ""}
-            {courseModules ? 
+            <HomeworkSubmissionMobileMenu 
+              student={student} 
+              courseModules={courseModules} 
+              currentModuleIndex={currentModuleIndex} 
+              currentLessonIndex={currentLessonIndex} 
+            />
             <Course 
-            selectedLesson={selectedLesson}
-            onNextLesson={handleNextLesson}
-            onPreviousLesson={handlePreviousLesson}
-            isFirstLesson={isFirstLesson}
-            isLastLesson={isLastLesson}
-            courseModules={courseModules}
-            student={student} />
-            : <Skeleton className="h-[300px] w-full rounded-xl" />}
+              selectedLesson={selectedLesson}
+              onNextLesson={handleNextLesson}
+              onPreviousLesson={handlePreviousLesson}
+              isFirstLesson={isFirstLesson}
+              isLastLesson={isLastLesson}
+              courseModules={courseModules}
+              student={student} 
+            />
           </div>
         </div>
-      </div>
-    </>
+      )}
+    </div>
+  </>
+  
   );
 }
