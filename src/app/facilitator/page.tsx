@@ -9,6 +9,7 @@ import { useState } from "react";
 import { useFetchCourseModules } from "@/hook/CourseModuleHook";
 import { useFetchStudents } from "@/hook/StudentHook";
 import { Skeleton } from "@/components/ui/skeleton";
+import Loader from "@/components/Loader";
 
 export default function FacilitatorPage() {
 
@@ -32,11 +33,11 @@ export default function FacilitatorPage() {
                     <div className="w-full md:w-9/12 grid grid-cols-1 gap-4">
                         <FacilitatorMobileMenu setPageComponent={setPageComponent} />
                         {pageComponent === "Add Course Module" ? (
-                            courseModules?.length ? <AddCourse courseModules={courseModules} /> : <Skeleton className="h-[300px] w-full rounded-xl" />
+                            courseModules?.length ? <AddCourse courseModules={courseModules} /> : <div className="flex justify-center items-center mt-5 "><Loader/></div>
                         ) : pageComponent === "Student List" ? (
-                            courseModules?.length ? <StudentsList courseModules={courseModules} studentList={studentList} /> : <Skeleton className="h-[300px] w-full rounded-xl" />
+                            courseModules?.length ? <StudentsList courseModules={courseModules} studentList={studentList} /> : <div className="flex justify-center items-center mt-5 "><Loader/></div>
                         ) : (
-                            courseModules?.length ? <AddCourse courseModules={courseModules} /> : <Skeleton className="h-[300px] w-full rounded-xl" />
+                            courseModules?.length ? <AddCourse courseModules={courseModules} /> : <div className="flex justify-center items-center mt-5 "><Loader/></div>
                         )}
                     </div>
                 </div>

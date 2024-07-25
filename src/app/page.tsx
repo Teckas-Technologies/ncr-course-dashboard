@@ -13,6 +13,8 @@ import { useFetchStudentById } from "@/hook/StudentHook";
 import { useFetchCourseModules } from "@/hook/CourseModuleHook";
 import { Module, Student } from "@/types/types";
 import { Skeleton } from "@/components/ui/skeleton";
+import Loader from "@/components/Loader";
+
 
 export default function Home() {
 
@@ -86,7 +88,7 @@ export default function Home() {
           </div>
           <div className="w-full md:w-9/12 grid grid-cols-1 gap-4">
             <CourseOverview />
-            {courseModules?.length ? <CourseCard setSelectedLesson={setSelectedLesson} updateSelectedLesson={updateSelectedLesson} student={student} courseModules={courseModules} /> : <Skeleton className="h-[300px] w-full rounded-xl" /> }
+            {courseModules?.length ? <CourseCard setSelectedLesson={setSelectedLesson} updateSelectedLesson={updateSelectedLesson} student={student} courseModules={courseModules} /> : <Loader/> }
           </div>
         </div>
       </div>
