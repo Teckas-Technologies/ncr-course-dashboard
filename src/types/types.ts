@@ -25,6 +25,7 @@ export interface Student {
     progress: number;
     completed: boolean;
     homework: HomeworkSubmission[];
+    
 }
 
 export interface SelectedLesson {

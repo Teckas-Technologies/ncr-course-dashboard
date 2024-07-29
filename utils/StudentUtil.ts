@@ -15,7 +15,27 @@ export const findAllStudents = async (): Promise<any> => {
         return null;
     }
 }
+export const findStudentsWithPagination = async (pageNumber: number, pageSize: number) => {
+    await connectToDatabase();
+    try {
+        const skip = (pageNumber - 1) * pageSize;
+        const [students, totalStudents] = await Promise.all([
+            Students.find({}).skip(skip).limit(pageSize).exec(),
+            Students.countDocuments().exec()
+        ]);
 
+        return {
+            students,
+            totalStudents
+        };
+    } catch (error) {
+        console.error('Error finding students:', error);
+        return {
+            students: [],
+            totalStudents: 0
+        };
+    }
+};
 export const findStudentById = async (id: string): Promise<any> => {
     await connectToDatabase(); 
 
