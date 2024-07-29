@@ -704,19 +704,60 @@
 
 .table-cell-id {
   width: 150px; /* Fixed width for the cell */
-  
 }
 
 .text-ellipsis {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  display: block; /* Ensures the element respects the set width */
-  max-width: 100%; /* Constrains the text to the cell's width */
+  display: block;
+  max-width: 100%;
 }
 
 .table-header-dark {
-  
-  color: #151718; /* White text color */
+  color: #151718;
   font-weight: 600;
+}
+.module-form {
+  display: flex;
+  gap: 1rem;
+  padding-bottom: 1rem;
+}
+
+.module-selector {
+  flex: 3; /* 75% of the container width */
+}
+
+.new-module {
+  flex: 1; /* 25% of the container width */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.new-module h2 {
+  display: block;
+}
+
+@media (max-width: 640px) {
+  .module-form {
+    flex-direction: row;
+    align-items: center;
+  }
+
+  .module-selector {
+    width: 75%;
+  }
+
+  .new-module {
+    width: 25%;
+  }
+
+  .new-module h2 {
+    display: none;
+  }
+
+  .new-module .plus-icon {
+    font-size: 24px;
+  }
 }
