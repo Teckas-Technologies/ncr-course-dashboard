@@ -635,3 +635,88 @@
   padding: 8px 16px;
   border-radius: 4px;
 }
+
+/* General styles for pagination buttons */
+.pagination-item {
+  display: inline-block;
+  margin: 0 2px; /* Reduced margin for smaller screens */
+}
+
+.pagination-link {
+  background-color: #fff;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  color: #121d42;
+  cursor: pointer;
+  font-size: 12px; /* Smaller font size for smaller screens */
+  padding: 6px 12px; /* Reduced padding for smaller screens */
+  text-align: center;
+  text-decoration: none;
+  transition: background-color 0.3s ease, border-color 0.3s ease;
+}
+
+.pagination-link:hover:not(.disabled) {
+  background-color: #e9ecef;
+}
+
+.pagination-link.active {
+  background-color: #df3276;
+  color: #fff;
+  border-color: #df3276;
+}
+
+.pagination-link.disabled {
+  color: #6c757d;
+  cursor: not-allowed;
+  border-color: #6c757d;
+  background-color: #f8f9fa;
+}
+
+.pagination-ellipsis {
+  font-size: 12px; /* Smaller font size for smaller screens */
+  color: #6c757d;
+  padding: 6px 8px; /* Reduced padding for smaller screens */
+}
+
+/* Responsive styles */
+@media (max-width: 600px) {
+  .pagination-link {
+    font-size: 10px; /* Even smaller font size for very small screens */
+    padding: 4px 6px; /* Reduced padding for very small screens */
+  }
+
+  .pagination-ellipsis {
+    font-size: 10px; /* Smaller font size for very small screens */
+    padding: 4px 6px; /* Reduced padding for very small screens */
+  }
+}
+
+@media (max-width: 400px) {
+  .pagination-item {
+    margin: 0 1px; /* Minimal margin for very small screens */
+  }
+}
+
+.table {
+  table-layout: fixed;
+  width: 100%;
+}
+
+.table-cell-id {
+  width: 150px; /* Fixed width for the cell */
+  
+}
+
+.text-ellipsis {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: block; /* Ensures the element respects the set width */
+  max-width: 100%; /* Constrains the text to the cell's width */
+}
+
+.table-header-dark {
+  
+  color: #151718; /* White text color */
+  font-weight: 600;
+}

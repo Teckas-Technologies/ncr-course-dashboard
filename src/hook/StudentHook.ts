@@ -123,3 +123,36 @@ export const useSaveStudent = () => {
   
     return { updateStudent, loading, error };
   };
+
+
+  export const useFetchStudentsPagination = () => {
+      const [studentListPagination, setStudentListPagination] = useState<Student[] | null>(null);
+      const [loading, setLoading] = useState<boolean>(false);
+      const [error, setError] = useState<string | null>(null);
+      const [totalPages, setTotalPages] = useState<number>(1);
+  
+      const fetchStudents = async (page: number, pageSize: number) => {
+          setLoading(true);
+          try {
+              const response = await fetch(`/api/Student?page=${page}&pageSize=${pageSize}`);
+              if (!response.ok) throw new Error('Network response was not ok');
+              const data = await response.json();
+              console.log("Students Pagination: ", data.students);
+              setStudentListPagination(data.students);
+              setTotalPages(data.totalPages); 
+              
+          } catch (err) {
+              console.error('Error fetching students:', err);
+              setError("Error fetching students!");
+          } finally {
+              setLoading(false);
+          }
+      };
+  
+      // useEffect(() => {
+      //     fetchStudents(page, pageSize);
+      // }, [page, pageSize]);
+  
+      return { studentListPagination, loading, error, totalPages,fetchStudents };
+  };
+  
