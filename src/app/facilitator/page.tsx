@@ -16,7 +16,7 @@ import Loader from "@/components/Loader";
 
 export default function FacilitatorPage() {
   const [page, setPage] = useState(1);
-  const [pageSize, setPageSize] = useState(1);
+  const [pageSize, setPageSize] = useState(10);
   const [pageComponent, setPageComponent] = useState("Add Course Module");
   const { courseModules, error, loading } = useFetchCourseModules();
   const { studentList } = useFetchStudents();
