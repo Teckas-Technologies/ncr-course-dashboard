@@ -37,6 +37,7 @@ import {
 import { useToast } from "./ui/use-toast";
 import { useSaveCourseModule } from "@/hook/CourseModuleHook";
 import { Skeleton } from "./ui/skeleton";
+import { log } from "console";
 
 interface Lesson {
   title: string;
@@ -63,7 +64,8 @@ export default function AddCourse({ courseModules }: AddCourseProps) {
   const [modules, setModules] = useState<Module[]>([]);
   const { toast } = useToast();
   const { saveCourseModule, loading, error } = useSaveCourseModule();
-
+  const [isFormFilled, setIsFormFilled] = useState(false);
+  const [processedContent, setProcessedContent] = useState("");
   const [isExistingLesson, setIsExistingLesson] = useState(false);
 
   console.log("Course Modules From Add course Page : ", courseModules);
@@ -89,6 +91,7 @@ export default function AddCourse({ courseModules }: AddCourseProps) {
       content: "",
     },
   });
+
 
   useEffect(() => {
     if (selectedModule) {
@@ -232,7 +235,35 @@ export default function AddCourse({ courseModules }: AddCourseProps) {
       setNewLesson("");
     }
   };
+  const preprocessHTMLContent = (html: string) => {
+    return html.replace(/<p><\/p>/g, " ");
+  };
+  const checkFormStatus = () => {
+    const selectedModule = form.getValues("module");
+    const selectedLesson = form.getValues("lesson");
+    const content = form.getValues("content");
+    // console.log("selectedModule:", selectedModule);
+    // console.log("selectedLesson:", selectedLesson);
+    console.log("content:", content);
+    const preprocessedContent = preprocessHTMLContent(content);
+    // setProcessedContent(preprocessedContent);
+    console.log("setProcessedContent:",preprocessedContent);
 
+    return (
+      (selectedModule || newModule) &&
+      (selectedLesson || newLesson) &&
+      preprocessedContent.trim().length > 0
+    );
+  };
+  useEffect(() => {
+    
+    const formStatus = checkFormStatus();
+    setIsFormFilled(Boolean(formStatus));
+    const content = form.getValues("content");
+    const preprocessedContent = preprocessHTMLContent(content);
+    setProcessedContent(preprocessedContent);
+    console.log("setProcessedContent:",preprocessedContent);
+  }, [form.getValues("content"),form]);
   return (
     <>
       <div className="add-course">
@@ -333,39 +364,41 @@ export default function AddCourse({ courseModules }: AddCourseProps) {
                 </div>
                 {selectedModule && (
                   <div className="lesson-form grid grid-cols-2 gap-4 pb-4">
-                    <FormField
-                      control={form.control}
-                      name="lesson"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Lesson</FormLabel>
-                          <Select
-                            onValueChange={(value) =>
-                              setSelectedLessonTitle(value)
-                            }
-                            defaultValue={field.value}
-                          >
-                            <FormControl>
-                              <SelectTrigger>
-                                <SelectValue placeholder="Select a lesson" />
-                              </SelectTrigger>
-                            </FormControl>
-                            <SelectContent>
-                              {modules
-                                ?.find(
-                                  (module) => module.title === selectedModule
-                                )
-                                ?.lessons.map((lesson, i) => (
-                                  <SelectItem key={i} value={lesson.title}>
-                                    {lesson.title}
-                                  </SelectItem>
-                                ))}
-                            </SelectContent>
-                          </Select>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
+                    <div className="select-lesson">
+                      <FormField
+                        control={form.control}
+                        name="lesson"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Lesson</FormLabel>
+                            <Select
+                              onValueChange={(value) =>
+                                setSelectedLessonTitle(value)
+                              }
+                              defaultValue={field.value}
+                            >
+                              <FormControl>
+                                <SelectTrigger>
+                                  <SelectValue placeholder="Select a lesson" />
+                                </SelectTrigger>
+                              </FormControl>
+                              <SelectContent>
+                                {modules
+                                  ?.find(
+                                    (module) => module.title === selectedModule
+                                  )
+                                  ?.lessons.map((lesson, i) => (
+                                    <SelectItem key={i} value={lesson.title}>
+                                      {lesson.title}
+                                    </SelectItem>
+                                  ))}
+                              </SelectContent>
+                            </Select>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                    </div>
                     <div className="new-lesson">
                       <AlertDialog>
                         <AlertDialogTrigger asChild>
@@ -429,7 +462,13 @@ export default function AddCourse({ courseModules }: AddCourseProps) {
                   )}
                 />
                 <div className="facilitator-add-btn">
-                  <Button type="submit">Submit</Button>
+                  <Button
+                    type="submit"
+                    disabled={!isFormFilled}
+                    className={!isFormFilled ? "disabled" : ""}
+                  >
+                    Submit
+                  </Button>
                 </div>
               </form>
             </Form>
