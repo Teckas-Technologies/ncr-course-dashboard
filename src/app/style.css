@@ -49,10 +49,11 @@
 .side-bar {
   position: fixed;
   width: 60%;
-  height: 100vh;
+  height: 100%;
+  overflow-y: scroll;
   box-shadow: rgba(0, 0, 0, 0.15) 1.95px 1.95px 2.6px;
   background-color: #fff;
-  padding-top: 25%;
+  padding-top: 15%;
   border-radius: 8px;
   padding-left: 5px;
   padding-right: 5px;
@@ -760,4 +761,104 @@
   .new-module .plus-icon {
     font-size: 24px;
   }
+}
+
+.lesson-form {
+  display: flex;
+  gap: 1rem;
+  padding-bottom: 1rem;
+}
+
+.select-lesson {
+  flex: 3; /* 75% of the container width */
+}
+
+.new-lesson {
+  flex: 1; /* 25% of the container width */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.new-lesson h2 {
+  display: block;
+}
+
+@media (max-width: 640px) {
+  .lesson-form {
+    flex-direction: row;
+    align-items: center;
+  }
+
+  .select-lesson {
+    width: 75%;
+  }
+
+  .new-lesson {
+    width: 25%;
+  }
+
+  .new-lesson h2 {
+    display: none;
+  }
+
+  .new-lesson .plus-icon {
+    font-size: 24px;
+  }
+}
+.navbar {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  padding: 1em;
+  
+}
+
+.nav-link {
+  position: relative;
+  margin: 0 15px; /* Adjust margin for spacing between links */
+  padding: 5px 0;
+  color: #fff; /* Your preferred text color */
+  text-decoration: none;
+  font-weight: 500; /* Slightly bolder font for visibility */
+  transition: color 0.3s;
+}
+
+.nav-link::after {
+  content: '';
+  position: absolute;
+  width: 0;
+  height: 2px;
+  display: block;
+  margin-top: 5px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #df3276; /* Line color */
+  transition: width 0.4s ease;
+  -webkit-transition: width 0.4s ease;
+}
+
+.nav-link:hover::after {
+  width: 100%;
+  left: 0;
+  transform: none;
+}
+
+.nav-link.active {
+  color: #df3276; /* Active link text color */
+}
+
+.nav-link.active::after {
+  width: 100%;
+  background: #df3276; /* Line color for active link */
+}
+@media (max-width: 768px) {
+  .navbar {
+    display: none;
+  }
+}
+/* Add to your CSS file */
+button.disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
 }

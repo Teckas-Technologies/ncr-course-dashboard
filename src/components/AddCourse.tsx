@@ -63,8 +63,9 @@ export default function AddCourse({ courseModules }: AddCourseProps) {
   const [modules, setModules] = useState<Module[]>([]);
   const { toast } = useToast();
   const { saveCourseModule, loading, error } = useSaveCourseModule();
-
+  const [previousContent, setPreviousContent] = useState("");
   const [isExistingLesson, setIsExistingLesson] = useState(false);
+  const [contentValue, setContentValue] = useState("");
 
   console.log("Course Modules From Add course Page : ", courseModules);
 
@@ -233,6 +234,31 @@ export default function AddCourse({ courseModules }: AddCourseProps) {
     }
   };
 
+  // useEffect(() => {
+  //   const cleanedContent = stripHtmlTags(contentValue);
+  //   console.log("Content without HTML:", cleanedContent);
+  // }, [contentValue]);
+
+  function stripHtmlTags(content: string): string {
+    return content.replace(/<[^>]+>/g, "").trim();
+  }
+
+  // useEffect(() => {
+  //   const cleanedContent = stripHtmlTags(contentValue);
+
+  // }, [contentValue]);
+
+  const isContentValid = stripHtmlTags(contentValue).length > 0;
+  const isFormFilled =
+    (selectedModule || newModule) &&
+    (selectedLessonTitle || newLesson) &&
+    isContentValid;
+
+  // useEffect(() => {
+  //   const cleanedContent = stripHtmlTags(contentValue);
+  //   console.log("Content without HTML:", cleanedContent);
+  // }, [contentValue]);
+
   return (
     <>
       <div className="add-course">
@@ -333,39 +359,41 @@ export default function AddCourse({ courseModules }: AddCourseProps) {
                 </div>
                 {selectedModule && (
                   <div className="lesson-form grid grid-cols-2 gap-4 pb-4">
-                    <FormField
-                      control={form.control}
-                      name="lesson"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Lesson</FormLabel>
-                          <Select
-                            onValueChange={(value) =>
-                              setSelectedLessonTitle(value)
-                            }
-                            defaultValue={field.value}
-                          >
-                            <FormControl>
-                              <SelectTrigger>
-                                <SelectValue placeholder="Select a lesson" />
-                              </SelectTrigger>
-                            </FormControl>
-                            <SelectContent>
-                              {modules
-                                ?.find(
-                                  (module) => module.title === selectedModule
-                                )
-                                ?.lessons.map((lesson, i) => (
-                                  <SelectItem key={i} value={lesson.title}>
-                                    {lesson.title}
-                                  </SelectItem>
-                                ))}
-                            </SelectContent>
-                          </Select>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
+                    <div className="select-lesson">
+                      <FormField
+                        control={form.control}
+                        name="lesson"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Lesson</FormLabel>
+                            <Select
+                              onValueChange={(value) =>
+                                setSelectedLessonTitle(value)
+                              }
+                              defaultValue={field.value}
+                            >
+                              <FormControl>
+                                <SelectTrigger>
+                                  <SelectValue placeholder="Select a lesson" />
+                                </SelectTrigger>
+                              </FormControl>
+                              <SelectContent>
+                                {modules
+                                  ?.find(
+                                    (module) => module.title === selectedModule
+                                  )
+                                  ?.lessons.map((lesson, i) => (
+                                    <SelectItem key={i} value={lesson.title}>
+                                      {lesson.title}
+                                    </SelectItem>
+                                  ))}
+                              </SelectContent>
+                            </Select>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                    </div>
                     <div className="new-lesson">
                       <AlertDialog>
                         <AlertDialogTrigger asChild>
@@ -420,7 +448,10 @@ export default function AddCourse({ courseModules }: AddCourseProps) {
                       <FormControl className="overflow-scroll">
                         <TipTap
                           content={field.value}
-                          onChange={field.onChange}
+                          onChange={(value) => {
+                            field.onChange(value); // Update form state
+                            setContentValue(value); // Update local state
+                          }}
                           disabled={isExistingLesson}
                         />
                       </FormControl>
@@ -429,7 +460,13 @@ export default function AddCourse({ courseModules }: AddCourseProps) {
                   )}
                 />
                 <div className="facilitator-add-btn">
-                  <Button type="submit">Submit</Button>
+                  <Button
+                    type="submit"
+                    disabled={!isFormFilled}
+                    className={!isFormFilled ? "disabled" : ""}
+                  >
+                    Submit
+                  </Button>
                 </div>
               </form>
             </Form>
