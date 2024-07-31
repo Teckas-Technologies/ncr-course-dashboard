@@ -37,7 +37,6 @@ import {
 import { useToast } from "./ui/use-toast";
 import { useSaveCourseModule } from "@/hook/CourseModuleHook";
 import { Skeleton } from "./ui/skeleton";
-import { log } from "console";
 
 interface Lesson {
   title: string;
@@ -64,9 +63,9 @@ export default function AddCourse({ courseModules }: AddCourseProps) {
   const [modules, setModules] = useState<Module[]>([]);
   const { toast } = useToast();
   const { saveCourseModule, loading, error } = useSaveCourseModule();
-  const [isFormFilled, setIsFormFilled] = useState(false);
-  const [processedContent, setProcessedContent] = useState("");
+  const [previousContent, setPreviousContent] = useState("");
   const [isExistingLesson, setIsExistingLesson] = useState(false);
+  const [contentValue, setContentValue] = useState("");
 
   console.log("Course Modules From Add course Page : ", courseModules);
 
@@ -91,7 +90,6 @@ export default function AddCourse({ courseModules }: AddCourseProps) {
       content: "",
     },
   });
-
 
   useEffect(() => {
     if (selectedModule) {
@@ -235,35 +233,32 @@ export default function AddCourse({ courseModules }: AddCourseProps) {
       setNewLesson("");
     }
   };
-  const preprocessHTMLContent = (html: string) => {
-    return html.replace(/<p><\/p>/g, " ");
-  };
-  const checkFormStatus = () => {
-    const selectedModule = form.getValues("module");
-    const selectedLesson = form.getValues("lesson");
-    const content = form.getValues("content");
-    // console.log("selectedModule:", selectedModule);
-    // console.log("selectedLesson:", selectedLesson);
-    console.log("content:", content);
-    const preprocessedContent = preprocessHTMLContent(content);
-    // setProcessedContent(preprocessedContent);
-    console.log("setProcessedContent:",preprocessedContent);
 
-    return (
-      (selectedModule || newModule) &&
-      (selectedLesson || newLesson) &&
-      preprocessedContent.trim().length > 0
-    );
-  };
-  useEffect(() => {
-    
-    const formStatus = checkFormStatus();
-    setIsFormFilled(Boolean(formStatus));
-    const content = form.getValues("content");
-    const preprocessedContent = preprocessHTMLContent(content);
-    setProcessedContent(preprocessedContent);
-    console.log("setProcessedContent:",preprocessedContent);
-  }, [form.getValues("content"),form]);
+  // useEffect(() => {
+  //   const cleanedContent = stripHtmlTags(contentValue);
+  //   console.log("Content without HTML:", cleanedContent);
+  // }, [contentValue]);
+
+  function stripHtmlTags(content: string): string {
+    return content.replace(/<[^>]+>/g, "").trim();
+  }
+
+  // useEffect(() => {
+  //   const cleanedContent = stripHtmlTags(contentValue);
+
+  // }, [contentValue]);
+
+  const isContentValid = stripHtmlTags(contentValue).length > 0;
+  const isFormFilled =
+    (selectedModule || newModule) &&
+    (selectedLessonTitle || newLesson) &&
+    isContentValid;
+
+  // useEffect(() => {
+  //   const cleanedContent = stripHtmlTags(contentValue);
+  //   console.log("Content without HTML:", cleanedContent);
+  // }, [contentValue]);
+
   return (
     <>
       <div className="add-course">
@@ -453,7 +448,10 @@ export default function AddCourse({ courseModules }: AddCourseProps) {
                       <FormControl className="overflow-scroll">
                         <TipTap
                           content={field.value}
-                          onChange={field.onChange}
+                          onChange={(value) => {
+                            field.onChange(value); // Update form state
+                            setContentValue(value); // Update local state
+                          }}
                           disabled={isExistingLesson}
                         />
                       </FormControl>

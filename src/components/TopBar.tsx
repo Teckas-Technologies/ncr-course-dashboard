@@ -222,6 +222,18 @@ export default function TopBar() {
                 </Link>
               </div>
             ))}
+             {isConnected && (
+        <div className="side-bar-list">
+          <Link href="/profile">
+            <div className="menu-item">
+              <p>Profile</p>
+              <div className="arrow">
+                <ArrowRightCircleIcon />
+              </div>
+            </div>
+          </Link>
+        </div>
+      )}
           </div>
           <div className="top-bar-progress">
             {isConnected && student ? (

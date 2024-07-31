@@ -29,7 +29,7 @@ export default function ProgressComp({value, currentModule, currentLesson, homew
                             <h1>{currentLesson}</h1>
                         </div>
                         <div className="completion-fields">
-                            <h1>Homework Done !</h1>
+                            <h1>Homework Done</h1>
                             <ArrowRightIcon/>
                             <h1>{homework}</h1>
                         </div>
