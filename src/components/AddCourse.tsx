@@ -66,9 +66,12 @@ export default function AddCourse({ courseModules }: AddCourseProps) {
   const [previousContent, setPreviousContent] = useState("");
   const [isExistingLesson, setIsExistingLesson] = useState(false);
   const [contentValue, setContentValue] = useState("");
-
+  const [disableEdit,setDisableEdit] = useState(false);
+  const [disableButtonEdit,setDisableButtonEdit] = useState(false);
+  
   console.log("Course Modules From Add course Page : ", courseModules);
-
+ console.log("log 1",disableEdit);
+ 
   // const formSchema = z.object({
   //     module: z.string().min(5, { message: "Hey the module is not long enough!" }).trim(),
   //     lesson: z.string().min(5, { message: "Hey the lesson is not long enough!" }).trim(),
@@ -104,7 +107,7 @@ export default function AddCourse({ courseModules }: AddCourseProps) {
   }, [courseModules]);
 
   const lesson = form.getValues("lesson");
-
+  // const isNewLesson = !isExistingLesson;
   useEffect(() => {
     const existingLesson = Boolean(
       selectedLessonTitle &&
@@ -112,7 +115,7 @@ export default function AddCourse({ courseModules }: AddCourseProps) {
           ?.find((module) => module.title === selectedModule)
           ?.lessons.find((lesson) => lesson.title === selectedLessonTitle)
     );
-    const isNewLesson = !isExistingLesson;
+
     console.log("Existing 1: ", existingLesson, isExistingLesson);
     if (existingLesson) {
       setIsExistingLesson(true);
@@ -121,8 +124,27 @@ export default function AddCourse({ courseModules }: AddCourseProps) {
       setIsExistingLesson(false);
       console.log("Existing3 : ", existingLesson, isExistingLesson);
     }
-  }, [courseModules, selectedLessonTitle, newLesson, lesson]);
+  }, [
+    courseModules,
+    selectedLessonTitle,
+    newLesson,
+    lesson,
+    isExistingLesson,
+    form.getValues("lesson"),
+  ]);
 
+  useEffect(() => {
+    if(selectedLessonTitle && isExistingLesson){
+      console.log("log 2",disableEdit);
+    setDisableEdit(!disableEdit);
+    console.log("log 3",disableEdit);
+    }
+    if(selectedLessonTitle && !isExistingLesson){
+      setDisableEdit(false);
+    }
+  }, [selectedLessonTitle,setSelectedLessonTitle]);
+ console.log("Existing Lesson:",isExistingLesson);
+ 
   // useEffect(() => {
   //     if (selectedLessonTitle) {
   //         form.setValue('lesson', selectedLessonTitle);
@@ -248,17 +270,33 @@ export default function AddCourse({ courseModules }: AddCourseProps) {
 
   // }, [contentValue]);
 
+  useEffect(()=>{
+    if(selectedLessonTitle && isExistingLesson){
+    
+      setDisableButtonEdit(true);
+     }else if(selectedLessonTitle && !isExistingLesson){
+      setDisableButtonEdit(false);
+     }
+    
+  },[selectedLessonTitle,isExistingLesson,form.getValues('content')])
+
+
   const isContentValid = stripHtmlTags(contentValue).length > 0;
   const isFormFilled =
     (selectedModule || newModule) &&
     (selectedLessonTitle || newLesson) &&
-    isContentValid;
+    isContentValid && disableButtonEdit;
+  
+  
+
 
   // useEffect(() => {
   //   const cleanedContent = stripHtmlTags(contentValue);
   //   console.log("Content without HTML:", cleanedContent);
   // }, [contentValue]);
-
+// const disableButton = ()=>{
+//  setDisableButtonEdit(true);
+// }
   return (
     <>
       <div className="add-course">
@@ -453,6 +491,9 @@ export default function AddCourse({ courseModules }: AddCourseProps) {
                             setContentValue(value); // Update local state
                           }}
                           disabled={isExistingLesson}
+                          disableEdit = {disableEdit}
+                          setDisableButtonEdit={setDisableButtonEdit}
+                          
                         />
                       </FormControl>
                       {/* <h1>{field.value}</h1> */}
