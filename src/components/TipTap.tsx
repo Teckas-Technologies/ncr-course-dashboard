@@ -14,11 +14,15 @@ import { useEffect } from "react";
 export default function TipTap({
     content,
     onChange,
-    disabled
+    disabled,
+    disableEdit,
+    setIsEditable
 }: {
     content: string
     onChange: (richText: string) => void,
-    disabled: boolean
+    disabled: boolean,
+    disableEdit: boolean,
+    setIsEditable: (e: boolean)=>void
 }) {
     const editor = useEditor({
         extensions: [StarterKit.configure({
@@ -81,7 +85,6 @@ export default function TipTap({
         },
         onUpdate({editor}) {
             onChange(editor.getHTML());
-            console.log(editor.getHTML());
         }
     })
 
@@ -93,16 +96,37 @@ export default function TipTap({
 
     useEffect(() => {
         editor?.setOptions({ editable: !disabled });
+        logEditableState()
     }, [disabled, editor]);
+
+    useEffect(() => {
+        if(disabled){
+            setDisableEdit();
+        }
+        logEditableState()
+    }, [disableEdit, editor]);
+
+    const logEditableState = () => {
+        console.log("Editable state >>>> :", editor?.isEditable);
+    };
+
+    useEffect(()=>{
+        setIsEditable(editor?.isEditable as boolean)
+    },[editor?.isEditable, disableEdit, disabled, editor, content])
 
     const setEditable = () => {
         editor?.setOptions({ editable: true });
+        logEditableState();
+    }
+    const setDisableEdit = () => {
+        editor?.setOptions({ editable: false });
+        logEditableState()
     }
 
     return (
         <>
         <div className="flex flex-col justify-stretch min-h-[250px] gap-2 overflow-scroll">
-            <Toolbar editor={editor} setEditable={setEditable} disabled={disabled}/>
+            <Toolbar editor={editor} setEditable={setEditable} disabled={disabled} disableEdit={disableEdit} setDisableEdit={setDisableEdit}/>
             <EditorContent editor={editor}/>
         </div>
         </>

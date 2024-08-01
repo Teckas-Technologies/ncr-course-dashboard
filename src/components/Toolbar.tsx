@@ -14,9 +14,11 @@ type Props = {
     editor: Editor | null
     setEditable: ()=>void
     disabled:boolean
+    disableEdit: boolean
+    setDisableEdit: ()=>void
 }
 
-export function Toolbar({ editor, setEditable, disabled }: Props) {
+export function Toolbar({ editor, setEditable, disabled, disableEdit, setDisableEdit }: Props) {
 
     const [showMore, setShowMore] = useState(false);
     const [isMobile, setIsMobile] = useState(false);
@@ -30,6 +32,11 @@ export function Toolbar({ editor, setEditable, disabled }: Props) {
     useEffect(() => {
         setIsDisabled(disabled);
     }, [disabled]);
+
+    useEffect(() => {
+        setIsDisabled(disableEdit);
+        setDisableEdit();
+    }, [disableEdit]);
 
     const setEditableTool = () => {
         setIsDisabled(false);

@@ -66,8 +66,9 @@ export default function AddCourse({ courseModules }: AddCourseProps) {
   const [previousContent, setPreviousContent] = useState("");
   const [isExistingLesson, setIsExistingLesson] = useState(false);
   const [contentValue, setContentValue] = useState("");
-
-  console.log("Course Modules From Add course Page : ", courseModules);
+  const [disableEdit, setDisableEdit] = useState(false);
+  const [editable, setEditable] = useState(false);
+  const [disableButtonEdit, setDisableButtonEdit] = useState(false);
 
   // const formSchema = z.object({
   //     module: z.string().min(5, { message: "Hey the module is not long enough!" }).trim(),
@@ -108,9 +109,9 @@ export default function AddCourse({ courseModules }: AddCourseProps) {
   useEffect(() => {
     const existingLesson = Boolean(
       selectedLessonTitle &&
-        courseModules
-          ?.find((module) => module.title === selectedModule)
-          ?.lessons.find((lesson) => lesson.title === selectedLessonTitle)
+      courseModules
+        ?.find((module) => module.title === selectedModule)
+        ?.lessons.find((lesson) => lesson.title === selectedLessonTitle)
     );
     const isNewLesson = !isExistingLesson;
     console.log("Existing 1: ", existingLesson, isExistingLesson);
@@ -122,19 +123,6 @@ export default function AddCourse({ courseModules }: AddCourseProps) {
       console.log("Existing3 : ", existingLesson, isExistingLesson);
     }
   }, [courseModules, selectedLessonTitle, newLesson, lesson]);
-
-  // useEffect(() => {
-  //     if (selectedLessonTitle) {
-  //         form.setValue('lesson', selectedLessonTitle);
-  //         const selectedLesson = modules?.find(module => module.title === selectedModule)?.lessons.find(lesson => lesson.title === selectedLessonTitle);
-  //         if (selectedLesson) {
-  //             form.setValue('content', selectedLesson.content);
-  //         }
-  //         setIsExistingLesson(!!selectedLesson); // Update existing lesson state
-  //     } else {
-  //         setIsExistingLesson(false); // Reset when no lesson is selected
-  //     }
-  // }, [selectedLessonTitle, modules, selectedModule, form.getValues('lesson')]);
 
   useEffect(() => {
     if (selectedLessonTitle) {
@@ -157,9 +145,6 @@ export default function AddCourse({ courseModules }: AddCourseProps) {
 
     console.log("Submitted Course Module :", submittedValues);
     if (submittedValues) {
-      // const theLesson: Lesson[] = [
-      //     { title: submittedValues.lesson, content: submittedValues.content },
-      // ]
       const theModule: Module = {
         title: submittedValues.module,
         description: newModuleDes,
@@ -230,34 +215,45 @@ export default function AddCourse({ courseModules }: AddCourseProps) {
         title: `${newLesson} has been added successfully!`,
         description: `Please add or edit the lesson content!`,
       });
-      setNewLesson("");
+      // setNewLesson("");
     }
   };
 
-  // useEffect(() => {
-  //   const cleanedContent = stripHtmlTags(contentValue);
-  //   console.log("Content without HTML:", cleanedContent);
-  // }, [contentValue]);
-
-  function stripHtmlTags(content: string): string {
-    return content.replace(/<[^>]+>/g, "").trim();
-  }
-
-  // useEffect(() => {
-  //   const cleanedContent = stripHtmlTags(contentValue);
-
-  // }, [contentValue]);
+  // ===================================================================
 
   const isContentValid = stripHtmlTags(contentValue).length > 0;
-  const isFormFilled =
-    (selectedModule || newModule) &&
-    (selectedLessonTitle || newLesson) &&
-    isContentValid;
+  console.log("isContentValid", isContentValid)
+  console.log("contentValue", contentValue)
+  const isNewLesson = selectedModule && newLesson && isContentValid && !isExistingLesson;
+  const isExistingLessonValid = selectedModule && selectedLessonTitle && isContentValid && isExistingLesson && editable;
 
-  // useEffect(() => {
-  //   const cleanedContent = stripHtmlTags(contentValue);
-  //   console.log("Content without HTML:", cleanedContent);
-  // }, [contentValue]);
+  const isFormFilled = (isNewLesson && editable) || isExistingLessonValid;
+
+  useEffect(() => {
+    // Set disableEdit state based on the conditions...
+    if (selectedLessonTitle && isExistingLesson) {
+      setDisableEdit(!disableEdit);
+    }
+    if (selectedLessonTitle && !isExistingLesson) {
+      setDisableEdit(false);
+    }
+  }, [selectedLessonTitle, setSelectedLessonTitle, isExistingLesson]);
+
+  function stripHtmlTags(content: string): string {
+    return content.replace(/<p><\/p>/g, "")
+      .replace(/<strong><\/strong>/g, "")
+      .replace(/<h2 class="text-xl font-bold" levels="2"><\/h2>/g, "")
+      .replace(/<em><\/em>/g, "")
+      .replace(/<s><\/s>/g, "")
+      .replace(/<ul class="list-disc pl-4"><\/ul>/g, "")
+      .replace(/<li><\/li>/g, "")
+      .replace(/<ol class="list-decimal pl-4"><\/ol>/g, "")
+      .replace(/<pre class="bg-stone-800 text-white p-2 rounded-lg mx-2 my-2"><\/pre>/g, "")
+      .replace(/<code><\/code>/g, "")
+      .replace(/<a target="_blank" rel="noopener noreferrer nofollow" class="text-blue-600 underline" href=""><\/a>/g, "")
+      .replace(/<table class="border border-collapse px-3 py-1 w-full overflow-scroll" style="minWidth: 100px"><colgroup><col><\/col><col><\/col><col><\/col><col><\/col><\/colgroup><tbody><tr class="border border-collapse px-3 py-1"><th class="border border-collapse px-3 py-1" colspan="1" rowspan="1"><p><\/p><\/th><th class="border border-collapse px-3 py-1" colspan="1" rowspan="1"><p><\/p><\/th><th class="border border-collapse px-3 py-1" colspan="1" rowspan="1"><p><\/p><\/th><th class="border border-collapse px-3 py-1" colspan="1" rowspan="1"><p><\/p><\/th><\/tr><tr class="border border-collapse px-3 py-1"><td class="border border-collapse px-3 py-1" colspan="1" rowspan="1"><p><\/p><\/td><td class="border border-collapse px-3 py-1" colspan="1" rowspan="1"><p><\/p><\/td><td class="border border-collapse px-3 py-1" colspan="1" rowspan="1"><p><\/p><\/td><td class="border border-collapse px-3 py-1" colspan="1" rowspan="1"><p><\/p><\/td><\/tr><tr class="border border-collapse px-3 py-1"><td class="border border-collapse px-3 py-1" colspan="1" rowspan="1"><p><\/p><\/td><td class="border border-collapse px-3 py-1" colspan="1" rowspan="1"><p><\/p><\/td><td class="border border-collapse px-3 py-1" colspan="1" rowspan="1"><p><\/p><\/td><td class="border border-collapse px-3 py-1" colspan="1" rowspan="1"><p><\/p><\/td><\/tr><\/tbody><\/table>/g, "")
+      .trim();
+  }
 
   return (
     <>
@@ -289,10 +285,10 @@ export default function AddCourse({ courseModules }: AddCourseProps) {
                             <SelectContent>
                               {modules
                                 ? modules?.map((module, i) => (
-                                    <SelectItem key={i} value={module.title}>
-                                      {module.title}
-                                    </SelectItem>
-                                  ))
+                                  <SelectItem key={i} value={module.title}>
+                                    {module.title}
+                                  </SelectItem>
+                                ))
                                 : "Module Not Found!"}
                             </SelectContent>
                           </Select>
@@ -453,6 +449,8 @@ export default function AddCourse({ courseModules }: AddCourseProps) {
                             setContentValue(value); // Update local state
                           }}
                           disabled={isExistingLesson}
+                          disableEdit={disableEdit}
+                          setIsEditable={setEditable}
                         />
                       </FormControl>
                       {/* <h1>{field.value}</h1> */}
