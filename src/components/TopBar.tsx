@@ -20,6 +20,7 @@ import { useFetchStudentById, useSaveStudent } from "@/hook/StudentHook";
 import { Student } from "@/types/types";
 import { useFetchCourseModules } from "@/hook/CourseModuleHook";
 import { usePathname } from "next/navigation";
+import { adminId } from "../../utils/Constant";
 type PartialStudent = Pick<Student, "id">;
 export default function TopBar() {
   const pathname = usePathname();
@@ -32,12 +33,8 @@ export default function TopBar() {
       name: "Course",
       path: "/course",
     },
-    {
-      name: "Facilitator",
-      path: "/facilitator",
-    },
-   
   ];
+
   const [isOpen, setIsOpen] = useState(false);
 
   const { isConnected, selector, connect, activeAccountId } = useMbWallet();
@@ -139,14 +136,30 @@ export default function TopBar() {
                 {menu.name}
               </Link>
             ))}
-             {isConnected ? (
+            {isConnected &&
+              activeAccountId &&
+              adminId.includes(activeAccountId) && (
+                <Link
+                  href="/facilitator"
+                  className={`nav-link ${
+                    pathname === "/facilitator" ? "active" : ""
+                  }`}
+                >
+                  Facilitator
+                </Link>
+              )}
+            {isConnected ? (
               <Link
                 href="/profile"
-                className={`nav-link ${pathname === "/profile" ? "active" : ""}`}
+                className={`nav-link ${
+                  pathname === "/profile" ? "active" : ""
+                }`}
               >
                 Profile
               </Link>
-            ) : ""}
+            ) : (
+              ""
+            )}
           </div>
           <div className="header-profile-details">
             {isConnected ? (
@@ -222,18 +235,32 @@ export default function TopBar() {
                 </Link>
               </div>
             ))}
-             {isConnected && (
-        <div className="side-bar-list">
-          <Link href="/profile">
-            <div className="menu-item">
-              <p>Profile</p>
-              <div className="arrow">
-                <ArrowRightCircleIcon />
+            {isConnected &&
+              activeAccountId &&
+              adminId.includes(activeAccountId) && (
+                <div className="side-bar-list">
+                  <Link href="/facilitator">
+                    <div className="menu-item">
+                      <p>Facilitator</p>
+                      <div className="arrow">
+                        <ArrowRightCircleIcon />
+                      </div>
+                    </div>
+                  </Link>
+                </div>
+              )}
+            {isConnected && (
+              <div className="side-bar-list">
+                <Link href="/profile">
+                  <div className="menu-item">
+                    <p>Profile</p>
+                    <div className="arrow">
+                      <ArrowRightCircleIcon />
+                    </div>
+                  </div>
+                </Link>
               </div>
-            </div>
-          </Link>
-        </div>
-      )}
+            )}
           </div>
           <div className="top-bar-progress">
             {isConnected && student ? (
