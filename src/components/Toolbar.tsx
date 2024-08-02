@@ -60,12 +60,6 @@ export function Toolbar({
   disableEdit,
   setDisableEdit,
 }: Props) {
-  useEffect(() => {
-    setIsDisabled(disableEdit);
-    setDisableEdit();
-    console.log("log 6", disableEdit);
-  }, [disableEdit]);
-
   const [showMore, setShowMore] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
 
@@ -74,7 +68,7 @@ export function Toolbar({
   const [linkPosition, setLinkPosition] = useState({ top: 0, left: 0 });
 
   const [isDisabled, setIsDisabled] = useState(disabled);
-  
+
   useEffect(() => {
     setIsDisabled(disabled);
   }, [disabled]);
@@ -82,16 +76,12 @@ export function Toolbar({
   useEffect(() => {
     setIsDisabled(disableEdit);
     setDisableEdit();
-    console.log("log 6", disableEdit);
   }, [disableEdit]);
-
-
 
   const setEditableTool = () => {
     setIsDisabled(false);
     setEditable();
   };
-  console.log("log 5", disableEdit);
 
   const handleResize = () => {
     setIsMobile(window.innerWidth <= 768);
@@ -405,28 +395,6 @@ export function Toolbar({
               </TooltipContent>
             </Tooltip>
           </TooltipProvider>
-          {/* <DropdownMenu>
-                        <DropdownMenuTrigger asChild>
-                            <Toggle
-                                size="sm"
-                                onPressedChange={()=> !isDisabled && addLink()}
-                            >
-                                <LinkIcon className="h-4 w-4" />
-                            </Toggle>
-                        </DropdownMenuTrigger>
-                        {showLinkDialog && (
-                            <div className="absolute left-[0] bottom-[100%] w-56 mr-4">
-                                <FormItem className="py-2">
-                                    <div className='flex items-center gap-3'>
-                                    <FormControl>
-                                        <Input type="text" placeholder="Enter the URL here..." value={linkUrl} onChange={(e) => setLinkUrl(e.target.value)} />
-                                    </FormControl>
-                                    <Button onClick={handleLinkSubmit}><CheckIcon /></Button>
-                                    </div>
-                                </FormItem>
-                            </div>
-                        )}
-                    </DropdownMenu> */}
           <TooltipProvider>
             <Tooltip>
               <TooltipTrigger asChild>
