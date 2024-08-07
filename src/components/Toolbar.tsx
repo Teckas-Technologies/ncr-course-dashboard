@@ -68,7 +68,7 @@ export function Toolbar({
   const [linkPosition, setLinkPosition] = useState({ top: 0, left: 0 });
 
   const [isDisabled, setIsDisabled] = useState(disabled);
-
+  const [isUrlValid, setIsUrlValid] = useState(false);
   useEffect(() => {
     setIsDisabled(disabled);
   }, [disabled]);
@@ -113,7 +113,11 @@ export function Toolbar({
   const handleLinkCancel = () => {
     setShowLinkDialog(false);
   };
-
+  const handleUrlChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const url = e.target.value;
+    setLinkUrl(url);
+    setIsUrlValid(url.startsWith("https://"));
+  };
   if (!editor) {
     return null;
   }
@@ -126,7 +130,9 @@ export function Toolbar({
             <TooltipTrigger asChild>
               <Toggle
                 size="sm"
-                className={editor.isActive("heading", { level: 2 }) ? 'activeIcon' : ''}
+                className={
+                  editor.isActive("heading", { level: 2 }) ? "activeIcon" : ""
+                }
                 pressed={editor.isActive("heading")}
                 onPressedChange={() =>
                   !isDisabled &&
@@ -146,7 +152,7 @@ export function Toolbar({
             <TooltipTrigger asChild>
               <Toggle
                 size="sm"
-                className={editor.isActive("bold") ? 'activeIcon' : ''}
+                className={editor.isActive("bold") ? "activeIcon" : ""}
                 pressed={editor.isActive("bold")}
                 onPressedChange={() =>
                   !isDisabled && editor.chain().focus().toggleBold().run()
@@ -165,7 +171,7 @@ export function Toolbar({
             <TooltipTrigger asChild>
               <Toggle
                 size="sm"
-                className={editor.isActive("italic") ? 'activeIcon' : ''}
+                className={editor.isActive("italic") ? "activeIcon" : ""}
                 pressed={editor.isActive("italic")}
                 onPressedChange={() =>
                   !isDisabled && editor.chain().focus().toggleItalic().run()
@@ -184,7 +190,7 @@ export function Toolbar({
             <TooltipTrigger asChild>
               <Toggle
                 size="sm"
-                className={editor.isActive("strike") ? 'activeIcon' : ''}
+                className={editor.isActive("strike") ? "activeIcon" : ""}
                 pressed={editor.isActive("strike")}
                 onPressedChange={() =>
                   !isDisabled && editor.chain().focus().toggleStrike().run()
@@ -203,7 +209,7 @@ export function Toolbar({
             <TooltipTrigger asChild>
               <Toggle
                 size="sm"
-                className={editor.isActive("bulletList") ? 'activeIcon' : ''}
+                className={editor.isActive("bulletList") ? "activeIcon" : ""}
                 pressed={editor.isActive("bulletList")}
                 onPressedChange={() =>
                   !isDisabled && editor.chain().focus().toggleBulletList().run()
@@ -222,7 +228,7 @@ export function Toolbar({
             <TooltipTrigger asChild>
               <Toggle
                 size="sm"
-                className={editor.isActive("orderedList") ? 'activeIcon' : ''}
+                className={editor.isActive("orderedList") ? "activeIcon" : ""}
                 pressed={editor.isActive("orderedList")}
                 onPressedChange={() =>
                   !isDisabled &&
@@ -505,7 +511,7 @@ export function Toolbar({
                 type="text"
                 placeholder="Enter the URL here..."
                 value={linkUrl}
-                onChange={(e) => setLinkUrl(e.target.value)}
+                onChange={handleUrlChange}
               />
             </FormControl>
             <FormMessage />
@@ -514,7 +520,10 @@ export function Toolbar({
             <AlertDialogCancel onClick={handleLinkCancel}>
               Cancel
             </AlertDialogCancel>
-            <AlertDialogAction onClick={handleLinkSubmit}>
+            <AlertDialogAction
+              onClick={handleLinkSubmit}
+              disabled={!isUrlValid}
+            >
               Add URL
             </AlertDialogAction>
           </AlertDialogFooter>
