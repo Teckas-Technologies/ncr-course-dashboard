@@ -726,11 +726,11 @@
 }
 
 .module-selector {
-  flex: 3; /* 75% of the container width */
+  flex: 3;
 }
 
 .new-module {
-  flex: 1; /* 25% of the container width */
+  flex: 1;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -770,11 +770,11 @@
 }
 
 .select-lesson {
-  flex: 3; /* 75% of the container width */
+  flex: 3;
 }
 
 .new-lesson {
-  flex: 1; /* 25% of the container width */
+  flex: 1;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -811,21 +811,20 @@
   justify-content: space-around;
   align-items: center;
   padding: 1em;
-  
 }
 
 .nav-link {
   position: relative;
-  margin: 0 15px; /* Adjust margin for spacing between links */
+  margin: 0 15px;
   padding: 5px 0;
-  color: #fff; /* Your preferred text color */
+  color: #fff;
   text-decoration: none;
-  font-weight: 500; /* Slightly bolder font for visibility */
+  font-weight: 500;
   transition: color 0.3s;
 }
 
 .nav-link::after {
-  content: '';
+  content: "";
   position: absolute;
   width: 0;
   height: 2px;
@@ -833,7 +832,7 @@
   margin-top: 5px;
   left: 50%;
   transform: translateX(-50%);
-  background: #df3276; /* Line color */
+  background: #df3276;
   transition: width 0.4s ease;
   -webkit-transition: width 0.4s ease;
 }
@@ -845,20 +844,292 @@
 }
 
 .nav-link.active {
-  color: #df3276; /* Active link text color */
+  color: #df3276;
 }
 
 .nav-link.active::after {
   width: 100%;
-  background: #df3276; /* Line color for active link */
+  background: #df3276;
 }
 @media (max-width: 768px) {
   .navbar {
     display: none;
   }
 }
-/* Add to your CSS file */
-button.disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
+
+/* Page.css */
+.page-container {
+  position: relative;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background: #f2f1ea;
+  width: 100%;
+  height: 100vh;
+  overflow-y: scroll;
+  padding-bottom: 50px;
+}
+
+.background {
+  width: 100%;
+  height: 300px;
+  overflow: hidden;
+  position: relative;
+  background-color: #3f51b5;
+}
+
+.background-color {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+}
+
+@media (max-width: 768px) {
+  .profile-container {
+    width: 90%;
+    margin-top: -30px;
+    height: 250px;
+  }
+}
+
+.background.hidden {
+  display: none;
+}
+
+.profile-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background: #fff;
+  padding: 20px;
+  border-radius: 20px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  margin-top: -100px;
+  position: relative;
+  z-index: 10;
+  width: 25%;
+  height: 250px;
+}
+.icon-container {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+}
+
+.top-right-icon {
+  width: 18px;
+  height: 18px;
+  cursor: pointer;
+}
+.profile-info {
+  margin-bottom: 10px;
+}
+
+.profile-image {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  border: 5px solid #151718;
+}
+
+.profile-details {
+  text-align: center;
+}
+
+.profile-details h2 {
+  margin: 0;
+  font-weight: 600;
+}
+
+.acc-id-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.acc_id {
+  color: #666;
+  margin-right: 8px;
+}
+
+.copy-icon {
+  width: 16px;
+  height: 16px;
+  cursor: pointer;
+}
+
+@media (max-width: 768px) {
+  .profile-container {
+    width: 90%;
+    margin-top: -90px;
+    height: 250px;
+  }
+}
+
+/* toastStyles.css */
+/* .custom-toast {
+  background-color: #6a5acd !important; 
+  color: white !important;
+  border-radius: 12px !important;
+  text-align: center;
+  font-size: 14px;
+  padding: 5px 10px !important;
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.Toastify__toast-container {
+  position: absolute;
+  top: -20px; 
+  right: 0;
+  z-index: 1000;
+}
+
+.Toastify__toast {
+  background: none;
+  box-shadow: none;
+  padding: 0;
+}
+
+.Toastify__toast-body {
+  margin: 0;
+  padding: 0;
+}
+
+.Toastify__close-button {
+  display: none;
+} */
+
+.copy-icon {
+  cursor: pointer;
+  transition: filter 0.3s;
+}
+
+.copy-icon.copied {
+  filter: blur(0.8px);
+}
+/* NearProfileDetails.css */
+.account-settings {
+  background: #fff;
+  padding: 20px;
+  border-radius: 10px;
+  width: 80%;
+  box-sizing: border-box;
+  margin-top: 80px;
+}
+
+.settings-header {
+  display: flex;
+  justify-content: flex-start; /* Align items to the start */
+  align-items: center;
+}
+
+.btn.settings {
+  display: flex; /* Use flexbox to align items inside the button */
+  align-items: center;
+  background-color: #df3276;
+  color: white;
+  border: none;
+  padding: 10px 15px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.btn.settings .chevron-icon {
+  margin-right: 5px; /* Add some space between the icon and text */
+}
+
+.user-info {
+  margin: 20px 0;
+}
+
+.form-group {
+  display: flex;
+  align-items: center;
+  margin: 10px 0;
+}
+
+.form-group label {
+  width: 30%;
+  margin-right: 10px;
+  text-align: left;
+  font-weight: 500;
+}
+
+.form-group input,
+.form-group textarea {
+  width: 65%;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+}
+.form-group input:focus,
+.form-group textarea:focus {
+  border-color: #df3276; /* Change border color on focus */
+  outline: none; /* Remove default outline */
+}
+textarea {
+  resize: none; /* Allow vertical resizing */
+}
+.form-buttons {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px; /* Space between buttons */
+}
+
+.btn {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.btn.save {
+  background-color: #4caf50;
+  color: white;
+}
+.btn.save:hover {
+  background-color: #45a049; /* Darker shade of green */
+}
+
+@media (max-width: 768px) {
+  .form-group {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .form-group label {
+    width: 100%;
+    text-align: left; /* Align text to the left */
+    margin-bottom: 5px;
+  }
+
+  .form-group input,
+  .form-group textarea {
+    width: 100%;
+  }
+  .account-settings {
+    width: 95%;
+    margin-top: 130px; /* Adjust if needed */
+  }
+}
+@media (max-width: 480px) {
+  .account-settings {
+    width: 100%;
+    margin-top: 120px;
+    padding: 15px;
+  }
+}
+@media only screen and (min-width: 820px) and (max-width: 1024px) {
+  .account-settings {
+    width: 80%;
+    margin-top: 180px;
+    padding: 15px;
+  }
+}
+
+/* active icon for toolbar icons */
+.activeIcon {
+  background-color: #cdcdcd;
 }

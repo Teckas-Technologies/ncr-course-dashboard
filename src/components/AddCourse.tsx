@@ -177,6 +177,15 @@ export default function AddCourse({ courseModules }: AddCourseProps) {
       console.log("Error", error);
     }
   }
+  console.log("Select", selectedModule);
+  useEffect(() => {
+    if (selectedModule) {
+      setSelectedLessonTitle("");
+      form.setValue("lesson", "");
+      form.setValue("content", "");
+      setContentValue(""); // Clear the local content state
+    }
+  }, [selectedModule]);
 
   const addModule = () => {
     if (newModule) {
@@ -186,6 +195,7 @@ export default function AddCourse({ courseModules }: AddCourseProps) {
         lessons: [],
       };
       setModules(modules ? [...modules, newModuleObject] : [newModuleObject]);
+      setSelectedModule(newModule);
       toast({
         title: `${newModule} has been added successfully!`,
         description: `Please select or add your lesson!`,
@@ -289,8 +299,14 @@ export default function AddCourse({ courseModules }: AddCourseProps) {
                         <FormItem>
                           <FormLabel>Module</FormLabel>
                           <Select
-                            onValueChange={(value) => setSelectedModule(value)}
-                            defaultValue={field.value}
+                            // onValueChange={(value) => setSelectedModule(value)}
+                            // defaultValue={field.value}
+                            onValueChange={(value) => {
+                              setSelectedModule(value);
+                              setSelectedLessonTitle("");
+                              form.setValue("module", value); // Ensure form value is updated
+                            }}
+                            value={field.value} // Ensure dropdown value is set
                           >
                             <FormControl>
                               <SelectTrigger>
@@ -378,10 +394,12 @@ export default function AddCourse({ courseModules }: AddCourseProps) {
                           <FormItem>
                             <FormLabel>Lesson</FormLabel>
                             <Select
-                              onValueChange={(value) =>
-                                setSelectedLessonTitle(value)
-                              }
-                              defaultValue={field.value}
+                              onValueChange={(value) => {
+                                setSelectedLessonTitle(value);
+                                field.onChange(value);
+                              }}
+                              value={selectedLessonTitle}
+                              defaultValue={selectedLessonTitle}
                             >
                               <FormControl>
                                 <SelectTrigger>
@@ -398,6 +416,18 @@ export default function AddCourse({ courseModules }: AddCourseProps) {
                                       {lesson.title}
                                     </SelectItem>
                                   ))}
+                                {selectedModule &&
+                                  modules.find(
+                                    (module) => module.title === selectedModule
+                                  )?.lessons.length === 0 && (
+                                    <SelectItem
+                                      key="empty"
+                                      value="no-lessons"
+                                      disabled
+                                    >
+                                      No lessons available
+                                    </SelectItem>
+                                  )}
                               </SelectContent>
                             </Select>
                             <FormMessage />
