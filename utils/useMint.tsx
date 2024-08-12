@@ -18,9 +18,9 @@ export type TokenMetadata = {
   media_hash?: string;
   copies?: number;
   issued_at?: string;
-  expires_at?: string; 
+  expires_at?: string;
   starts_at?: string;
-  updated_at?: string; 
+  updated_at?: string;
   extra?: string;
   reference?: string;
   reference_hash?: string;
@@ -52,7 +52,11 @@ const MintComponent = ({ metadata, contractAddress, ownerId }: MintArgsV1) => {
       },
 
       mint({
-        metadata: { media: "https://www.shutterstock.com/image-vector/vector-flat-illustration-grayscale-avatar-600nw-2264922221.jpg", reference: "profile" },
+        metadata: {
+          media:
+            "https://www.shutterstock.com/image-vector/vector-flat-illustration-grayscale-avatar-600nw-2264922221.jpg",
+          reference: "profile",
+        },
         contractAddress: proxyContractAddress,
         ownerId: "calista_moltan.testnet",
       })

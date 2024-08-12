@@ -20,6 +20,9 @@ importers:
       '@mintbase-js/react':
         specifier: ^0.5.4-beta.0
         version: 0.5.4-v2-minting-ed5a2da.0(borsh@0.7.0)(near-api-js@2.1.4)
+      '@mintbase-js/sdk':
+        specifier: ^0.5.4-beta.0
+        version: 0.5.4-v2-minting-ed5a2da.0
       '@next/mdx':
         specifier: ^14.2.4
         version: 14.2.5(@mdx-js/loader@3.0.1(webpack@5.93.0))(@mdx-js/react@3.0.1(@types/react@18.3.3)(react@18.3.1))
@@ -276,6 +279,9 @@ packages:
 
   '@mintbase-js/react@0.5.4-v2-minting-ed5a2da.0':
     resolution: {integrity: sha512-94yZ25flCIwK/vza6c0FcXL52Yn22We9gDCueFSMxTxATr8dG2eHL2O1igsj9O6eDRNGn0+nQp4+wYn+/nq/1A==}
+
+  '@mintbase-js/sdk@0.5.4-v2-minting-ed5a2da.0':
+    resolution: {integrity: sha512-jlOkbJdmkHwl+pZVlydVh3vi+44bfTB/7leFnnDJcfKJy85piX9CCMfZ9k9uuiFMXZHQ02WTDkEH9P6DxRgu9w==}
 
   '@mintbase-js/wallet@0.5.2-beta.0':
     resolution: {integrity: sha512-8byHdddYMTn/QbrTV9Nhk7HocDSPxuye30W3e3TitgR8PvWXiY/mnj0QstiV9Cb+82dssH5vSrNQ1cUPet7xPw==}
@@ -3606,6 +3612,13 @@ snapshots:
       - borsh
       - encoding
       - near-api-js
+
+  '@mintbase-js/sdk@0.5.4-v2-minting-ed5a2da.0':
+    dependencies:
+      bn.js: 5.2.1
+      near-api-js: 2.1.4
+    transitivePeerDependencies:
+      - encoding
 
   '@mintbase-js/wallet@0.5.2-beta.0':
     dependencies:
