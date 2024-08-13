@@ -54,11 +54,12 @@ const MintComponent = ({ metadata, contractAddress, ownerId }: MintArgsV1) => {
       mint({
         metadata: {
           media:
-            "https://www.shutterstock.com/image-vector/vector-flat-illustration-grayscale-avatar-600nw-2264922221.jpg",
-          reference: "profile",
+            "https://arweave.net/WPQbUMWSZhGtINES3qDsAKvFfVzrygHUhI9DQYhmUg0",
+          reference:
+            "https://arweave.net/GO3yDW_zvD9S_890z6dqyE4uOhnM0SlCu4Ee9i6TxLc",
         },
         contractAddress: proxyContractAddress,
-        ownerId: "calista_moltan.testnet",
+        ownerId: "sharmila_blessy.testnet",
       })
     );
   };
