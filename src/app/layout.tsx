@@ -5,7 +5,7 @@ import "./globals.css";
 import { Toaster } from "@/components/ui/toaster";
 import { MintbaseWalletContextProvider } from "@mintbase-js/react";
 import "@near-wallet-selector/modal-ui/styles.css";
-
+import DataProvider from "@/providers/data";
 const inter = Inter({ subsets: ["latin"] });
 
 // export const metadata: Metadata = {
@@ -31,7 +31,7 @@ export default function RootLayout({
       <html lang="en">
         <body className={inter.className}>
           <div className="">
-          {children}
+          <DataProvider>{children}</DataProvider>
           <Toaster />
           </div>
         </body>

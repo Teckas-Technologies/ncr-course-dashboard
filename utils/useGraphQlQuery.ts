@@ -1,5 +1,5 @@
 import type { QueryObserverResult } from "@tanstack/react-query";
-import { useQuery, QueryClient, QueryClientProvider} from "@tanstack/react-query";
+import { useQuery} from "@tanstack/react-query";
 import { graphqlQLServiceNew } from "./graphqlService";
 
 interface GraphQlQueryResult<T> {
@@ -28,11 +28,12 @@ export const useGraphQlQuery = <TData>({
 }: GQLQueryOptions): GraphQlQueryResult<TData> => {
   const queryObj =
     queryParams.length > 0 ? [queryName, ...queryParams] : [queryName];
-
+    console.log("GraphQL Query Object:", { queryName, query, variables, queryOpts, queryParams });
   const { data, error, isLoading, refetch, isFetching, status } = useQuery(
     queryObj,
     () => graphqlQLServiceNew<TData>({ query, variables }),
     { ...queryOpts, throwOnError: true }
+    
   );
   return {
     data: data?.data,

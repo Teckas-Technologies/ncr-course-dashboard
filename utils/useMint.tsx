@@ -26,31 +26,37 @@ export type TokenMetadata = {
   reference_hash?: string;
 };
 
-async function fetchImageAsFile(
-  imagePath: string,
-  fileName: string
-): Promise<File> {
-  const response = await fetch(imagePath);
-  const blob = await response.blob();
-  const file = new File([blob], fileName, { type: blob.type });
-  return file;
-}
+// async function fetchImageAsFile(
+//   imagePath: string,
+//   fileName: string
+// ): Promise<File> {
+//   const response = await fetch(imagePath);
+//   const blob = await response.blob();
+//   const file = new File([blob], fileName, { type: blob.type });
+//   return file;
+// }
 
 const MintComponent = ({ metadata, contractAddress, ownerId }: MintArgsV1) => {
-  const { selector } = useMbWallet();
+  const { isConnected, selector, activeAccountId } = useMbWallet();
 
   const handleMint = async (): Promise<void> => {
+    if (!isConnected) {
+      console.error("Wallet not connected.");
+      return;
+    }
+
+    if (!activeAccountId) {
+      console.error("Active account ID is null.");
+      return;
+    }
+
     const wallet = await selector.wallet();
-    const imageFile = await fetchImageAsFile(
-      "https://www.shutterstock.com/image-vector/vector-flat-illustration-grayscale-avatar-600nw-2264922221.jpg",
-      "profile.jpg"
-    );
+
     await execute(
       {
         wallet,
-        callbackUrl: "",
+        callbackUrl: "http://localhost:3000",
       },
-
       mint({
         metadata: {
           media:
@@ -59,7 +65,7 @@ const MintComponent = ({ metadata, contractAddress, ownerId }: MintArgsV1) => {
             "https://arweave.net/GO3yDW_zvD9S_890z6dqyE4uOhnM0SlCu4Ee9i6TxLc",
         },
         contractAddress: proxyContractAddress,
-        ownerId: "sharmila_blessy.testnet",
+        ownerId: activeAccountId,
       })
     );
   };

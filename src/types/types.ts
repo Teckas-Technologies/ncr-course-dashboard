@@ -27,7 +27,9 @@ export interface Student {
     homework: HomeworkSubmission[];
     
 }
-
+export interface AccountIds {
+  accountIds: string[];
+}
 export interface SelectedLesson {
     moduleTitle: string;
     lessonTitle: string;

@@ -1,9 +1,9 @@
 import { networkName } from "./Constant";
-import { extractErrorMessage } from "./data";
+import { extractErrorMessage } from "@/providers/data";
 import { nearEndpoints } from "./networks";
-
 import request from "graphql-request";
 import { toast } from "react-hot-toast";
+
 export type GqlFetchResult<T> = {
   data?: T;
   error?: unknown;

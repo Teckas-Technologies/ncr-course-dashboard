@@ -21,6 +21,21 @@ import { Student } from "@/types/types";
 import { useFetchCourseModules } from "@/hook/CourseModuleHook";
 import { usePathname } from "next/navigation";
 import { adminId } from "../../utils/Constant";
+import MintComponent from "../../utils/useMint";
+import { proxyContractAddress } from "../../utils/Constant";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "./ui/alert-dialog";
+import { useAccountIds } from "@/hook/AccountIdHook";
+
 type PartialStudent = Pick<Student, "id">;
 export default function TopBar() {
   const pathname = usePathname();
@@ -36,12 +51,15 @@ export default function TopBar() {
   ];
 
   const [isOpen, setIsOpen] = useState(false);
+  const [showAlert, setShowAlert] = useState(false);
+  const [inputValue, setInputValue] = useState("");
 
   const { isConnected, selector, connect, activeAccountId } = useMbWallet();
   const { saveStudent } = useSaveStudent();
   const { fetchStudentById } = useFetchStudentById();
   const { courseModules, error, loading } = useFetchCourseModules();
   const [student, setStudent] = useState<Student | null | undefined>(null);
+  const { getStoredIds, storeId } = useAccountIds();
   const completedHomework =
     student?.homework.filter((lesson) => lesson.completed).length || 0;
   const totalLessons = courseModules?.reduce(
@@ -71,6 +89,8 @@ export default function TopBar() {
     return connect();
   };
 
+  
+
   useEffect(() => {
     if (activeAccountId) {
       const student: PartialStudent = {
@@ -87,9 +107,31 @@ export default function TopBar() {
         fetchStudentById(activeAccountId.toString()).then((res) => {
           setStudent(res);
         });
+        // setShowAlert(true); // Show the alert dialog when account is logged in
       }
     }
   }, [activeAccountId, isConnected]);
+  useEffect(() => {
+    const checkAndStoreAccountId = async () => {
+      if (activeAccountId) {
+        try {
+          const retriveIds = await getStoredIds();
+
+          // Check if activeAccountId is in the stored IDs
+          if (!retriveIds.includes(activeAccountId)) {
+            setShowAlert(true);
+            
+          } else {
+            console.log("Active Account ID is already stored.");
+          }
+        } catch (err) {
+          console.error("Error processing account IDs:", err);
+        }
+      }
+    };
+
+    checkAndStoreAccountId();
+  }, [activeAccountId, getStoredIds, storeId]);
 
   // const handleSignIn = async () => {
   //     console.log("clicked login", activeAccountId);
@@ -104,7 +146,16 @@ export default function TopBar() {
   //     });
   //     return;
   // };
+  const metadata = {
+    title: "My Custom NFT",
+    description: "Custom description",
+  };
 
+  const contractAddress = proxyContractAddress;
+  const ownerId = "";
+
+  // Pass arguments to MintComponent
+  const { handleMint } = MintComponent({ metadata, contractAddress, ownerId });
   return (
     <>
       <div className="main-header">
@@ -282,6 +333,49 @@ export default function TopBar() {
           </div>
         </div>
       </div>
+      {/* AlertDialog component */}
+      <AlertDialog open={showAlert} onOpenChange={setShowAlert}>
+        <AlertDialogTrigger asChild>
+          <div className="inline-block cursor-pointer">
+            <button className="bg-blue-500 text-white px-4 py-2 rounded">
+              Open Dialog
+            </button>
+          </div>
+        </AlertDialogTrigger>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Please Register here</AlertDialogTitle>
+          </AlertDialogHeader>
+          <div className="py-2">
+            <label
+              htmlFor="accountId"
+              className="block font-medium text-gray-700"
+            >
+              Name
+            </label>
+            <input
+              id="accountId"
+              type="text"
+              placeholder="Enter Name  here..."
+              value={inputValue}
+              onChange={(e) => setInputValue(e.target.value)}
+              className="mt-1 block w-full px-3 py-2 border  rounded-md shadow-sm focus:outline-none focus:ring-1 focus:ring-[#df3276] focus:border-[#df3276] sm:text-sm"
+            />
+          </div>
+          <AlertDialogFooter>
+            {/* <AlertDialogCancel onClick={() => setShowAlert(false)}>
+            Cancel
+          </AlertDialogCancel> */}
+            <AlertDialogAction
+              disabled={!inputValue}
+              onClick={handleMint}
+              className="bg-[#df3276] text-white px-4 py-2 rounded-md"
+            >
+              Register
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </>
   );
 }

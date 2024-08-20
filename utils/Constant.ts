@@ -5,5 +5,5 @@ export const adminId = [
 ];
 export const proxyContractAddress =
   process.env.NEXT_PUBLIC_PROXY_MINTER_CONTRACT_ADDRESS ||
-  "ncrcourse.mintspace2.testnet";
+  "ncrcoursencr.mintspace2.testnet";
 export const networkName = process.env.NEXT_PUBLIC_NETWORK || "testnet";
