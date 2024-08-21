@@ -5,22 +5,24 @@ import { AccountIds } from "@/types/types";
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   try {
     switch (req.method) {
-      // POST method is used for storing accountIds
+      
       case "POST":
-        const { accountIds }: { accountIds: string[] } = req.body;
-        console.log("Received accountIds:", accountIds);
+        const { accountIds, transactionHash }: { accountIds: string[], transactionHash: string  } = req.body;
+        console.log("Received accountIds:", accountIds,"and transactionHash:", transactionHash);
 
         if (!Array.isArray(accountIds) || accountIds.some(id => typeof id !== 'string')) {
           return res.status(400).json({ error: "Invalid input. accountIds must be an array of strings." });
         }
-
-        const savedAccountIds = await storeAccountIds(accountIds);
+        if (typeof transactionHash !== 'string' || !transactionHash) {
+          return res.status(400).json({ error: "Invalid input. transactionHash must be a non-empty string." });
+        }
+        const savedAccountIds = await storeAccountIds(accountIds, transactionHash);
         console.log("Stored result:", savedAccountIds);
         return res.status(201).json(savedAccountIds);
 
-      // GET method is used for fetching stored accountIds
+      
       case "GET":
-        const storedAccountIds: { accountIds: string[] } = await getStoredAccountIds();
+        const storedAccountIds: { accountIds: string[], transactionHash: string } = await getStoredAccountIds();
         console.log("Retrieved accountIds:", storedAccountIds);
         return res.status(200).json(storedAccountIds);
 

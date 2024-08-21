@@ -1,6 +1,7 @@
 import { useMbWallet } from "@mintbase-js/react";
 import { execute, mint } from "@mintbase-js/sdk";
 import { proxyContractAddress } from "./Constant";
+import { uploadReference } from "@mintbase-js/storage";
 
 export type MintArgsV1 = {
   metadata: TokenMetadata;
@@ -26,15 +27,11 @@ export type TokenMetadata = {
   reference_hash?: string;
 };
 
-// async function fetchImageAsFile(
-//   imagePath: string,
-//   fileName: string
-// ): Promise<File> {
-//   const response = await fetch(imagePath);
-//   const blob = await response.blob();
-//   const file = new File([blob], fileName, { type: blob.type });
-//   return file;
-// }
+type ReferenceObject = {
+  title?: string;
+  description?: string;
+  media?: File | string;
+};
 
 const MintComponent = ({ metadata, contractAddress, ownerId }: MintArgsV1) => {
   const { isConnected, selector, activeAccountId } = useMbWallet();
@@ -52,18 +49,40 @@ const MintComponent = ({ metadata, contractAddress, ownerId }: MintArgsV1) => {
 
     const wallet = await selector.wallet();
 
+    // Upload reference and get URL
+    const uploadReferenceObject = async (refObject: ReferenceObject) => {
+      try {
+        return await uploadReference(refObject);
+      } catch (error) {
+        console.error("Failed to upload reference:", error);
+        throw new Error("Failed to upload reference");
+      }
+    };
+
+    const refObject = {
+      title: "NCR Course",
+      description: "nft",
+      media: "https://arweave.net/WPQbUMWSZhGtINES3qDsAKvFfVzrygHUhI9DQYhmUg0",
+    };
+
+    const uploadedData = await uploadReferenceObject(refObject);
+    console.log("Uploaded Data:", uploadedData);
+
+    // Set metadata with the response from uploadReferenceObject
+    const metadata = {
+      title: "NCR Course",
+      description: "nft",
+      media: uploadedData?.media_url , // Assuming media is a string URL
+      reference: uploadedData?.id, // Set reference from uploadedData
+    };
+
     await execute(
       {
         wallet,
         callbackUrl: "http://localhost:3000",
       },
       mint({
-        metadata: {
-          media:
-            "https://arweave.net/WPQbUMWSZhGtINES3qDsAKvFfVzrygHUhI9DQYhmUg0",
-          reference:
-            "https://arweave.net/GO3yDW_zvD9S_890z6dqyE4uOhnM0SlCu4Ee9i6TxLc",
-        },
+        metadata,
         contractAddress: proxyContractAddress,
         ownerId: activeAccountId,
       })

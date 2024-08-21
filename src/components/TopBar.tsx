@@ -89,6 +89,26 @@ export default function TopBar() {
     return connect();
   };
 
+  // const handleSave = async () => {
+  //   console.log("Input value:", inputValue);
+  
+  //   try {
+  //     await handleMint(); 
+  //     console.log("Minting was successful");
+  
+  //     if (activeAccountId) {
+  //       await storeId([activeAccountId]);
+  //       console.log("Active Account ID stored after mint:", activeAccountId);
+  //     }
+  //   } catch (error) {
+  //     console.error("Minting failed:", error);
+     
+  //   }
+  // };
+  const handleSave = () => {
+    console.log("Input value:", inputValue);
+    handleMint();
+  };
   
 
   useEffect(() => {
@@ -115,23 +135,33 @@ export default function TopBar() {
     const checkAndStoreAccountId = async () => {
       if (activeAccountId) {
         try {
-          const retriveIds = await getStoredIds();
-
-          // Check if activeAccountId is in the stored IDs
-          if (!retriveIds.includes(activeAccountId)) {
-            setShowAlert(true);
-            
+          const data = await getStoredIds();
+  
+          // Check if data is valid and contains the accountIds array
+          if (data && data.accountIds && Array.isArray(data.accountIds)) {
+            // Check if activeAccountId is in the stored IDs
+            if (!data.accountIds.includes(activeAccountId)) {
+              setShowAlert(true);
+            } else {
+              console.log("Active Account ID is already stored.");
+            }
           } else {
-            console.log("Active Account ID is already stored.");
+            console.error("Invalid data format received from getStoredIds.");
           }
         } catch (err) {
           console.error("Error processing account IDs:", err);
         }
       }
     };
-
+  
     checkAndStoreAccountId();
   }, [activeAccountId, getStoredIds, storeId]);
+  useEffect(()=>{
+    const searchParams = new URLSearchParams(window.location.search);
+    const hash = searchParams.get("transactionHashes") || "";
+    console.log("hash>>",hash);
+    
+  },[])
 
   // const handleSignIn = async () => {
   //     console.log("clicked login", activeAccountId);
@@ -368,7 +398,7 @@ export default function TopBar() {
           </AlertDialogCancel> */}
             <AlertDialogAction
               disabled={!inputValue}
-              onClick={handleMint}
+              onClick={handleSave}
               className="bg-[#df3276] text-white px-4 py-2 rounded-md"
             >
               Register

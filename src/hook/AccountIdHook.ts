@@ -6,7 +6,7 @@ export const useAccountIds = () => {
   const [error, setError] = useState<string | null>(null);
   const [storedIds, setStoredIds] = useState<string[]>([]);
 
-  const storeId = async (accountIds: string[]): Promise<void> => {
+  const storeId = async (accountIds: string[], transactionHash: string): Promise<void> => {
     setLoading(true);
     setError(null);
 
@@ -16,7 +16,7 @@ export const useAccountIds = () => {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ accountIds }),
+        body: JSON.stringify({ accountIds, transactionHash }),
       });
 
       if (!response.ok) {
@@ -24,16 +24,16 @@ export const useAccountIds = () => {
       }
 
       const data: AccountIds = await response.json();
-      console.log("Account IDs stored:", data);
+      console.log("Account IDs and transaction hash stored::", data);
     } catch (err) {
-      console.error("Error storing account IDs:", err);
-      setError("Error storing account IDs!");
+      console.error("Error storing account IDs and transaction hash:", err);
+      setError("Error storing account IDs and transaction hash!");
     } finally {
       setLoading(false);
     }
   };
 
-  const getStoredIds = async (): Promise<string[]> => {
+  const getStoredIds = async (): Promise<{ accountIds: string[], transactionHash: string } | null>  => {
     try {
       const response = await fetch("/api/AccountId", {
         method: "GET",
@@ -47,13 +47,13 @@ export const useAccountIds = () => {
       }
 
       const data = await response.json();
-      console.log("retrived account ids:",data.accountIds)
-      return data.accountIds || []; // Ensure this is an array of IDs
+      console.log("Retrieved account IDs and transaction hash:", data);
+      return data; // Ensure this is an array of IDs
     } catch (err) {
-      console.error("Error retrieving account IDs:", err);
-      return []; // Return an empty array on error
+      console.error("Error retrieving account IDs and transaction hash:", err);
+      return null; // Return an empty array on error
     }
   };
 
-  return { storeId, getStoredIds, storedIds };
+  return { storeId, getStoredIds };
 };

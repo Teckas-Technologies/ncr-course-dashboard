@@ -1,17 +1,26 @@
-import mongoose, { Document, Model } from 'mongoose';
+import mongoose, { Document, Model } from "mongoose";
 
 interface AccountId extends Document {
-    accountIds: string[];
+  accountIds: string[];
+  transactionHash: string;
 }
 
-const accountIdSchema = new mongoose.Schema({
-    accountIds: {  // Changed to match the interface
-        type: [String],
-        required: true,
-       
-    }
-}, { timestamps: true }); // Adds createdAt and updatedAt fields
+const accountIdSchema = new mongoose.Schema(
+  {
+    accountIds: {
+      type: [String],
+      required: true,
+    },
+    transactionHash: {
+      type: String,
+      required: true,
+    },
+  },
+  { timestamps: true }
+);
 
-const AccountId: Model<AccountId> = mongoose.models.AccountId || mongoose.model<AccountId>('AccountId', accountIdSchema);
+const AccountId: Model<AccountId> =
+  mongoose.models.AccountId ||
+  mongoose.model<AccountId>("AccountId", accountIdSchema);
 
 export default AccountId;

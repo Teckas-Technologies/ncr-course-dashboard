@@ -2,39 +2,34 @@ import AccountId from "../model/AccountId";
 import { connectToDatabase } from "./mongoose";
 
 // Function to store account IDs
-export async function storeAccountIds(accountIds: string[]): Promise<{ accountIds: string[] }> {
+export async function storeAccountIds(
+  accountIds: string[],
+  transactionHash: string
+): Promise<{ accountIds: string[]; transactionHash: string }> {
   await connectToDatabase();
-
   try {
-    // Find the existing document, or create a new one if not found
-    let existingAccountIdsDoc = await AccountId.findOne();
+    const newAccountIdDoc = new AccountId({
+      accountIds: accountIds,
+      transactionHash: transactionHash,
+    });
 
-    if (!existingAccountIdsDoc) {
-      // Initialize with an empty accountIds array
-      existingAccountIdsDoc = new AccountId({ accountIds: [] });
-    }
+    const savedAccountIdDoc = await newAccountIdDoc.save();
 
-    // Add only new, unique accountIds
-    const newAccountIds = accountIds.filter(
-      (id) => !existingAccountIdsDoc.accountIds.includes(id)
-    );
-    existingAccountIdsDoc.accountIds.push(...newAccountIds);
-
-    // Save the updated document
-    const updatedAccountIdsDoc = await existingAccountIdsDoc.save();
-
-    // Return the updated document as AccountIds type
     return {
-      accountIds: updatedAccountIdsDoc.accountIds,
+      accountIds: savedAccountIdDoc.accountIds,
+      transactionHash: savedAccountIdDoc.transactionHash,
     };
   } catch (error) {
-    console.error("Error storing account IDs:", error);
-    throw new Error("Failed to store account IDs");
+    console.error("Error storing account IDs and transaction hash:", error);
+    throw new Error("Failed to store account IDs and transaction hash");
   }
 }
 
 // Function to get stored account IDs
-export async function getStoredAccountIds(): Promise<{ accountIds: string[] }> {
+export async function getStoredAccountIds(): Promise<{
+  accountIds: string[];
+  transactionHash: string;
+}> {
   await connectToDatabase();
 
   try {
@@ -42,13 +37,16 @@ export async function getStoredAccountIds(): Promise<{ accountIds: string[] }> {
     const existingAccountIdsDoc = await AccountId.findOne();
 
     if (!existingAccountIdsDoc) {
-      return { accountIds: [] }; // Return an empty array if no document is found
+      return { accountIds: [], transactionHash: "" }; // Return an empty array if no document is found
     }
 
     // Return the accountIds from the document
-    return { accountIds: existingAccountIdsDoc.accountIds };
+    return {
+      accountIds: existingAccountIdsDoc.accountIds,
+      transactionHash: existingAccountIdsDoc.transactionHash,
+    };
   } catch (error) {
-    console.error("Error retrieving account IDs:", error);
-    throw new Error("Failed to retrieve account IDs");
+    console.error("Error retrieving account IDs and transaction hash:", error);
+    throw new Error("Failed to retrieve account IDs and transaction hash");
   }
 }
