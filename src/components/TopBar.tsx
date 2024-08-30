@@ -10,19 +10,21 @@ import {
   SidebarOpenIcon,
   XIcon,
 } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useContext } from "react";
 import "../app/style.css";
 import ProgressComp from "./Progress";
 import SocialMedia from "./SocialMedia";
 import Link from "next/link";
-import { useMbWallet } from "@mintbase-js/react";
+import { NearContext } from "@/wallet/walletSelector";
 import { useFetchStudentById, useSaveStudent } from "@/hook/StudentHook";
 import { Student } from "@/types/types";
 import { useFetchCourseModules } from "@/hook/CourseModuleHook";
 import { usePathname } from "next/navigation";
 import { adminId } from "../../utils/Constant";
 import MintComponent from "../../utils/useMint";
+import { useAccountIds } from "@/hook/AccountIdHook";
 import { proxyContractAddress } from "../../utils/Constant";
+
 import {
   AlertDialog,
   AlertDialogAction,
@@ -34,8 +36,8 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "./ui/alert-dialog";
-import { useAccountIds } from "@/hook/AccountIdHook";
 
+import { getTxnStatus } from "@mintbase-js/rpc";
 type PartialStudent = Pick<Student, "id">;
 export default function TopBar() {
   const pathname = usePathname();
@@ -54,12 +56,12 @@ export default function TopBar() {
   const [showAlert, setShowAlert] = useState(false);
   const [inputValue, setInputValue] = useState("");
 
-  const { isConnected, selector, connect, activeAccountId } = useMbWallet();
+  const { wallet, signedAccountId } = useContext(NearContext);
   const { saveStudent } = useSaveStudent();
   const { fetchStudentById } = useFetchStudentById();
   const { courseModules, error, loading } = useFetchCourseModules();
   const [student, setStudent] = useState<Student | null | undefined>(null);
-  const { getStoredIds, storeId } = useAccountIds();
+  const { storeAccountIdData, fetchAccountById ,fetchTransactionHash} = useAccountIds();
   const completedHomework =
     student?.homework.filter((lesson) => lesson.completed).length || 0;
   const totalLessons = courseModules?.reduce(
@@ -80,88 +82,103 @@ export default function TopBar() {
 
   const handleSignout = async () => {
     console.log("clicked logout");
-    const wallet = await selector.wallet();
-    return wallet.signOut();
+    return wallet?.signOut();
   };
 
   const handleSignIn = async () => {
     console.log("clicked login");
-    return connect();
+    return wallet?.signIn();
   };
 
   // const handleSave = async () => {
   //   console.log("Input value:", inputValue);
-  
+
   //   try {
-  //     await handleMint(); 
+  //     await handleMint();
   //     console.log("Minting was successful");
-  
+
   //     if (activeAccountId) {
   //       await storeId([activeAccountId]);
   //       console.log("Active Account ID stored after mint:", activeAccountId);
   //     }
   //   } catch (error) {
   //     console.error("Minting failed:", error);
-     
   //   }
   // };
-  const handleSave = () => {
-    console.log("Input value:", inputValue);
-    handleMint();
-  };
-  
 
   useEffect(() => {
-    if (activeAccountId) {
+    if (signedAccountId) {
       const student: PartialStudent = {
-        id: activeAccountId.toString(),
+        id: signedAccountId.toString(),
       };
-      console.log("Active Account : ", activeAccountId);
+      console.log("Active Account : ", signedAccountId);
       saveStudent(student);
     }
-  }, [activeAccountId]);
+  }, [signedAccountId]);
 
   useEffect(() => {
-    if (isConnected) {
-      if (activeAccountId) {
-        fetchStudentById(activeAccountId.toString()).then((res) => {
-          setStudent(res);
-        });
-        // setShowAlert(true); // Show the alert dialog when account is logged in
-      }
+    // if (isConnected) {
+    if (signedAccountId) {
+      fetchStudentById(signedAccountId.toString()).then((res) => {
+        setStudent(res);
+      });
     }
-  }, [activeAccountId, isConnected]);
+    // }
+  }, [signedAccountId]);
+
   useEffect(() => {
-    const checkAndStoreAccountId = async () => {
-      if (activeAccountId) {
-        try {
-          const data = await getStoredIds();
+    const fetchTransactionStatusAndHandleAccount = async () => {
+      const searchParams = new URLSearchParams(window.location.search);
+      const txnHash = searchParams.get("transactionHashes") || "";
+      console.log("hash>>", txnHash);
   
-          // Check if data is valid and contains the accountIds array
-          if (data && data.accountIds && Array.isArray(data.accountIds)) {
-            // Check if activeAccountId is in the stored IDs
-            if (!data.accountIds.includes(activeAccountId)) {
-              setShowAlert(true);
+      if (signedAccountId) {
+        try {
+          if (txnHash) {
+            // Check if the transaction hash already exists in the database
+            const existingTxn = await fetchTransactionHash(txnHash);
+  
+            if (existingTxn) {
+              console.log("Transaction hash already exists in the database.");
             } else {
-              console.log("Active Account ID is already stored.");
+              const senderId = signedAccountId;
+              const rpcUrl = "https://rpc.testnet.near.org";
+              const txnStatus = await getTxnStatus(txnHash, senderId, rpcUrl);
+              console.log("Transaction Status:", txnStatus);
+  
+              if (txnStatus === "success") {
+                console.log("Storing ID and transaction hash...");
+                console.log("Active Account ID:", signedAccountId);
+                console.log("Transaction Hash:", txnHash);
+                await storeAccountIdData(signedAccountId, txnHash);
+              }
             }
-          } else {
-            console.error("Invalid data format received from getStoredIds.");
           }
-        } catch (err) {
-          console.error("Error processing account IDs:", err);
+  
+          const storedData = await fetchAccountById(signedAccountId);
+          console.log("Retrieved account>>", storedData);
+  
+          if (!storedData) {
+            console.log("Active account ID not found in the database.");
+            setShowAlert(true);
+          } else {
+            console.log("Active account ID is already present in the database.");
+            setShowAlert(false);
+          }
+        } catch (error) {
+          console.error(
+            "Error fetching transaction status or account data:",
+            error
+          );
         }
+      } else {
+        console.log("No transaction hash found in the URL.");
       }
     };
   
-    checkAndStoreAccountId();
-  }, [activeAccountId, getStoredIds, storeId]);
-  useEffect(()=>{
-    const searchParams = new URLSearchParams(window.location.search);
-    const hash = searchParams.get("transactionHashes") || "";
-    console.log("hash>>",hash);
-    
-  },[])
+    fetchTransactionStatusAndHandleAccount();
+  }, [signedAccountId]);
+  
 
   // const handleSignIn = async () => {
   //     console.log("clicked login", activeAccountId);
@@ -176,16 +193,9 @@ export default function TopBar() {
   //     });
   //     return;
   // };
-  const metadata = {
-    title: "My Custom NFT",
-    description: "Custom description",
-  };
-
-  const contractAddress = proxyContractAddress;
-  const ownerId = "";
 
   // Pass arguments to MintComponent
-  const { handleMint } = MintComponent({ metadata, contractAddress, ownerId });
+  const { handleMint } = MintComponent();
   return (
     <>
       <div className="main-header">
@@ -217,19 +227,17 @@ export default function TopBar() {
                 {menu.name}
               </Link>
             ))}
-            {isConnected &&
-              activeAccountId &&
-              adminId.includes(activeAccountId) && (
-                <Link
-                  href="/facilitator"
-                  className={`nav-link ${
-                    pathname === "/facilitator" ? "active" : ""
-                  }`}
-                >
-                  Facilitator
-                </Link>
-              )}
-            {isConnected ? (
+            {signedAccountId && adminId.includes(signedAccountId) && (
+              <Link
+                href="/facilitator"
+                className={`nav-link ${
+                  pathname === "/facilitator" ? "active" : ""
+                }`}
+              >
+                Facilitator
+              </Link>
+            )}
+            {signedAccountId ? (
               <Link
                 href="/profile"
                 className={`nav-link ${
@@ -243,7 +251,7 @@ export default function TopBar() {
             )}
           </div>
           <div className="header-profile-details">
-            {isConnected ? (
+            {signedAccountId ? (
               <div className="flex items-center gap-2">
                 {/* <p className="text-white">{activeAccountId}</p> */}
                 <button
@@ -316,21 +324,19 @@ export default function TopBar() {
                 </Link>
               </div>
             ))}
-            {isConnected &&
-              activeAccountId &&
-              adminId.includes(activeAccountId) && (
-                <div className="side-bar-list">
-                  <Link href="/facilitator">
-                    <div className="menu-item">
-                      <p>Facilitator</p>
-                      <div className="arrow">
-                        <ArrowRightCircleIcon />
-                      </div>
+            {signedAccountId && adminId.includes(signedAccountId) && (
+              <div className="side-bar-list">
+                <Link href="/facilitator">
+                  <div className="menu-item">
+                    <p>Facilitator</p>
+                    <div className="arrow">
+                      <ArrowRightCircleIcon />
                     </div>
-                  </Link>
-                </div>
-              )}
-            {isConnected && (
+                  </div>
+                </Link>
+              </div>
+            )}
+            {signedAccountId && (
               <div className="side-bar-list">
                 <Link href="/profile">
                   <div className="menu-item">
@@ -344,7 +350,7 @@ export default function TopBar() {
             )}
           </div>
           <div className="top-bar-progress">
-            {isConnected && student ? (
+            {signedAccountId && student ? (
               <ProgressComp
                 value={progress}
                 currentModule={currentModule}
@@ -374,31 +380,15 @@ export default function TopBar() {
         </AlertDialogTrigger>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>Please Register here</AlertDialogTitle>
+            <AlertDialogTitle className="text-center">
+              Welcome! Register here to claim your NFT and kickstart your
+              learning journey🚀
+            </AlertDialogTitle>
           </AlertDialogHeader>
-          <div className="py-2">
-            <label
-              htmlFor="accountId"
-              className="block font-medium text-gray-700"
-            >
-              Name
-            </label>
-            <input
-              id="accountId"
-              type="text"
-              placeholder="Enter Name  here..."
-              value={inputValue}
-              onChange={(e) => setInputValue(e.target.value)}
-              className="mt-1 block w-full px-3 py-2 border  rounded-md shadow-sm focus:outline-none focus:ring-1 focus:ring-[#df3276] focus:border-[#df3276] sm:text-sm"
-            />
-          </div>
-          <AlertDialogFooter>
-            {/* <AlertDialogCancel onClick={() => setShowAlert(false)}>
-            Cancel
-          </AlertDialogCancel> */}
+
+          <AlertDialogFooter className="register-button">
             <AlertDialogAction
-              disabled={!inputValue}
-              onClick={handleSave}
+              onClick={handleMint}
               className="bg-[#df3276] text-white px-4 py-2 rounded-md"
             >
               Register

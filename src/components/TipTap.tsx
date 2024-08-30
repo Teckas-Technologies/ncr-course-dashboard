@@ -112,6 +112,8 @@ export default function TipTap({
   useEffect(() => {
     setIsEditable(editor?.isEditable as boolean);
   }, [editor?.isEditable, disableEdit, disabled, editor, content]);
+  console.log("monitor the editor changes:",setIsEditable);
+  
 
   const setEditable = () => {
     editor?.setOptions({ editable: true });

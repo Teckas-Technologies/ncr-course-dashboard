@@ -3,10 +3,10 @@ import Banner from "@/components/Banner";
 import CourseCard from "@/components/CourseCard";
 import TopBar from "@/components/TopBar";
 import Course from "@/components/Course";
-import { useEffect, useState } from "react";
+import { useEffect, useState,useContext } from "react";
 import HomeworkSubmissionMobileMenu from "@/components/HomeworkSubmissionMobileMenu";
 import { useFetchStudentById } from "@/hook/StudentHook";
-import { useMbWallet } from "@mintbase-js/react";
+import { NearContext } from "@/wallet/walletSelector";
 import { useFetchCourseModules } from "@/hook/CourseModuleHook";
 import { Module, Student } from "@/types/types";
 import {
@@ -30,7 +30,7 @@ import Loader from "@/components/Loader";
 
 export default function CoursePage() {
   const { courseModules, error, loading } = useFetchCourseModules();
-  const { isConnected, activeAccountId } = useMbWallet();
+  const { wallet, signedAccountId } = useContext(NearContext);
   const { fetchStudentById } = useFetchStudentById();
   const [student, setStudent] = useState<Student | null | undefined>(null);
   const totalLessons = courseModules?.reduce(
@@ -69,14 +69,14 @@ export default function CoursePage() {
   }, [courseModules, currentModuleIndex, currentLessonIndex]);
 
   useEffect(() => {
-    if (isConnected) {
-      if (activeAccountId) {
-        fetchStudentById(activeAccountId.toString()).then((res) => {
+    // if (signedAccountId) {
+      if (signedAccountId) {
+        fetchStudentById(signedAccountId.toString()).then((res) => {
           setStudent(res);
         });
       }
-    }
-  }, [activeAccountId, isConnected]);
+    // }
+  }, [signedAccountId]);
 
   const updateSelectedLesson = (moduleIndex: number, lessonIndex: number) => {
     const theModule: Module | null = courseModules

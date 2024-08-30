@@ -1,25 +1,23 @@
 import { InfiniteScrollHook } from "@/types/types";
-import { proxyContractAddress } from "../../utils/Constant";
 import { FETCH_FEED_NEW } from "../../utils/graphl";
 import { useGraphQlQuery } from "../../utils/useGraphQlQuery";
-import { useMbWallet } from "@mintbase-js/react";
-import AccountId from "../../model/AccountId";
+import { NearContext } from "@/wallet/walletSelector";
+import { useContext } from "react";
 export const useFeedDesc = () => {
-  console.log("useFeedDesc hook is called");
-  const { isConnected, activeAccountId } = useMbWallet();
+  const { wallet, signedAccountId } = useContext(NearContext);
+
   const queryObj = {
     queryName: "q_FETCH_FEED_NEW",
     query: FETCH_FEED_NEW,
     variables: {
-      contractAddress: proxyContractAddress,
-      accountId: activeAccountId,
+      contractAddress: "ncrcoursencr.mintspace2.testnet",
+      accountId: signedAccountId, // dynamically use activeAccountId
     },
-    queryOpts: { staleTime: Infinity },
+    queryOpts: { staleTime: Infinity, enabled: !!signedAccountId },
   };
 
-  console.log("Query Object:", queryObj);
   const { data, isLoading } = useGraphQlQuery<InfiniteScrollHook>(queryObj);
-  console.log("Fetched data:", data);
+console.log("Fetched data from usefeed:",data);
 
   return {
     data,

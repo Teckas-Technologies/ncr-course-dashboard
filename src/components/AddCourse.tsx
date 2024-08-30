@@ -99,7 +99,7 @@ export default function AddCourse({ courseModules }: AddCourseProps) {
     }
   }, [courseModules]);
 
-  const lesson = form.getValues("lesson");
+  const lesson = form.getValues("lesson"); // hold the current value of the lesson field
 
   useEffect(() => {
     const existingLesson = Boolean(
@@ -112,6 +112,7 @@ export default function AddCourse({ courseModules }: AddCourseProps) {
     console.log("Existing 1: ", existingLesson, isExistingLesson);
     if (existingLesson) {
       setIsExistingLesson(true);
+      console.log("setisexisting lesson ------------:", isExistingLesson); //---->XXX
       console.log("Existing2 : ", existingLesson, isExistingLesson);
     } else {
       setIsExistingLesson(false);
@@ -183,7 +184,7 @@ export default function AddCourse({ courseModules }: AddCourseProps) {
       setSelectedLessonTitle("");
       form.setValue("lesson", "");
       form.setValue("content", "");
-      setContentValue(""); // Clear the local content state
+      setContentValue("");
     }
   }, [selectedModule]);
 
@@ -239,6 +240,8 @@ export default function AddCourse({ courseModules }: AddCourseProps) {
     isContentValid &&
     isExistingLesson &&
     editable;
+ 
+  console.log("editable >>", editable);
 
   const isFormFilled = (isNewLesson && editable) || isExistingLessonValid;
 
@@ -493,7 +496,7 @@ export default function AddCourse({ courseModules }: AddCourseProps) {
                             field.onChange(value); // Update form state
                             setContentValue(value); // Update local state
                           }}
-                          disabled={isExistingLesson}
+                          disabled={isExistingLesson} // disabled(prop name){boolean value of the isExisting lesson}
                           disableEdit={disableEdit}
                           setIsEditable={setEditable}
                         />

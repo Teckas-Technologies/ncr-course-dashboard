@@ -70,7 +70,10 @@ export function Toolbar({
   const [isDisabled, setIsDisabled] = useState(disabled);
   const [isUrlValid, setIsUrlValid] = useState(false);
   useEffect(() => {
+    console.log("log 1 from tool bar :",isDisabled);
     setIsDisabled(disabled);
+    console.log("log 1 from tool bar :",isDisabled);
+    
   }, [disabled]);
 
   useEffect(() => {
@@ -81,8 +84,10 @@ export function Toolbar({
   const setEditableTool = () => {
     setIsDisabled(false);
     setEditable();
+    console.log("click the editor",setEditableTool);
+    
   };
-
+ 
   const handleResize = () => {
     setIsMobile(window.innerWidth <= 768);
   };

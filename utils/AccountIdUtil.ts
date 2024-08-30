@@ -1,11 +1,10 @@
 import AccountId from "../model/AccountId";
 import { connectToDatabase } from "./mongoose";
 
-// Function to store account IDs
 export async function storeAccountIds(
-  accountIds: string[],
+  accountIds: string,
   transactionHash: string
-): Promise<{ accountIds: string[]; transactionHash: string }> {
+): Promise<{ accountIds: string; transactionHash: string }> {
   await connectToDatabase();
   try {
     const newAccountIdDoc = new AccountId({
@@ -25,28 +24,60 @@ export async function storeAccountIds(
   }
 }
 
-// Function to get stored account IDs
-export async function getStoredAccountIds(): Promise<{
-  accountIds: string[];
-  transactionHash: string;
-}> {
+export async function getStoredAccountIds() {
   await connectToDatabase();
 
   try {
-    // Find the existing document
-    const existingAccountIdsDoc = await AccountId.findOne();
+    const accountIdsDocs = await AccountId.find();
+    console.log(
+      "Retrieved account IDs and transaction hashes:",
+      accountIdsDocs
+    );
 
-    if (!existingAccountIdsDoc) {
-      return { accountIds: [], transactionHash: "" }; // Return an empty array if no document is found
-    }
-
-    // Return the accountIds from the document
-    return {
-      accountIds: existingAccountIdsDoc.accountIds,
-      transactionHash: existingAccountIdsDoc.transactionHash,
-    };
+    return accountIdsDocs;
   } catch (error) {
-    console.error("Error retrieving account IDs and transaction hash:", error);
-    throw new Error("Failed to retrieve account IDs and transaction hash");
+    console.error(
+      "Error retrieving account IDs and transaction hashes:",
+      error
+    );
+    throw new Error("Failed to retrieve account IDs and transaction hashes");
+  }
+}
+
+export async function getStoredAccountByIds(accountId: string): Promise<{ accountIds: string; transactionHash: string } | null> {
+  await connectToDatabase();
+
+  try {
+    // Find a specific document by accountIds
+    const accountIdsDoc = await AccountId.findOne({ accountIds: accountId });
+
+    console.log("Retrieved account ID and transaction hash:", accountIdsDoc);
+
+    return accountIdsDoc ? {
+      accountIds: accountIdsDoc.accountIds,
+      transactionHash: accountIdsDoc.transactionHash,
+    } : null;
+  } catch (error) {
+    console.error("Error retrieving account ID and transaction hash:", error);
+    throw new Error("Failed to retrieve account ID and transaction hash");
+  }
+}
+
+export async function getStoredTransactionHash(transactionHash: string): Promise<{ transactionHash: string; accountIds: string } | null> {
+  await connectToDatabase();
+
+  try {
+    // Find a specific document by transactionHash
+    const transactionHashDoc = await AccountId.findOne({ transactionHash });
+
+    console.log("Retrieved transaction hash and associated account IDs:", transactionHashDoc);
+
+    return transactionHashDoc ? {
+      transactionHash: transactionHashDoc.transactionHash,
+      accountIds: transactionHashDoc.accountIds,
+    } : null;
+  } catch (error) {
+    console.error("Error retrieving transaction hash and associated account IDs:", error);
+    throw new Error("Failed to retrieve transaction hash and associated account IDs");
   }
 }

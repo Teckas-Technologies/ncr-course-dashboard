@@ -1,14 +1,14 @@
 import mongoose, { Document, Model } from "mongoose";
 
 interface AccountId extends Document {
-  accountIds: string[];
+  accountIds: string;
   transactionHash: string;
 }
 
 const accountIdSchema = new mongoose.Schema(
   {
     accountIds: {
-      type: [String],
+      type: String,
       required: true,
     },
     transactionHash: {

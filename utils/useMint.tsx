@@ -1,31 +1,8 @@
-import { useMbWallet } from "@mintbase-js/react";
-import { execute, mint } from "@mintbase-js/sdk";
+import { useContext, useState } from "react";
 import { proxyContractAddress } from "./Constant";
 import { uploadReference } from "@mintbase-js/storage";
+import { NearContext, Wallet } from "@/wallet/walletSelector";
 
-export type MintArgsV1 = {
-  metadata: TokenMetadata;
-  contractAddress?: string;
-  ownerId: string;
-  amount?: number;
-  noMedia?: boolean; // explicit opt-in to NFT without media, breaks wallets
-  noReference?: boolean; // explicit opt-in to NFT without reference
-};
-
-export type TokenMetadata = {
-  title?: string;
-  description?: string;
-  media?: string;
-  media_hash?: string;
-  copies?: number;
-  issued_at?: string;
-  expires_at?: string;
-  starts_at?: string;
-  updated_at?: string;
-  extra?: string;
-  reference?: string;
-  reference_hash?: string;
-};
 
 type ReferenceObject = {
   title?: string;
@@ -33,61 +10,74 @@ type ReferenceObject = {
   media?: File | string;
 };
 
-const MintComponent = ({ metadata, contractAddress, ownerId }: MintArgsV1) => {
-  const { isConnected, selector, activeAccountId } = useMbWallet();
-
-  const handleMint = async (): Promise<void> => {
-    if (!isConnected) {
-      console.error("Wallet not connected.");
-      return;
+const MintComponent = () => {
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const { wallet, signedAccountId } = useContext(NearContext);
+  const uploadReferenceObject = async (refObject: ReferenceObject) => {
+    try {
+      return await uploadReference(refObject);
+    } catch (error) {
+      console.error("Failed to upload reference:", error);
+      setLoading(false);
+      throw new Error("Failed to upload reference");
     }
-
-    if (!activeAccountId) {
-      console.error("Active account ID is null.");
-      return;
-    }
-
-    const wallet = await selector.wallet();
-
-    // Upload reference and get URL
-    const uploadReferenceObject = async (refObject: ReferenceObject) => {
-      try {
-        return await uploadReference(refObject);
-      } catch (error) {
-        console.error("Failed to upload reference:", error);
-        throw new Error("Failed to upload reference");
-      }
-    };
-
-    const refObject = {
-      title: "NCR Course",
-      description: "nft",
-      media: "https://arweave.net/WPQbUMWSZhGtINES3qDsAKvFfVzrygHUhI9DQYhmUg0",
-    };
-
-    const uploadedData = await uploadReferenceObject(refObject);
-    console.log("Uploaded Data:", uploadedData);
-
-    // Set metadata with the response from uploadReferenceObject
-    const metadata = {
-      title: "NCR Course",
-      description: "nft",
-      media: uploadedData?.media_url , // Assuming media is a string URL
-      reference: uploadedData?.id, // Set reference from uploadedData
-    };
-
-    await execute(
-      {
-        wallet,
-        callbackUrl: "http://localhost:3000",
-      },
-      mint({
-        metadata,
-        contractAddress: proxyContractAddress,
-        ownerId: activeAccountId,
-      })
-    );
   };
+
+  const performTransaction = async (
+    wallet: Wallet,
+    metadata: any,
+  ) => {
+    if (!wallet) {
+      throw new Error("Wallet is not defined.");
+    }
+
+    try {
+      return await wallet.callMethod({
+        contractId: proxyContractAddress,
+        method: 'mint',
+        args: {
+          metadata: JSON.stringify(metadata),
+          nft_contract_id: "ncrcoursencr.mintspace2.testnet",
+        },
+        gas: '200000000000000',
+        deposit: '10000000000000000000000'
+      });
+    } catch (error) {
+      console.error("Failed to sign and send transaction:", error);
+      throw new Error("Failed to sign and send transaction");
+    }
+  };
+  const handleMint = async (): Promise<void> => {
+    if (!wallet) {
+      setError("Wallet is not initialized.");
+      return;
+    }
+    if (!signedAccountId) {
+      setError("Active account ID is not set.");
+      return;
+    }
+
+    setLoading(true);
+
+    try {
+      const refObject = {
+        title: "NCR",
+        description: "nft",
+        media: "https://arweave.net/WPQbUMWSZhGtINES3qDsAKvFfVzrygHUhI9DQYhmUg0",
+       
+      };
+      const uploadedData = await uploadReferenceObject(refObject);
+      const metadata = { reference: uploadedData?.id, title: "NCR", description: "nft" };
+      await performTransaction(wallet, metadata);
+    } catch (error: any) {
+      setError(
+        error?.message || "An error occurred during the minting process."
+      );
+    } finally {
+      setLoading(false);
+    }
+  }
 
   return { handleMint };
 };
