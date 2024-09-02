@@ -10,17 +10,34 @@ import {
   SidebarOpenIcon,
   XIcon,
 } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useContext } from "react";
 import "../app/style.css";
 import ProgressComp from "./Progress";
 import SocialMedia from "./SocialMedia";
 import Link from "next/link";
-import { useMbWallet } from "@mintbase-js/react";
+import { NearContext } from "@/wallet/walletSelector";
 import { useFetchStudentById, useSaveStudent } from "@/hook/StudentHook";
 import { Student } from "@/types/types";
 import { useFetchCourseModules } from "@/hook/CourseModuleHook";
 import { usePathname } from "next/navigation";
 import { adminId } from "../../utils/Constant";
+import MintComponent from "../../utils/useMint";
+import { useAccountIds } from "@/hook/AccountIdHook";
+import { proxyContractAddress } from "../../utils/Constant";
+
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "./ui/alert-dialog";
+
+import { getTxnStatus } from "@mintbase-js/rpc";
 type PartialStudent = Pick<Student, "id">;
 export default function TopBar() {
   const pathname = usePathname();
@@ -36,12 +53,15 @@ export default function TopBar() {
   ];
 
   const [isOpen, setIsOpen] = useState(false);
+  const [showAlert, setShowAlert] = useState(false);
+  const [inputValue, setInputValue] = useState("");
 
-  const { isConnected, selector, connect, activeAccountId } = useMbWallet();
+  const { wallet, signedAccountId } = useContext(NearContext);
   const { saveStudent } = useSaveStudent();
   const { fetchStudentById } = useFetchStudentById();
   const { courseModules, error, loading } = useFetchCourseModules();
   const [student, setStudent] = useState<Student | null | undefined>(null);
+  const { storeAccountIdData, fetchAccountById ,fetchTransactionHash} = useAccountIds();
   const completedHomework =
     student?.homework.filter((lesson) => lesson.completed).length || 0;
   const totalLessons = courseModules?.reduce(
@@ -62,34 +82,103 @@ export default function TopBar() {
 
   const handleSignout = async () => {
     console.log("clicked logout");
-    const wallet = await selector.wallet();
-    return wallet.signOut();
+    return wallet?.signOut();
   };
 
   const handleSignIn = async () => {
     console.log("clicked login");
-    return connect();
+    return wallet?.signIn();
   };
 
-  useEffect(() => {
-    if (activeAccountId) {
-      const student: PartialStudent = {
-        id: activeAccountId.toString(),
-      };
-      console.log("Active Account : ", activeAccountId);
-      saveStudent(student);
-    }
-  }, [activeAccountId]);
+  // const handleSave = async () => {
+  //   console.log("Input value:", inputValue);
+
+  //   try {
+  //     await handleMint();
+  //     console.log("Minting was successful");
+
+  //     if (activeAccountId) {
+  //       await storeId([activeAccountId]);
+  //       console.log("Active Account ID stored after mint:", activeAccountId);
+  //     }
+  //   } catch (error) {
+  //     console.error("Minting failed:", error);
+  //   }
+  // };
 
   useEffect(() => {
-    if (isConnected) {
-      if (activeAccountId) {
-        fetchStudentById(activeAccountId.toString()).then((res) => {
-          setStudent(res);
-        });
-      }
+    if (signedAccountId) {
+      const student: PartialStudent = {
+        id: signedAccountId.toString(),
+      };
+      console.log("Active Account : ", signedAccountId);
+      saveStudent(student);
     }
-  }, [activeAccountId, isConnected]);
+  }, [signedAccountId]);
+
+  useEffect(() => {
+    // if (isConnected) {
+    if (signedAccountId) {
+      fetchStudentById(signedAccountId.toString()).then((res) => {
+        setStudent(res);
+      });
+    }
+    // }
+  }, [signedAccountId]);
+
+  useEffect(() => {
+    const fetchTransactionStatusAndHandleAccount = async () => {
+      const searchParams = new URLSearchParams(window.location.search);
+      const txnHash = searchParams.get("transactionHashes") || "";
+      console.log("hash>>", txnHash);
+  
+      if (signedAccountId) {
+        try {
+          if (txnHash) {
+            // Check if the transaction hash already exists in the database
+            const existingTxn = await fetchTransactionHash(txnHash);
+  
+            if (existingTxn) {
+              console.log("Transaction hash already exists in the database.");
+            } else {
+              const senderId = signedAccountId;
+              const rpcUrl = "https://rpc.testnet.near.org";
+              const txnStatus = await getTxnStatus(txnHash, senderId, rpcUrl);
+              console.log("Transaction Status:", txnStatus);
+  
+              if (txnStatus === "success") {
+                console.log("Storing ID and transaction hash...");
+                console.log("Active Account ID:", signedAccountId);
+                console.log("Transaction Hash:", txnHash);
+                await storeAccountIdData(signedAccountId, txnHash);
+              }
+            }
+          }
+  
+          const storedData = await fetchAccountById(signedAccountId);
+          console.log("Retrieved account>>", storedData);
+  
+          if (!storedData) {
+            console.log("Active account ID not found in the database.");
+            setShowAlert(true);
+          } else {
+            console.log("Active account ID is already present in the database.");
+            setShowAlert(false);
+          }
+        } catch (error) {
+          console.error(
+            "Error fetching transaction status or account data:",
+            error
+          );
+        }
+      } else {
+        console.log("No transaction hash found in the URL.");
+      }
+    };
+  
+    fetchTransactionStatusAndHandleAccount();
+  }, [signedAccountId]);
+  
 
   // const handleSignIn = async () => {
   //     console.log("clicked login", activeAccountId);
@@ -105,6 +194,8 @@ export default function TopBar() {
   //     return;
   // };
 
+  // Pass arguments to MintComponent
+  const { handleMint } = MintComponent();
   return (
     <>
       <div className="main-header">
@@ -136,19 +227,17 @@ export default function TopBar() {
                 {menu.name}
               </Link>
             ))}
-            {isConnected &&
-              activeAccountId &&
-              adminId.includes(activeAccountId) && (
-                <Link
-                  href="/facilitator"
-                  className={`nav-link ${
-                    pathname === "/facilitator" ? "active" : ""
-                  }`}
-                >
-                  Facilitator
-                </Link>
-              )}
-            {isConnected ? (
+            {signedAccountId && adminId.includes(signedAccountId) && (
+              <Link
+                href="/facilitator"
+                className={`nav-link ${
+                  pathname === "/facilitator" ? "active" : ""
+                }`}
+              >
+                Facilitator
+              </Link>
+            )}
+            {signedAccountId ? (
               <Link
                 href="/profile"
                 className={`nav-link ${
@@ -162,7 +251,7 @@ export default function TopBar() {
             )}
           </div>
           <div className="header-profile-details">
-            {isConnected ? (
+            {signedAccountId ? (
               <div className="flex items-center gap-2">
                 {/* <p className="text-white">{activeAccountId}</p> */}
                 <button
@@ -235,21 +324,19 @@ export default function TopBar() {
                 </Link>
               </div>
             ))}
-            {isConnected &&
-              activeAccountId &&
-              adminId.includes(activeAccountId) && (
-                <div className="side-bar-list">
-                  <Link href="/facilitator">
-                    <div className="menu-item">
-                      <p>Facilitator</p>
-                      <div className="arrow">
-                        <ArrowRightCircleIcon />
-                      </div>
+            {signedAccountId && adminId.includes(signedAccountId) && (
+              <div className="side-bar-list">
+                <Link href="/facilitator">
+                  <div className="menu-item">
+                    <p>Facilitator</p>
+                    <div className="arrow">
+                      <ArrowRightCircleIcon />
                     </div>
-                  </Link>
-                </div>
-              )}
-            {isConnected && (
+                  </div>
+                </Link>
+              </div>
+            )}
+            {signedAccountId && (
               <div className="side-bar-list">
                 <Link href="/profile">
                   <div className="menu-item">
@@ -263,7 +350,7 @@ export default function TopBar() {
             )}
           </div>
           <div className="top-bar-progress">
-            {isConnected && student ? (
+            {signedAccountId && student ? (
               <ProgressComp
                 value={progress}
                 currentModule={currentModule}
@@ -282,6 +369,33 @@ export default function TopBar() {
           </div>
         </div>
       </div>
+      {/* AlertDialog component */}
+      <AlertDialog open={showAlert} onOpenChange={setShowAlert}>
+        <AlertDialogTrigger asChild>
+          <div className="inline-block cursor-pointer">
+            <button className="bg-blue-500 text-white px-4 py-2 rounded">
+              Open Dialog
+            </button>
+          </div>
+        </AlertDialogTrigger>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle className="text-center">
+              Welcome! Register here to claim your NFT and kickstart your
+              learning journey🚀
+            </AlertDialogTitle>
+          </AlertDialogHeader>
+
+          <AlertDialogFooter className="register-button">
+            <AlertDialogAction
+              onClick={handleMint}
+              className="bg-[#df3276] text-white px-4 py-2 rounded-md"
+            >
+              Register
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </>
   );
 }

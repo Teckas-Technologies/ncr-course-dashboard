@@ -9,21 +9,25 @@ import TableRow from "@tiptap/extension-table-row";
 import TableCell from "@tiptap/extension-table-cell";
 import TableHeader from "@tiptap/extension-table-header";
 import Link from "@tiptap/extension-link";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 export default function TipTap({
   content,
   onChange,
   disabled,
+  isNewLesson,
   disableEdit,
   setIsEditable,
 }: {
   content: string;
   onChange: (richText: string) => void;
   disabled: boolean;
+  isNewLesson: boolean;
   disableEdit: boolean;
   setIsEditable: (e: boolean) => void;
 }) {
+  const [isEditorEditable, setEditorEditable] = useState(!disabled);
+  const [toolBar, setToolBar] = useState(false);
   const editor = useEditor({
     extensions: [
       StarterKit.configure({
@@ -78,7 +82,7 @@ export default function TipTap({
       }),
     ],
     content: content,
-    editable: !disabled,
+    editable: isEditorEditable,
     editorProps: {
       attributes: {
         class:
@@ -92,34 +96,39 @@ export default function TipTap({
 
   useEffect(() => {
     if (editor && content !== editor.getHTML()) {
-      editor.commands.setContent(content, false); 
+      editor.commands.setContent(content, false);
     }
   }, [content, editor]);
 
   useEffect(() => {
-    editor?.setOptions({ editable: !disabled });
-  }, [disabled, editor]);
+    if (editor) {
+      editor.setOptions({ editable: isEditorEditable });
+    }
+  }, [isEditorEditable, editor]);
+
+  console.log("Tiptap editable >> ", editor?.isEditable);
 
   useEffect(() => {
-    if (disabled) {
-      setDisableEdit();
+    if (isNewLesson) {
+      setEditorEditable(true);
     }
-    if (!disabled) {
-      setEditable();
-    }
-  }, [disableEdit, editor]);
+  }, [disabled, isNewLesson]);
 
   useEffect(() => {
-    setIsEditable(editor?.isEditable as boolean);
-  }, [editor?.isEditable, disableEdit, disabled, editor, content]);
+    if (editor) {
+      setIsEditable(editor.isEditable);
+    }
+  }, [editor?.isEditable, editor]);
 
   const setEditable = () => {
-    editor?.setOptions({ editable: true });
-  };
-  const setDisableEdit = () => {
-    editor?.setOptions({ editable: false });
+    setEditorEditable(true);
+    setIsEditable(true);
   };
 
+  const setDisableEdit = () => {
+    setEditorEditable(false);
+    setIsEditable(false);
+  };
   return (
     <>
       <div className="flex flex-col justify-stretch min-h-[250px] gap-2 overflow-scroll">
@@ -129,6 +138,7 @@ export default function TipTap({
           disabled={disabled}
           disableEdit={disableEdit}
           setDisableEdit={setDisableEdit}
+          toolbar={isEditorEditable}
         />
         <EditorContent editor={editor} />
       </div>

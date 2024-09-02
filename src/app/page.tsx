@@ -6,8 +6,8 @@ import WelcomeCard from "@/components/WelcomeCard";
 import CourseOverview from "@/components/CourseOverview";
 import ProgressComp from "@/components/Progress";
 import SocialMedia from "@/components/SocialMedia"
-import { useEffect, useState } from "react";
-import { useMbWallet } from "@mintbase-js/react";
+import { useEffect, useState,useContext } from "react";
+import { NearContext } from "@/wallet/walletSelector";
 import { Button } from "@/components/ui/button";
 import { useFetchStudentById } from "@/hook/StudentHook";
 import { useFetchCourseModules } from "@/hook/CourseModuleHook";
@@ -21,7 +21,7 @@ export default function Home() {
     const { courseModules, error, loading } = useFetchCourseModules();
     const [ currentModuleIndex, setCurrentModuleIndex] = useState(0);
     const [currentLessonIndex, setCurrentLessonIndex] = useState(0);
-    const { isConnected, activeAccountId } = useMbWallet();
+    const { wallet, signedAccountId } = useContext(NearContext);
     const { fetchStudentById } = useFetchStudentById();
     const [ student, setStudent ] =useState<Student | null | undefined>(null);
     const totalLessons = courseModules?.reduce((total: number, theModule: any) => total + theModule.lessons.length, 0);
@@ -46,14 +46,14 @@ export default function Home() {
     
 
     useEffect(()=> {
-      if(isConnected) {
-        if(activeAccountId) {
-          fetchStudentById(activeAccountId.toString()).then((res)=> {
+      // if(signedAccountId) {
+        if(signedAccountId) {
+          fetchStudentById(signedAccountId.toString()).then((res)=> {
             setStudent(res);
           });
         }
-      }
-    }, [activeAccountId]);
+      // }
+    }, [signedAccountId]);
 
     useEffect(() => {
       updateSelectedLesson(currentModuleIndex, currentLessonIndex);
@@ -82,7 +82,7 @@ export default function Home() {
       <div className="main-page">
         <div className="flex flex-col md:flex-row gap-4">
           <div className="hidden md:block w-full md:w-3/12">
-            {isConnected && student ? <ProgressComp value={progress} currentModule={currentModule } currentLesson={currentLesson} homework={completedHomework} /> 
+            {signedAccountId && student ? <ProgressComp value={progress} currentModule={currentModule } currentLesson={currentLesson} homework={completedHomework} /> 
             : <ProgressComp value={progress} currentModule={0} currentLesson={0} homework={completedHomework} /> }
             <SocialMedia />
           </div>

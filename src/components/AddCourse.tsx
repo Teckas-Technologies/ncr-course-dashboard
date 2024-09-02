@@ -64,12 +64,12 @@ export default function AddCourse({ courseModules }: AddCourseProps) {
   const [modules, setModules] = useState<Module[]>([]);
   const { toast } = useToast();
   const { saveCourseModule, loading, error } = useSaveCourseModule();
-  const [previousContent, setPreviousContent] = useState("");
   const [isExistingLesson, setIsExistingLesson] = useState(false);
   const [contentValue, setContentValue] = useState("");
   const [disableEdit, setDisableEdit] = useState(false);
   const [editable, setEditable] = useState(false);
-  const [disableButtonEdit, setDisableButtonEdit] = useState(false);
+  const [newlyLesson, setNewlyLesson] = useState(false);
+  const [isEdited, setIsEdited] = useState<boolean>(false);
 
   const formSchema = z.object({
     module: z.string().trim(),
@@ -108,7 +108,7 @@ export default function AddCourse({ courseModules }: AddCourseProps) {
           ?.find((module) => module.title === selectedModule)
           ?.lessons.find((lesson) => lesson.title === selectedLessonTitle)
     );
-    const isNewLesson = !isExistingLesson;
+
     console.log("Existing 1: ", existingLesson, isExistingLesson);
     if (existingLesson) {
       setIsExistingLesson(true);
@@ -183,7 +183,7 @@ export default function AddCourse({ courseModules }: AddCourseProps) {
       setSelectedLessonTitle("");
       form.setValue("lesson", "");
       form.setValue("content", "");
-      setContentValue(""); // Clear the local content state
+      setContentValue("");
     }
   }, [selectedModule]);
 
@@ -239,18 +239,25 @@ export default function AddCourse({ courseModules }: AddCourseProps) {
     isContentValid &&
     isExistingLesson &&
     editable;
+  console.log("isExistingLesson", isExistingLesson);
+  console.log("editable >>", editable);
 
-  const isFormFilled = (isNewLesson && editable) || isExistingLessonValid;
+  const isFormFilled =
+    (isNewLesson && editable) || (isExistingLesson && isEdited);
 
   useEffect(() => {
     if (selectedLessonTitle && isExistingLesson) {
       setDisableEdit(!disableEdit);
+      setIsEdited(false);
     }
     if (selectedLessonTitle && !isExistingLesson) {
       setDisableEdit(false);
+      setNewlyLesson(true);
+      setIsEdited(true);
     }
     if (selectedLessonTitle && newly.includes(selectedLessonTitle)) {
       setContentValue("");
+      setIsEdited(false);
     }
   }, [selectedLessonTitle, setSelectedLessonTitle, isExistingLesson]);
 
@@ -304,9 +311,9 @@ export default function AddCourse({ courseModules }: AddCourseProps) {
                             onValueChange={(value) => {
                               setSelectedModule(value);
                               setSelectedLessonTitle("");
-                              form.setValue("module", value); // Ensure form value is updated
+                              form.setValue("module", value);
                             }}
-                            value={field.value} // Ensure dropdown value is set
+                            value={field.value}
                           >
                             <FormControl>
                               <SelectTrigger>
@@ -492,9 +499,11 @@ export default function AddCourse({ courseModules }: AddCourseProps) {
                           onChange={(value) => {
                             field.onChange(value); // Update form state
                             setContentValue(value); // Update local state
+                            setIsEdited(true);
                           }}
-                          disabled={isExistingLesson}
+                          disabled={isExistingLesson} // disabled(prop name){boolean value of the isExisting lesson}
                           disableEdit={disableEdit}
+                          isNewLesson={newlyLesson}
                           setIsEditable={setEditable}
                         />
                       </FormControl>
