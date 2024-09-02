@@ -51,6 +51,7 @@ type Props = {
   disabled: boolean;
   disableEdit: boolean;
   setDisableEdit: () => void;
+  toolbar?: boolean;
 };
 
 export function Toolbar({
@@ -59,6 +60,7 @@ export function Toolbar({
   disabled,
   disableEdit,
   setDisableEdit,
+  toolbar,
 }: Props) {
   const [showMore, setShowMore] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
@@ -69,11 +71,9 @@ export function Toolbar({
 
   const [isDisabled, setIsDisabled] = useState(disabled);
   const [isUrlValid, setIsUrlValid] = useState(false);
+
   useEffect(() => {
-    console.log("log 1 from tool bar :",isDisabled);
     setIsDisabled(disabled);
-    console.log("log 1 from tool bar :",isDisabled);
-    
   }, [disabled]);
 
   useEffect(() => {
@@ -84,10 +84,8 @@ export function Toolbar({
   const setEditableTool = () => {
     setIsDisabled(false);
     setEditable();
-    console.log("click the editor",setEditableTool);
-    
   };
- 
+
   const handleResize = () => {
     setIsMobile(window.innerWidth <= 768);
   };
@@ -140,6 +138,7 @@ export function Toolbar({
                 }
                 pressed={editor.isActive("heading")}
                 onPressedChange={() =>
+                  toolbar &&
                   !isDisabled &&
                   editor.chain().focus().toggleHeading({ level: 2 }).run()
                 }
@@ -160,7 +159,9 @@ export function Toolbar({
                 className={editor.isActive("bold") ? "activeIcon" : ""}
                 pressed={editor.isActive("bold")}
                 onPressedChange={() =>
-                  !isDisabled && editor.chain().focus().toggleBold().run()
+                  toolbar &&
+                  !isDisabled &&
+                  editor.chain().focus().toggleBold().run()
                 }
               >
                 <Bold className="h-4 w-4" />
@@ -179,7 +180,9 @@ export function Toolbar({
                 className={editor.isActive("italic") ? "activeIcon" : ""}
                 pressed={editor.isActive("italic")}
                 onPressedChange={() =>
-                  !isDisabled && editor.chain().focus().toggleItalic().run()
+                  toolbar &&
+                  !isDisabled &&
+                  editor.chain().focus().toggleItalic().run()
                 }
               >
                 <Italic className="h-4 w-4" />
@@ -198,7 +201,9 @@ export function Toolbar({
                 className={editor.isActive("strike") ? "activeIcon" : ""}
                 pressed={editor.isActive("strike")}
                 onPressedChange={() =>
-                  !isDisabled && editor.chain().focus().toggleStrike().run()
+                  toolbar &&
+                  !isDisabled &&
+                  editor.chain().focus().toggleStrike().run()
                 }
               >
                 <Strikethrough className="h-4 w-4" />
@@ -217,7 +222,9 @@ export function Toolbar({
                 className={editor.isActive("bulletList") ? "activeIcon" : ""}
                 pressed={editor.isActive("bulletList")}
                 onPressedChange={() =>
-                  !isDisabled && editor.chain().focus().toggleBulletList().run()
+                  toolbar &&
+                  !isDisabled &&
+                  editor.chain().focus().toggleBulletList().run()
                 }
               >
                 <List className="h-4 w-4" />
@@ -236,6 +243,7 @@ export function Toolbar({
                 className={editor.isActive("orderedList") ? "activeIcon" : ""}
                 pressed={editor.isActive("orderedList")}
                 onPressedChange={() =>
+                  toolbar &&
                   !isDisabled &&
                   editor.chain().focus().toggleOrderedList().run()
                 }
@@ -253,7 +261,7 @@ export function Toolbar({
             <TooltipTrigger asChild>
               <Toggle
                 size="sm"
-                className={editor.isActive("pencil") ? "active" : ""}
+                className={toolbar ? "activeIcon" : ""}
                 onPressedChange={setEditableTool}
               >
                 <PencilIcon className="h-4 w-4" />
@@ -290,9 +298,10 @@ export function Toolbar({
                 <TooltipTrigger asChild>
                   <Toggle
                     size="sm"
-                    className={editor.isActive("codeBlock") ? "active" : ""}
+                    className={editor.isActive("codeBlock") ? "activeIcon" : ""}
                     pressed={editor.isActive("codeBlock")}
                     onPressedChange={() =>
+                      toolbar &&
                       !isDisabled &&
                       editor.chain().focus().toggleCodeBlock().run()
                     }
@@ -310,9 +319,9 @@ export function Toolbar({
                 <TooltipTrigger asChild>
                   <Toggle
                     size="sm"
-                    className={editor.isActive("link") ? "active" : ""}
+                    className={editor.isActive("link") ? "activeIcon" : ""}
                     pressed={editor.isActive("link")}
-                    onPressedChange={() => !isDisabled && addLink()}
+                    onPressedChange={() => toolbar && !isDisabled && addLink()}
                   >
                     <LinkIcon className="h-4 w-4" />
                   </Toggle>
@@ -327,9 +336,10 @@ export function Toolbar({
                 <TooltipTrigger asChild>
                   <Toggle
                     size="sm"
-                    className={editor.isActive("table") ? "active" : ""}
+                    className={editor.isActive("table") ? "activeIcon" : ""}
                     pressed={editor.isActive("table")}
                     onPressedChange={() =>
+                      toolbar &&
                       !isDisabled &&
                       editor
                         .chain()
@@ -351,10 +361,12 @@ export function Toolbar({
                 <TooltipTrigger asChild>
                   <Toggle
                     size="sm"
-                    className={editor.isActive("rowAfter") ? "active" : ""}
+                    className={editor.isActive("rowAfter") ? "activeIcon" : ""}
                     pressed={editor.isActive("rowAfter")}
                     onPressedChange={() =>
-                      !isDisabled && editor.chain().focus().addRowAfter().run()
+                      toolbar &&
+                      !isDisabled &&
+                      editor.chain().focus().addRowAfter().run()
                     }
                   >
                     <TableRowsSplit className="h-4 w-4" />
@@ -370,9 +382,12 @@ export function Toolbar({
                 <TooltipTrigger asChild>
                   <Toggle
                     size="sm"
-                    className={editor.isActive("undo") ? "active" : ""}
+                    className={editor.isActive("undo") ? "activeIcon" : ""}
+                    pressed={editor.isActive("undo")}
                     onPressedChange={() =>
-                      !isDisabled && editor.chain().focus().undo().run()
+                      toolbar &&
+                      !isDisabled &&
+                      editor.chain().focus().undo().run()
                     }
                   >
                     <Undo className="h-4 w-4" />
@@ -388,9 +403,12 @@ export function Toolbar({
                 <TooltipTrigger asChild>
                   <Toggle
                     size="sm"
-                    className={editor.isActive("redo") ? "active" : ""}
+                    className={editor.isActive("redo") ? "activeIcon" : ""}
+                    pressed={editor.isActive("redo")}
                     onPressedChange={() =>
-                      !isDisabled && editor.chain().focus().redo().run()
+                      toolbar &&
+                      !isDisabled &&
+                      editor.chain().focus().redo().run()
                     }
                   >
                     <Redo className="h-4 w-4" />
@@ -411,9 +429,9 @@ export function Toolbar({
               <TooltipTrigger asChild>
                 <Toggle
                   size="sm"
-                  className={editor.isActive("link") ? "active" : ""}
+                  className={editor.isActive("link") ? "activeIcon" : ""}
                   pressed={editor.isActive("table")}
-                  onPressedChange={() => !isDisabled && addLink()}
+                  onPressedChange={() => toolbar && !isDisabled && addLink()}
                 >
                   <LinkIcon className="h-4 w-4" />
                 </Toggle>
@@ -428,9 +446,10 @@ export function Toolbar({
               <TooltipTrigger asChild>
                 <Toggle
                   size="sm"
-                  className={editor.isActive("table") ? "active" : ""}
+                  className={editor.isActive("table") ? "activeIcon" : ""}
                   pressed={editor.isActive("table")}
                   onPressedChange={() =>
+                    toolbar &&
                     !isDisabled &&
                     editor
                       .chain()
@@ -452,10 +471,12 @@ export function Toolbar({
               <TooltipTrigger asChild>
                 <Toggle
                   size="sm"
-                  className={editor.isActive("rowAfter") ? "active" : ""}
+                  className={editor.isActive("rowAfter") ? "activeIcon" : ""}
                   pressed={editor.isActive("rowAfter")}
                   onPressedChange={() =>
-                    !isDisabled && editor.chain().focus().addRowAfter().run()
+                    toolbar &&
+                    !isDisabled &&
+                    editor.chain().focus().addRowAfter().run()
                   }
                 >
                   <TableRowsSplit className="h-4 w-4" />
@@ -471,9 +492,12 @@ export function Toolbar({
               <TooltipTrigger asChild>
                 <Toggle
                   size="sm"
-                  className={editor.isActive("undo") ? "active" : ""}
+                  className={editor.isActive("undo") ? "activeIcon" : ""}
+                  pressed={editor.isActive("undo")}
                   onPressedChange={() =>
-                    !isDisabled && editor.chain().focus().undo().run()
+                    toolbar &&
+                    !isDisabled &&
+                    editor.chain().focus().undo().run()
                   }
                 >
                   <Undo className="h-4 w-4" />
@@ -489,9 +513,12 @@ export function Toolbar({
               <TooltipTrigger asChild>
                 <Toggle
                   size="sm"
-                  className={editor.isActive("redo") ? "active" : ""}
+                  className={editor.isActive("redo") ? "activeIcon" : ""}
+                  pressed={editor.isActive("redo")}
                   onPressedChange={() =>
-                    !isDisabled && editor.chain().focus().redo().run()
+                    toolbar &&
+                    !isDisabled &&
+                    editor.chain().focus().redo().run()
                   }
                 >
                   <Redo className="h-4 w-4" />

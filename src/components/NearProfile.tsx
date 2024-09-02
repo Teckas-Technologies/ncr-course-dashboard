@@ -97,31 +97,35 @@ export default function NearProfile() {
         </div>
         <div className="profile-details">
           <h2>{profile?.name || ""}</h2>
-          <div className="acc-id-container">
-            <p className="acc_id">{signedAccountId}</p>
-            <div className="copy_id" style={{ position: "relative" }}>
-              <Copy className="copy-icon" onClick={handleCopyClick} />
-              <div className={`toast-container ${showToast ? "show" : ""}`}>
-                Copied
+          {signedAccountId && (
+            <div className="acc-id-container">
+              <p className="acc_id">{signedAccountId}</p>
+              <div className="copy_id" style={{ position: "relative" }}>
+                <Copy className="copy-icon" onClick={handleCopyClick} />
+                <div className={`toast-container ${showToast ? "show" : ""}`}>
+                  Copied
+                </div>
               </div>
             </div>
-          </div>
+          )}
           {signedAccountId && (
-  <div className="nft-badge">
-    <div className="circle">
-      <img
-        className="nft-image"
-        src={mediaUrl || defaultImageUrl}
-        alt="NFT"
-      />
-    </div>
-    <div className="rectangle">
-      <span className="role-text">
-        {adminId.includes(signedAccountId) ? "Facilitator" : "Student"}
-      </span>
-    </div>
-  </div>
-)}
+            <div className="nft-badge">
+              <div className="circle">
+                <img
+                  className="nft-image"
+                  src={mediaUrl || defaultImageUrl}
+                  alt="NFT"
+                />
+              </div>
+              <div className="rectangle">
+                <span className="role-text">
+                  {adminId.includes(signedAccountId)
+                    ? "Facilitator"
+                    : "Student"}
+                </span>
+              </div>
+            </div>
+          )}
 
           {/* Social Links Section */}
           {(profile?.linktree?.github ||
