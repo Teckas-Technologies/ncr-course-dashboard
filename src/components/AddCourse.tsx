@@ -166,6 +166,9 @@ export default function AddCourse({ courseModules }: AddCourseProps) {
           form.setValue("module", "");
           form.setValue("lesson", "");
           form.setValue("content", "");
+          setDisableEdit(true);
+          setNewlyLesson(false);
+          setIsEdited(false);
         })
         .catch((err) => {
           toast({
