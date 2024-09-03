@@ -31,7 +31,7 @@ export default function FacilitatorMobileMenu({ setPageComponent }: any) {
   const mediaUrl = data?.mb_views_nft_tokens?.[0]?.media || "";
   return (
     <>
-      <div className="facilitator-mobile-menu flex flex-row w-full justify-end">
+      <div className=" cursor-pointer transition duration-400 relative mt-4 sm:block flex flex-row w-full justify-end md:hidden">
         <DropdownMenu>
           <DropdownMenuTrigger asChild className="hamburger1">
             <Button variant="outline" className="flex-row gap-2">
