@@ -134,7 +134,7 @@ export function Toolbar({
               <Toggle
                 size="sm"
                 className={
-                  editor.isActive("heading", { level: 2 }) ? "activeIcon" : ""
+                  editor.isActive("heading", { level: 2 }) ? "bg-gray-300" : ""
                 }
                 pressed={editor.isActive("heading")}
                 onPressedChange={() =>
@@ -177,7 +177,7 @@ export function Toolbar({
             <TooltipTrigger asChild>
               <Toggle
                 size="sm"
-                className={editor.isActive("italic") ? "activeIcon" : ""}
+                className={editor.isActive("italic") ? "bg-gray-300" : ""}
                 pressed={editor.isActive("italic")}
                 onPressedChange={() =>
                   toolbar &&
@@ -198,7 +198,7 @@ export function Toolbar({
             <TooltipTrigger asChild>
               <Toggle
                 size="sm"
-                className={editor.isActive("strike") ? "activeIcon" : ""}
+                className={editor.isActive("strike") ? "bg-gray-300" : ""}
                 pressed={editor.isActive("strike")}
                 onPressedChange={() =>
                   toolbar &&
@@ -219,7 +219,7 @@ export function Toolbar({
             <TooltipTrigger asChild>
               <Toggle
                 size="sm"
-                className={editor.isActive("bulletList") ? "activeIcon" : ""}
+                className={editor.isActive("bulletList") ? "bg-gray-300" : ""}
                 pressed={editor.isActive("bulletList")}
                 onPressedChange={() =>
                   toolbar &&
@@ -240,7 +240,7 @@ export function Toolbar({
             <TooltipTrigger asChild>
               <Toggle
                 size="sm"
-                className={editor.isActive("orderedList") ? "activeIcon" : ""}
+                className={editor.isActive("orderedList") ? "bg-gray-300" : ""}
                 pressed={editor.isActive("orderedList")}
                 onPressedChange={() =>
                   toolbar &&
@@ -261,7 +261,7 @@ export function Toolbar({
             <TooltipTrigger asChild>
               <Toggle
                 size="sm"
-                className={toolbar ? "activeIcon" : ""}
+                className={toolbar ? "bg-gray-300" : ""}
                 onPressedChange={setEditableTool}
               >
                 <PencilIcon className="h-4 w-4" />
@@ -298,7 +298,7 @@ export function Toolbar({
                 <TooltipTrigger asChild>
                   <Toggle
                     size="sm"
-                    className={editor.isActive("codeBlock") ? "activeIcon" : ""}
+                    className={editor.isActive("codeBlock") ? "bg-gray-300" : ""}
                     pressed={editor.isActive("codeBlock")}
                     onPressedChange={() =>
                       toolbar &&
@@ -319,7 +319,7 @@ export function Toolbar({
                 <TooltipTrigger asChild>
                   <Toggle
                     size="sm"
-                    className={editor.isActive("link") ? "activeIcon" : ""}
+                    className={editor.isActive("link") ? "bg-gray-300" : ""}
                     pressed={editor.isActive("link")}
                     onPressedChange={() => toolbar && !isDisabled && addLink()}
                   >
@@ -336,7 +336,7 @@ export function Toolbar({
                 <TooltipTrigger asChild>
                   <Toggle
                     size="sm"
-                    className={editor.isActive("table") ? "activeIcon" : ""}
+                    className={editor.isActive("table") ? "bg-gray-300" : ""}
                     pressed={editor.isActive("table")}
                     onPressedChange={() =>
                       toolbar &&
@@ -361,7 +361,7 @@ export function Toolbar({
                 <TooltipTrigger asChild>
                   <Toggle
                     size="sm"
-                    className={editor.isActive("rowAfter") ? "activeIcon" : ""}
+                    className={editor.isActive("rowAfter") ? "bg-gray-300" : ""}
                     pressed={editor.isActive("rowAfter")}
                     onPressedChange={() =>
                       toolbar &&
@@ -382,7 +382,7 @@ export function Toolbar({
                 <TooltipTrigger asChild>
                   <Toggle
                     size="sm"
-                    className={editor.isActive("undo") ? "activeIcon" : ""}
+                    className={editor.isActive("undo") ? "bg-gray-300" : ""}
                     pressed={editor.isActive("undo")}
                     onPressedChange={() =>
                       toolbar &&
@@ -403,7 +403,7 @@ export function Toolbar({
                 <TooltipTrigger asChild>
                   <Toggle
                     size="sm"
-                    className={editor.isActive("redo") ? "activeIcon" : ""}
+                    className={editor.isActive("redo") ? "bg-gray-300" : ""}
                     pressed={editor.isActive("redo")}
                     onPressedChange={() =>
                       toolbar &&
@@ -429,7 +429,7 @@ export function Toolbar({
               <TooltipTrigger asChild>
                 <Toggle
                   size="sm"
-                  className={editor.isActive("link") ? "activeIcon" : ""}
+                  className={editor.isActive("link") ? "bg-gray-300" : ""}
                   pressed={editor.isActive("table")}
                   onPressedChange={() => toolbar && !isDisabled && addLink()}
                 >
@@ -446,7 +446,7 @@ export function Toolbar({
               <TooltipTrigger asChild>
                 <Toggle
                   size="sm"
-                  className={editor.isActive("table") ? "activeIcon" : ""}
+                  className={editor.isActive("table") ? "bg-gray-300" : ""}
                   pressed={editor.isActive("table")}
                   onPressedChange={() =>
                     toolbar &&
@@ -471,7 +471,7 @@ export function Toolbar({
               <TooltipTrigger asChild>
                 <Toggle
                   size="sm"
-                  className={editor.isActive("rowAfter") ? "activeIcon" : ""}
+                  className={editor.isActive("rowAfter") ? "bg-gray-300" : ""}
                   pressed={editor.isActive("rowAfter")}
                   onPressedChange={() =>
                     toolbar &&
@@ -492,7 +492,7 @@ export function Toolbar({
               <TooltipTrigger asChild>
                 <Toggle
                   size="sm"
-                  className={editor.isActive("undo") ? "activeIcon" : ""}
+                  className={editor.isActive("undo") ? "bg-gray-300" : ""}
                   pressed={editor.isActive("undo")}
                   onPressedChange={() =>
                     toolbar &&
@@ -513,7 +513,7 @@ export function Toolbar({
               <TooltipTrigger asChild>
                 <Toggle
                   size="sm"
-                  className={editor.isActive("redo") ? "activeIcon" : ""}
+                  className={editor.isActive("redo") ? "bg-gray-300" : ""}
                   pressed={editor.isActive("redo")}
                   onPressedChange={() =>
                     toolbar &&

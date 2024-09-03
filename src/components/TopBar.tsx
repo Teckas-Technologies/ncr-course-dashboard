@@ -386,7 +386,7 @@ export default function TopBar() {
             </AlertDialogTitle>
           </AlertDialogHeader>
 
-          <AlertDialogFooter className="register-button">
+          <AlertDialogFooter className="sm:justify-center">
             <AlertDialogAction
               onClick={handleMint}
               className="bg-[#df3276] text-white px-4 py-2 rounded-md"
