@@ -32,7 +32,7 @@ export default function HomeworkSubmissionMobileMenu({ student, courseModules, c
 
     return (
         <>
-         <div className="facilitator-mobile-menu flex flex-row w-full justify-end">
+         <div className="cursor-pointer transition duration-400 relative mt-4 sm:block flex flex-row w-full justify-end md:hidden">
             <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
                 <DialogTrigger asChild className="hamburger1">
                     <Button variant="outline" className="flex-row gap-2"><NotebookPenIcon /> <p>Home Work</p></Button>

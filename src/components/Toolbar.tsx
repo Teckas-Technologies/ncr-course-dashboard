@@ -156,7 +156,7 @@ export function Toolbar({
             <TooltipTrigger asChild>
               <Toggle
                 size="sm"
-                className={editor.isActive("bold") ? "activeIcon" : ""}
+                className={editor.isActive("bold") ? "bg-gray-300" : ""}
                 pressed={editor.isActive("bold")}
                 onPressedChange={() =>
                   toolbar &&
