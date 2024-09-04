@@ -3,12 +3,13 @@ import Banner from "@/components/Banner";
 import CourseCard from "@/components/CourseCard";
 import TopBar from "@/components/TopBar";
 import Course from "@/components/Course";
-import { useEffect, useState,useContext } from "react";
+import { useEffect, useState, useContext } from "react";
 import HomeworkSubmissionMobileMenu from "@/components/HomeworkSubmissionMobileMenu";
 import { useFetchStudentById } from "@/hook/StudentHook";
 import { NearContext } from "@/wallet/walletSelector";
 import { useFetchCourseModules } from "@/hook/CourseModuleHook";
 import { Module, Student } from "@/types/types";
+import { useRouter } from "next/navigation";
 import {
   Card,
   CardContent,
@@ -29,6 +30,7 @@ import Loader from "@/components/Loader";
 // };
 
 export default function CoursePage() {
+  const router = useRouter();
   const { courseModules, error, loading } = useFetchCourseModules();
   const { wallet, signedAccountId } = useContext(NearContext);
   const { fetchStudentById } = useFetchStudentById();
@@ -61,7 +63,15 @@ export default function CoursePage() {
         ? courseModules[0]?.lessons[0]?.content || ""
         : "",
   });
-
+  useEffect(() => {
+    if (!signedAccountId) {
+      router.push("/");
+      console.log("can't find signedAccountId");
+      
+    } else {
+      router.push("/course");
+    }
+  }, [signedAccountId]);
   useEffect(() => {
     if (courseModules && courseModules.length > 0) {
       updateSelectedLesson(currentModuleIndex, currentLessonIndex);
@@ -70,11 +80,11 @@ export default function CoursePage() {
 
   useEffect(() => {
     // if (signedAccountId) {
-      if (signedAccountId) {
-        fetchStudentById(signedAccountId.toString()).then((res) => {
-          setStudent(res);
-        });
-      }
+    if (signedAccountId) {
+      fetchStudentById(signedAccountId.toString()).then((res) => {
+        setStudent(res);
+      });
+    }
     // }
   }, [signedAccountId]);
 
@@ -139,40 +149,40 @@ export default function CoursePage() {
       />
 
       <div id="content-top">
-      <div className="main-page">
-        {!courseModules ? (
-          <Loader />
-        ) : (
-          <div className="flex flex-col md:flex-row gap-4">
-            <div className="hidden md:block w-full md:w-3/12 side-course">
-              <CourseCard
-                setSelectedLesson={setSelectedLesson}
-                updateSelectedLesson={updateSelectedLesson}
-                student={student}
-                courseModules={courseModules}
-              />
-            </div>
-            <div className="w-full md:w-9/12 grid grid-cols-1 gap-4">
-              <HomeworkSubmissionMobileMenu
-                student={student}
-                courseModules={courseModules}
-                currentModuleIndex={currentModuleIndex}
-                currentLessonIndex={currentLessonIndex}
-              />
+        <div className="main-page">
+          {!courseModules ? (
+            <Loader />
+          ) : (
+            <div className="flex flex-col md:flex-row gap-4">
+              <div className="hidden md:block w-full md:w-3/12 side-course">
+                <CourseCard
+                  setSelectedLesson={setSelectedLesson}
+                  updateSelectedLesson={updateSelectedLesson}
+                  student={student}
+                  courseModules={courseModules}
+                />
+              </div>
+              <div className="w-full md:w-9/12 grid grid-cols-1 gap-4">
+                <HomeworkSubmissionMobileMenu
+                  student={student}
+                  courseModules={courseModules}
+                  currentModuleIndex={currentModuleIndex}
+                  currentLessonIndex={currentLessonIndex}
+                />
 
-              <Course
-                selectedLesson={selectedLesson}
-                onNextLesson={handleNextLesson}
-                onPreviousLesson={handlePreviousLesson}
-                isFirstLesson={isFirstLesson}
-                isLastLesson={isLastLesson}
-                courseModules={courseModules}
-                student={student}
-              />
+                <Course
+                  selectedLesson={selectedLesson}
+                  onNextLesson={handleNextLesson}
+                  onPreviousLesson={handlePreviousLesson}
+                  isFirstLesson={isFirstLesson}
+                  isLastLesson={isLastLesson}
+                  courseModules={courseModules}
+                  student={student}
+                />
+              </div>
             </div>
-          </div>
-        )}
-      </div>
+          )}
+        </div>
       </div>
     </>
   );

@@ -5,14 +5,17 @@ import FacilitatorMenu from "@/components/FacilitatorMenu";
 import FacilitatorMobileMenu from "@/components/FacilitatorMobileMenu";
 import StudentsList from "@/components/StudentsList";
 import TopBar from "@/components/TopBar";
-import { useState, useEffect } from "react";
+import { useState, useEffect,useContext } from "react";
 import { useFetchCourseModules } from "@/hook/CourseModuleHook";
+import { NearContext } from "@/wallet/walletSelector";
+import { useRouter } from "next/navigation";
 import {
   useFetchStudents,
   useFetchStudentsPagination,
 } from "@/hook/StudentHook";
 import { Skeleton } from "@/components/ui/skeleton";
 import Loader from "@/components/Loader";
+import { adminId } from "../../../utils/Constant";
 
 export default function FacilitatorPage() {
   const [page, setPage] = useState(1);
@@ -20,6 +23,8 @@ export default function FacilitatorPage() {
   const [pageComponent, setPageComponent] = useState("Add Course Module");
   const { courseModules, error, loading } = useFetchCourseModules();
   const { studentList } = useFetchStudents();
+  const router = useRouter();
+  const { signedAccountId } = useContext(NearContext);
   const {
     studentListPagination,
     loading: studentLoading,
@@ -40,6 +45,13 @@ export default function FacilitatorPage() {
   useEffect(() => {
     fetchStudents(page, pageSize); // Pass current page and page size
   }, [page, pageSize]);
+  useEffect(()=>{
+   if(signedAccountId && adminId.includes(signedAccountId)){
+     router.push("/facilitator");
+   }else{
+    router.push("/");
+   }
+  })
   return (
     <>
       <TopBar />

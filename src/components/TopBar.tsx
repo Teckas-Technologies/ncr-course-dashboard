@@ -46,14 +46,11 @@ export default function TopBar() {
       name: "Home",
       path: "/",
     },
-    {
-      name: "Course",
-      path: "/course",
-    },
   ];
 
   const [isOpen, setIsOpen] = useState(false);
   const [showAlert, setShowAlert] = useState(false);
+  const [showSuccessPopup, setShowSuccessPopup] = useState(false);
   const [inputValue, setInputValue] = useState("");
 
   const { wallet, signedAccountId } = useContext(NearContext);
@@ -61,7 +58,8 @@ export default function TopBar() {
   const { fetchStudentById } = useFetchStudentById();
   const { courseModules, error, loading } = useFetchCourseModules();
   const [student, setStudent] = useState<Student | null | undefined>(null);
-  const { storeAccountIdData, fetchAccountById ,fetchTransactionHash} = useAccountIds();
+  const { storeAccountIdData, fetchAccountById, fetchTransactionHash } =
+    useAccountIds();
   const completedHomework =
     student?.homework.filter((lesson) => lesson.completed).length || 0;
   const totalLessons = courseModules?.reduce(
@@ -89,7 +87,10 @@ export default function TopBar() {
     console.log("clicked login");
     return wallet?.signIn();
   };
-
+  const handleClose = () => {
+    setShowSuccessPopup(false);
+    window.location.href = "/course";
+  };
   // const handleSave = async () => {
   //   console.log("Input value:", inputValue);
 
@@ -131,13 +132,13 @@ export default function TopBar() {
       const searchParams = new URLSearchParams(window.location.search);
       const txnHash = searchParams.get("transactionHashes") || "";
       console.log("hash>>", txnHash);
-  
+
       if (signedAccountId) {
         try {
           if (txnHash) {
             // Check if the transaction hash already exists in the database
             const existingTxn = await fetchTransactionHash(txnHash);
-  
+
             if (existingTxn) {
               console.log("Transaction hash already exists in the database.");
             } else {
@@ -145,24 +146,27 @@ export default function TopBar() {
               const rpcUrl = "https://rpc.testnet.near.org";
               const txnStatus = await getTxnStatus(txnHash, senderId, rpcUrl);
               console.log("Transaction Status:", txnStatus);
-  
+
               if (txnStatus === "success") {
                 console.log("Storing ID and transaction hash...");
                 console.log("Active Account ID:", signedAccountId);
                 console.log("Transaction Hash:", txnHash);
                 await storeAccountIdData(signedAccountId, txnHash);
+                setShowSuccessPopup(true);
               }
             }
           }
-  
+
           const storedData = await fetchAccountById(signedAccountId);
           console.log("Retrieved account>>", storedData);
-  
+
           if (!storedData) {
             console.log("Active account ID not found in the database.");
             setShowAlert(true);
           } else {
-            console.log("Active account ID is already present in the database.");
+            console.log(
+              "Active account ID is already present in the database."
+            );
             setShowAlert(false);
           }
         } catch (error) {
@@ -175,10 +179,9 @@ export default function TopBar() {
         console.log("No transaction hash found in the URL.");
       }
     };
-  
+
     fetchTransactionStatusAndHandleAccount();
   }, [signedAccountId]);
-  
 
   // const handleSignIn = async () => {
   //     console.log("clicked login", activeAccountId);
@@ -210,7 +213,9 @@ export default function TopBar() {
             )}{" "}
           </div>
           <h2 style={{ fontWeight: 700, fontSize: 25, color: "#fff" }}>
-            <span style={{ color: "#DF3276" }}> NCR</span> Course
+            <Link href="/" style={{ color: "#fff", textDecoration: "none" }}>
+              <span style={{ color: "#DF3276" }}> NCR</span> Course
+            </Link>
           </h2>
         </div>
         <div className="header-right">
@@ -227,6 +232,14 @@ export default function TopBar() {
                 {menu.name}
               </Link>
             ))}
+            {signedAccountId && (
+              <Link
+                href="/course"
+                className={`nav-link ${pathname === "/course" ? "active" : ""}`}
+              >
+                Course
+              </Link>
+            )}
             {signedAccountId && adminId.includes(signedAccountId) && (
               <Link
                 href="/facilitator"
@@ -324,6 +337,18 @@ export default function TopBar() {
                 </Link>
               </div>
             ))}
+             {signedAccountId && (
+              <div className="side-bar-list">
+                <Link href="/course">
+                  <div className="menu-item">
+                    <p>Course</p>
+                    <div className="arrow">
+                      <ArrowRightCircleIcon />
+                    </div>
+                  </div>
+                </Link>
+              </div>
+            )}
             {signedAccountId && adminId.includes(signedAccountId) && (
               <div className="side-bar-list">
                 <Link href="/facilitator">
@@ -392,6 +417,32 @@ export default function TopBar() {
               className="bg-[#df3276] text-white px-4 py-2 rounded-md"
             >
               Register
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+      <AlertDialog open={showSuccessPopup} onOpenChange={setShowSuccessPopup}>
+        <AlertDialogTrigger asChild>
+          <div className="inline-block cursor-pointer">
+            <button className="bg-blue-500 text-white px-4 py-2 rounded">
+              Open Dialog
+            </button>
+          </div>
+        </AlertDialogTrigger>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle className="text-center">
+              You&apos;ve successfully claimed your NFT! 🎉 Now, jump in and
+              start exploring your learning path 📚🚀
+            </AlertDialogTitle>
+          </AlertDialogHeader>
+
+          <AlertDialogFooter className="sm:justify-center">
+            <AlertDialogAction
+              onClick={handleClose}
+              className="bg-[#df3276] text-white px-4 py-2 rounded-md"
+            >
+              Get Started
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>

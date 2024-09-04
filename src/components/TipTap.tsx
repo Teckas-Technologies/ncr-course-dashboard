@@ -102,19 +102,21 @@ export default function TipTap({
 
   useEffect(() => {
     if (editor) {
+      // Update editor options based on `isEditorEditable` state
       editor.setOptions({ editable: isEditorEditable });
+      setIsEditable(editor.isEditable);
     }
   }, [isEditorEditable, editor]);
 
-  console.log("Tiptap editable >> ", editor?.isEditable);
-
   useEffect(() => {
-    if (isNewLesson) {
-      setEditorEditable(true);
+    // Ensure editor editability is set correctly based on `isNewLesson` and `disableEdit`
+    if (editor) {
+      setEditorEditable(isNewLesson && !disableEdit);
     }
-  }, [disabled, isNewLesson]);
+  }, [isNewLesson, disableEdit, editor]);
 
   useEffect(() => {
+    // Update parent component about the editor's editability
     if (editor) {
       setIsEditable(editor.isEditable);
     }
@@ -129,6 +131,7 @@ export default function TipTap({
     setEditorEditable(false);
     setIsEditable(false);
   };
+
   return (
     <>
       <div className="flex flex-col justify-stretch min-h-[250px] gap-2 overflow-scroll">
