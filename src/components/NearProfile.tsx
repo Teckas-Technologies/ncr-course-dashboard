@@ -48,11 +48,11 @@ export default function NearProfile() {
   const mediaUrl = data?.mb_views_nft_tokens?.[0]?.media || "";
   console.log("Extracted media URL:", mediaUrl);
   const handleImageClick = () => {
-    setShowModal(true); // Show the modal when image is clicked
+    setShowModal(true);
   };
 
   const handleCloseModal = () => {
-    setShowModal(false); // Hide the modal when close button is clicked
+    setShowModal(false);
   };
   useEffect(() => {
     if (signedAccountId) {
@@ -118,28 +118,28 @@ export default function NearProfile() {
           {signedAccountId && (
             <div className="nft-badge">
               <div className="circle">
-        <img
-          className="nft-image"
-          src={mediaUrl || defaultImageUrl}
-          alt="NFT"
-          onClick={handleImageClick} // Show modal on image click
-          style={{ cursor: "pointer" }} // Make the image clickable
-        />
-      </div>
-      {showModal && (
-        <div className="modal-overlay">
-          <div className="modal-content">
-            <button className="close-button" onClick={handleCloseModal}>
-              <X size={24} /> {/* "X" icon for closing */}
-            </button>
-            <img
-              className="nft-full-image"
-              src={mediaUrl || defaultImageUrl}
-              alt="NFT Full Size"
-            />
-          </div>
-        </div>
-      )}
+                <img
+                  className="nft-image"
+                  src={mediaUrl || defaultImageUrl}
+                  alt="NFT"
+                  onClick={handleImageClick}
+                  style={{ cursor: "pointer" }}
+                />
+              </div>
+              {showModal && (
+                <div className="modal-overlay">
+                  <div className="modal-content">
+                    <button className="close-button" onClick={handleCloseModal}>
+                      <X size={24} />
+                    </button>
+                    <img
+                      className="nft-full-image"
+                      src={mediaUrl || defaultImageUrl}
+                      alt="NFT Full Size"
+                    />
+                  </div>
+                </div>
+              )}
               <div className="rectangle">
                 <span className="role-text">
                   {adminId.includes(signedAccountId)
@@ -150,7 +150,6 @@ export default function NearProfile() {
             </div>
           )}
 
-          {/* Social Links Section */}
           {(profile?.linktree?.github ||
             profile?.linktree?.telegram ||
             profile?.linktree?.twitter ||

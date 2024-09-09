@@ -57,12 +57,12 @@ export const useAccountIds = () => {
       return data;
     } catch (err) {
       console.error("Error retrieving account IDs and transaction hash:", err);
-      return null; // Return null on error
+      return null; 
     }
   };
   const fetchAccountById = async (accountIds: string) => {
-    setLoading(true); // Start loading state
-    setError(null); // Clear previous errors
+    setLoading(true); 
+    setError(null); 
     console.log("Entered fetchAccountById Hook:", accountIds);
 
     try {
@@ -88,15 +88,15 @@ export const useAccountIds = () => {
       console.error("Error fetching account:", err);
       setError("Error fetching account!");
     } finally {
-      setLoading(false); // End loading state
+      setLoading(false); 
     }
     
   };
   const fetchTransactionHash = async (transactionHash: string) => {
    
   
-    setLoading(true); // Start loading state
-    setError(null); // Clear previous errors
+    setLoading(true); 
+    setError(null); 
     console.log("Entered fetchTransactionHash Hook:", transactionHash);
   
     try {
@@ -122,7 +122,7 @@ export const useAccountIds = () => {
       console.error("Error fetching transaction hash:", err);
       setError("Error fetching transaction hash!");
     } finally {
-      setLoading(false); // End loading state
+      setLoading(false); 
     }
   };
   return { storeAccountIdData, getStoredIds, fetchAccountById, fetchTransactionHash,loading, error };

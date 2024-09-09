@@ -52,7 +52,7 @@ export default function Course({
   const [courseCompleted, setCourseCompleted] = useState(false);
   const [completedLessons, setCompletedLessons] = useState(0);
   const { updateStudent } = useUpdateStudent();
-  const { toast } = useToast(); // Use toast for notification
+  const { toast } = useToast(); 
 
   useEffect(() => {
     const completedCount =
@@ -130,7 +130,7 @@ export default function Course({
     }
   };
   const handleThankYouClick = () => {
-    router.push("/"); // Navigates to the home page ("/")
+    router.push("/"); 
   };
   return (
     <>

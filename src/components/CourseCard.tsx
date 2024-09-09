@@ -82,7 +82,7 @@ export default function CourseCard({
     lessonIndex: number
   ) => {
     if (lessonIndex === 0 && moduleIndex === 0) {
-      return true; // First lesson, no previous lesson to check
+      return true; 
     }
     const prevModuleIndex = lessonIndex === 0 ? moduleIndex - 1 : moduleIndex;
     const prevLessonIndex =
@@ -110,18 +110,18 @@ export default function CourseCard({
     if (!isPreviousLessonCompleted(moduleIndex, lessonIndex)) {
       event.preventDefault();
 
-      // Get the previous module and lesson index
+      
       const prevModuleIndex = lessonIndex === 0 ? moduleIndex - 1 : moduleIndex;
       const prevLessonIndex =
         lessonIndex === 0
           ? courseModules![prevModuleIndex].lessons.length - 1
           : lessonIndex - 1;
 
-      // Get the previous lesson's title
+     
       const prevLessonTitle =
         courseModules![prevModuleIndex].lessons[prevLessonIndex].title;
 
-      // Show normal toast at the bottom right
+     
       toast({
         title: "Incomplete Homework",
         description: `Please complete the lesson "${prevLessonTitle}" homework before start this Lesson.`,
@@ -165,7 +165,7 @@ export default function CourseCard({
                           (hw) =>
                             hw.moduleIndex === moduleIndex &&
                             hw.lessonIndex === lessonIndex &&
-                            hw.completed // Check if the homework is completed
+                            hw.completed 
                         );
 
                       const homeworkKey = `${moduleIndex}-${lessonIndex}`;

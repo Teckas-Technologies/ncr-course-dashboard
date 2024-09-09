@@ -30,12 +30,9 @@ export default async function handler(
             .json({ error: "Invalid input. accountIds must be a string." });
         }
         if (typeof transactionHash !== "string" || !transactionHash) {
-          return res
-            .status(400)
-            .json({
-              error:
-                "Invalid input. transactionHash must be a non-empty string.",
-            });
+          return res.status(400).json({
+            error: "Invalid input. transactionHash must be a non-empty string.",
+          });
         }
         const savedAccountIds = await storeAccountIds(
           accountIds,
@@ -45,11 +42,9 @@ export default async function handler(
         return res.status(201).json(savedAccountIds);
 
       case "GET":
-        // Handling GET request to fetch accountIds
         const accountIdQuery = req.query.accountId as string;
         const transactionHashQuery = req.query.transactionHash as string;
         if (accountIdQuery) {
-          // Fetch specific accountId if provided
           const accountData = await getStoredAccountByIds(accountIdQuery);
 
           if (!accountData) {
@@ -59,7 +54,6 @@ export default async function handler(
           console.log("Retrieved account data:", accountData);
           return res.status(200).json(accountData);
         } else if (transactionHashQuery) {
-          // Fetch specific transactionHash if provided
           const transactionData = await getStoredTransactionHash(
             transactionHashQuery
           );
@@ -73,7 +67,6 @@ export default async function handler(
           console.log("Retrieved transaction data:", transactionData);
           return res.status(200).json(transactionData);
         } else {
-          // Fetch all accountIds if no specific accountId is provided
           const storedAccountIds = await getStoredAccountIds();
           console.log("Retrieved all account IDs:", storedAccountIds);
           return res.status(200).json(storedAccountIds);
