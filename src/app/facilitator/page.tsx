@@ -51,7 +51,7 @@ export default function FacilitatorPage() {
    }else{
     router.push("/");
    }
-  })
+  },[signedAccountId])
   return (
     <>
       <TopBar />

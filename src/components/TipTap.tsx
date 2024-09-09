@@ -102,21 +102,18 @@ export default function TipTap({
 
   useEffect(() => {
     if (editor) {
-      // Update editor options based on `isEditorEditable` state
       editor.setOptions({ editable: isEditorEditable });
       setIsEditable(editor.isEditable);
     }
   }, [isEditorEditable, editor]);
 
   useEffect(() => {
-    // Ensure editor editability is set correctly based on `isNewLesson` and `disableEdit`
     if (editor) {
       setEditorEditable(isNewLesson && !disableEdit);
     }
   }, [isNewLesson, disableEdit, editor]);
 
   useEffect(() => {
-    // Update parent component about the editor's editability
     if (editor) {
       setIsEditable(editor.isEditable);
     }

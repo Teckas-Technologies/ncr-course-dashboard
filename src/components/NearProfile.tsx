@@ -8,7 +8,7 @@ import useNearSocialDB from "../../utils/useNearSocial";
 import { useImage } from "../../utils/socialImage";
 import { NEARSocialUserProfile } from "@/types/types";
 import { adminId } from "../../utils/Constant";
-
+import { X } from "lucide-react";
 export default function NearProfile() {
   const [showProfileDetails, setShowProfileDetails] = useState(false);
   const [showToast, setShowToast] = useState(false);
@@ -21,6 +21,7 @@ export default function NearProfile() {
   const { getSocialProfile } = useNearSocialDB();
   const { data, isLoading } = useFeedDesc();
   const { getImage } = useImage();
+  const [showModal, setShowModal] = useState(false);
   const { wallet, signedAccountId } = useContext(NearContext);
 
   const defaultImageUrl =
@@ -46,7 +47,13 @@ export default function NearProfile() {
   // Extract the media URL from the data
   const mediaUrl = data?.mb_views_nft_tokens?.[0]?.media || "";
   console.log("Extracted media URL:", mediaUrl);
+  const handleImageClick = () => {
+    setShowModal(true);
+  };
 
+  const handleCloseModal = () => {
+    setShowModal(false);
+  };
   useEffect(() => {
     if (signedAccountId) {
       const fetchProfile = async () => {
@@ -115,8 +122,24 @@ export default function NearProfile() {
                   className="nft-image"
                   src={mediaUrl || defaultImageUrl}
                   alt="NFT"
+                  onClick={handleImageClick}
+                  style={{ cursor: "pointer" }}
                 />
               </div>
+              {showModal && (
+                <div className="modal-overlay">
+                  <div className="modal-content">
+                    <button className="close-button" onClick={handleCloseModal}>
+                      <X size={24} />
+                    </button>
+                    <img
+                      className="nft-full-image"
+                      src={mediaUrl || defaultImageUrl}
+                      alt="NFT Full Size"
+                    />
+                  </div>
+                </div>
+              )}
               <div className="rectangle">
                 <span className="role-text">
                   {adminId.includes(signedAccountId)
@@ -127,7 +150,6 @@ export default function NearProfile() {
             </div>
           )}
 
-          {/* Social Links Section */}
           {(profile?.linktree?.github ||
             profile?.linktree?.telegram ||
             profile?.linktree?.twitter ||
