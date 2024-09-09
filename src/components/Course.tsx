@@ -10,6 +10,7 @@ import {
   AlertDialogTrigger,
 } from "./ui/alert-dialog";
 import { Button } from "./ui/button";
+import { useRouter } from "next/navigation";
 import {
   Card,
   CardContent,
@@ -19,6 +20,7 @@ import {
 } from "./ui/card";
 import { Module, SelectedLesson, Student } from "@/types/types";
 import { useUpdateStudent } from "@/hook/StudentHook";
+import { useToast } from "./ui/use-toast"; // Import useToast for notification
 
 interface CourseProps {
   selectedLesson: SelectedLesson;
@@ -28,6 +30,7 @@ interface CourseProps {
   isLastLesson: boolean;
   courseModules: Module[];
   student: Student | null | undefined;
+  
 }
 
 export default function Course({
@@ -38,7 +41,9 @@ export default function Course({
   isLastLesson,
   courseModules,
   student,
+ 
 }: CourseProps) {
+  const router = useRouter();
   const finish = useRef<HTMLButtonElement>(null);
   const totalLessons = courseModules?.reduce(
     (total: number, theModule: any) => total + theModule.lessons.length,
@@ -47,6 +52,7 @@ export default function Course({
   const [courseCompleted, setCourseCompleted] = useState(false);
   const [completedLessons, setCompletedLessons] = useState(0);
   const { updateStudent } = useUpdateStudent();
+  const { toast } = useToast(); // Use toast for notification
 
   useEffect(() => {
     const completedCount =
@@ -81,6 +87,34 @@ export default function Course({
   };
 
   const handleNext = () => {
+    const currentModuleIndex = courseModules.findIndex(
+      (module) => module.title === selectedLesson.moduleTitle
+    );
+    const currentLessonIndex = courseModules[
+      currentModuleIndex
+    ].lessons.findIndex(
+      (lesson) => lesson.title === selectedLesson.lessonTitle
+    );
+
+    const isHomeworkCompleted =
+      student &&
+      student.homework.some(
+        (hw) =>
+          hw.moduleIndex === currentModuleIndex &&
+          hw.lessonIndex === currentLessonIndex &&
+          hw.completed
+      );
+    console.log("hw completed?", isHomeworkCompleted);
+
+    if (!isHomeworkCompleted) {
+      toast({
+        title: "Incomplete Homework",
+        description:
+          "Please submit the homework for this lesson before proceeding to the next one.",
+      });
+      return;
+    }
+
     onNextLesson();
     const element = document.getElementById("content-top");
     if (element) {
@@ -95,7 +129,9 @@ export default function Course({
       element.scrollIntoView({ behavior: "auto", block: "start" });
     }
   };
-
+  const handleThankYouClick = () => {
+    router.push("/"); // Navigates to the home page ("/")
+  };
   return (
     <>
       <div className="course-learn-page pt-4">
@@ -142,7 +178,9 @@ export default function Course({
                   You have successfully completed the NCR course!
                 </AlertDialogDescription>
                 <AlertDialogFooter>
-                  <AlertDialogAction>Thank You!</AlertDialogAction>
+                  <AlertDialogAction onClick={handleThankYouClick}>
+                    Thank You!
+                  </AlertDialogAction>
                 </AlertDialogFooter>
               </AlertDialogContent>
             )}

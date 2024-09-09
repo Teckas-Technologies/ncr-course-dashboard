@@ -3,7 +3,6 @@ import { proxyContractAddress } from "./Constant";
 import { uploadReference } from "@mintbase-js/storage";
 import { NearContext, Wallet } from "@/wallet/walletSelector";
 
-
 type ReferenceObject = {
   title?: string;
   description?: string;
@@ -24,10 +23,7 @@ const MintComponent = () => {
     }
   };
 
-  const performTransaction = async (
-    wallet: Wallet,
-    metadata: any,
-  ) => {
+  const performTransaction = async (wallet: Wallet, metadata: any) => {
     if (!wallet) {
       throw new Error("Wallet is not defined.");
     }
@@ -35,13 +31,13 @@ const MintComponent = () => {
     try {
       return await wallet.callMethod({
         contractId: proxyContractAddress,
-        method: 'mint',
+        method: "mint",
         args: {
           metadata: JSON.stringify(metadata),
           nft_contract_id: "ncrcoursencr.mintspace2.testnet",
         },
-        gas: '200000000000000',
-        deposit: '10000000000000000000000'
+        gas: "200000000000000",
+        deposit: "10000000000000000000000",
       });
     } catch (error) {
       console.error("Failed to sign and send transaction:", error);
@@ -64,11 +60,15 @@ const MintComponent = () => {
       const refObject = {
         title: "NCR",
         description: "nft",
-        media: "https://arweave.net/WPQbUMWSZhGtINES3qDsAKvFfVzrygHUhI9DQYhmUg0",
-       
+        media:
+          "https://arweave.net/WPQbUMWSZhGtINES3qDsAKvFfVzrygHUhI9DQYhmUg0",
       };
       const uploadedData = await uploadReferenceObject(refObject);
-      const metadata = { reference: uploadedData?.id, title: "NCR", description: "nft" };
+      const metadata = {
+        reference: uploadedData?.id,
+        title: "NCR",
+        description: "nft",
+      };
       await performTransaction(wallet, metadata);
     } catch (error: any) {
       setError(
@@ -77,9 +77,25 @@ const MintComponent = () => {
     } finally {
       setLoading(false);
     }
-  }
+  };
+  const uploadFile = async (file: File): Promise<string> => {
+    try {
+      const refObject = { media: file };
+      const uploadResult = await uploadReference(refObject);
+      console.log("upload Result >>", uploadResult);
 
-  return { handleMint };
+      const fileUrl = uploadResult?.media_url || "";
+
+      console.log("Uploaded file URL:", fileUrl);
+
+      return fileUrl;
+    } catch (error) {
+      console.error("Failed to upload file:", error);
+      throw new Error("Failed to upload file");
+    }
+  };
+
+  return { handleMint, uploadFile };
 };
 
 export default MintComponent;

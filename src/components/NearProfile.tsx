@@ -8,7 +8,7 @@ import useNearSocialDB from "../../utils/useNearSocial";
 import { useImage } from "../../utils/socialImage";
 import { NEARSocialUserProfile } from "@/types/types";
 import { adminId } from "../../utils/Constant";
-
+import { X } from "lucide-react";
 export default function NearProfile() {
   const [showProfileDetails, setShowProfileDetails] = useState(false);
   const [showToast, setShowToast] = useState(false);
@@ -21,6 +21,7 @@ export default function NearProfile() {
   const { getSocialProfile } = useNearSocialDB();
   const { data, isLoading } = useFeedDesc();
   const { getImage } = useImage();
+  const [showModal, setShowModal] = useState(false);
   const { wallet, signedAccountId } = useContext(NearContext);
 
   const defaultImageUrl =
@@ -46,7 +47,13 @@ export default function NearProfile() {
   // Extract the media URL from the data
   const mediaUrl = data?.mb_views_nft_tokens?.[0]?.media || "";
   console.log("Extracted media URL:", mediaUrl);
+  const handleImageClick = () => {
+    setShowModal(true); // Show the modal when image is clicked
+  };
 
+  const handleCloseModal = () => {
+    setShowModal(false); // Hide the modal when close button is clicked
+  };
   useEffect(() => {
     if (signedAccountId) {
       const fetchProfile = async () => {
@@ -111,12 +118,28 @@ export default function NearProfile() {
           {signedAccountId && (
             <div className="nft-badge">
               <div className="circle">
-                <img
-                  className="nft-image"
-                  src={mediaUrl || defaultImageUrl}
-                  alt="NFT"
-                />
-              </div>
+        <img
+          className="nft-image"
+          src={mediaUrl || defaultImageUrl}
+          alt="NFT"
+          onClick={handleImageClick} // Show modal on image click
+          style={{ cursor: "pointer" }} // Make the image clickable
+        />
+      </div>
+      {showModal && (
+        <div className="modal-overlay">
+          <div className="modal-content">
+            <button className="close-button" onClick={handleCloseModal}>
+              <X size={24} /> {/* "X" icon for closing */}
+            </button>
+            <img
+              className="nft-full-image"
+              src={mediaUrl || defaultImageUrl}
+              alt="NFT Full Size"
+            />
+          </div>
+        </div>
+      )}
               <div className="rectangle">
                 <span className="role-text">
                   {adminId.includes(signedAccountId)

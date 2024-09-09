@@ -35,6 +35,7 @@ export default function CoursePage() {
   const { wallet, signedAccountId } = useContext(NearContext);
   const { fetchStudentById } = useFetchStudentById();
   const [student, setStudent] = useState<Student | null | undefined>(null);
+  const [clcikNext, setClickNext] = useState(false);
   const totalLessons = courseModules?.reduce(
     (total: number, theModule: any) => total + theModule.lessons.length,
     0
@@ -67,7 +68,6 @@ export default function CoursePage() {
     if (!signedAccountId) {
       router.push("/");
       console.log("can't find signedAccountId");
-      
     } else {
       router.push("/course");
     }
@@ -85,9 +85,8 @@ export default function CoursePage() {
         setStudent(res);
       });
     }
-    // }
-  }, [signedAccountId]);
-
+  },[signedAccountId,clcikNext]);//[signedAccountId, clcikNext]
+  console.log("click >>", clcikNext);
   const updateSelectedLesson = (moduleIndex: number, lessonIndex: number) => {
     const theModule: Module | null = courseModules
       ? courseModules[moduleIndex]
@@ -160,6 +159,8 @@ export default function CoursePage() {
                   updateSelectedLesson={updateSelectedLesson}
                   student={student}
                   courseModules={courseModules}
+                  setClickNext={setClickNext}
+                  clcikNext={clcikNext}
                 />
               </div>
               <div className="w-full md:w-9/12 grid grid-cols-1 gap-4">
@@ -168,6 +169,7 @@ export default function CoursePage() {
                   courseModules={courseModules}
                   currentModuleIndex={currentModuleIndex}
                   currentLessonIndex={currentLessonIndex}
+                 
                 />
 
                 <Course
@@ -178,6 +180,7 @@ export default function CoursePage() {
                   isLastLesson={isLastLesson}
                   courseModules={courseModules}
                   student={student}
+                  
                 />
               </div>
             </div>

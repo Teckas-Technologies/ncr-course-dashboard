@@ -24,6 +24,7 @@ export default function Home() {
     const { wallet, signedAccountId } = useContext(NearContext);
     const { fetchStudentById } = useFetchStudentById();
     const [ student, setStudent ] =useState<Student | null | undefined>(null);
+    const [clickNext, setClickNext] = useState(false);
     const totalLessons = courseModules?.reduce((total: number, theModule: any) => total + theModule.lessons.length, 0);
     let progress = 0;
     if (totalLessons) {
@@ -53,7 +54,7 @@ export default function Home() {
           });
         }
       // }
-    }, [signedAccountId]);
+    }, [signedAccountId,clickNext]);
 
     useEffect(() => {
       updateSelectedLesson(currentModuleIndex, currentLessonIndex);
@@ -88,7 +89,8 @@ export default function Home() {
           </div>
           <div className="w-full md:w-9/12 grid grid-cols-1 gap-4">
             <CourseOverview />
-            {courseModules?.length ? <CourseCard setSelectedLesson={setSelectedLesson} updateSelectedLesson={updateSelectedLesson} student={student} courseModules={courseModules} /> : <Loader/> }
+            {courseModules?.length ? <CourseCard setSelectedLesson={setSelectedLesson} updateSelectedLesson={updateSelectedLesson} student={student} courseModules={courseModules} setClickNext={setClickNext}
+                  clcikNext={clickNext}/> : <Loader/> }
           </div>
         </div>
       </div>

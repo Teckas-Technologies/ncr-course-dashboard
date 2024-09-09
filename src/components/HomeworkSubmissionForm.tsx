@@ -1,4 +1,4 @@
-import { ChangeEvent, useState } from "react";
+import { ChangeEvent, useState,useEffect } from "react";
 import { Textarea } from "./ui/textarea";
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
@@ -7,7 +7,7 @@ import { Label } from "./ui/label";
 import { useToast } from "./ui/use-toast";
 import { useSaveStudent } from "@/hook/StudentHook";
 import { Module, Student, HomeworkSubmission } from "@/types/types";
-
+import MintComponent from "../../utils/useMint";
 interface HomeworkSubmissionFormProps {
     studentId: string | null;
     studentCurrentModule: number;
@@ -17,16 +17,27 @@ interface HomeworkSubmissionFormProps {
     currentLesson: number;
     courseModules: Module[] | null;
     handleHomeworkSubmit: any
+    setClickNext:(value:boolean)=>void;
+    clcikNext: boolean;
 }
 
-export default function HomeworkSubmissionForm({ studentId, studentCurrentModule, studentCurrentLesson, studentProgress, currentModule, currentLesson, courseModules, handleHomeworkSubmit }: HomeworkSubmissionFormProps) {
+export default function HomeworkSubmissionForm({ studentId, studentCurrentModule, studentCurrentLesson, studentProgress, currentModule, currentLesson, courseModules, handleHomeworkSubmit,setClickNext,clcikNext }: HomeworkSubmissionFormProps) {
     const [selectedOption, setSelectedOption] = useState<string>("text");
     const [homeworkContent, setHomeworkContent] = useState<string>("");
     const [file, setFile] = useState<File | null>(null);
     const {saveStudent} = useSaveStudent();
-
+    const [isSubmitDisabled, setIsSubmitDisabled] = useState<boolean>(true);
     const { toast } = useToast();
+    const { uploadFile } = MintComponent(); 
 
+    useEffect(() => {
+        // Enable submit button only if the content or file is provided based on the selected option
+        if (selectedOption === "document") {
+            setIsSubmitDisabled(!file);
+        } else {
+            setIsSubmitDisabled(!homeworkContent.trim());
+        }
+    }, [selectedOption, homeworkContent, file]);
     const handleOptionChange = (option: string) => {
         setSelectedOption(option);
         setHomeworkContent("");
@@ -39,6 +50,9 @@ export default function HomeworkSubmissionForm({ studentId, studentCurrentModule
         } else {
           setFile(null);
         }
+    };
+    const removeSelectedFile = () => {
+        setFile(null);
     };
 
     const handleSubmit = async () => {
@@ -78,7 +92,7 @@ export default function HomeworkSubmissionForm({ studentId, studentCurrentModule
                     const homeworkType = selectedOption;
                     let homeworkContentValue = "";
                     if (homeworkType === "document" && file) {
-                        homeworkContentValue = file.name;
+                        homeworkContentValue = await uploadFile(file);
                     } else {
                         homeworkContentValue = homeworkContent;
                     }
@@ -103,14 +117,15 @@ export default function HomeworkSubmissionForm({ studentId, studentCurrentModule
 
                     // formData.append("homework", JSON.stringify(homeworkSubmission));
 
-                    saveStudent(student).then(()=>{
-                        console.log("Student saved with hw")
+                    await saveStudent(student).then(()=>{
+                        console.log("Student saved with hw",homeworkSubmission)
                         toast({
                             title: `${courseModules[currentModule].lessons[currentLesson].title} homework has been submitted successfully!`,
                             description: `Great Achievement ${student.id}!`,
                         })
                     }).then(()=>{
                         handleHomeworkSubmit();
+                        setClickNext(!clcikNext);
                     })
                 }
                 
@@ -146,16 +161,35 @@ export default function HomeworkSubmissionForm({ studentId, studentCurrentModule
                     <Input type="text" value={homeworkContent} onChange={(e) => setHomeworkContent(e.target.value)} placeholder="Paste your homework link here..." />
                 </div>
                 </>
-            case 'document':
-                return <>
-                <div className="hw-input-field mx-2">
-                    <Input type="file" onChange={handleFileChange} />
+            case "document":
+                return (
+                    <div className="hw-input-field mx-2 flex items-center space-x-2">
+                    {file ? (
+                        <>
+                            {/* Truncate the file name if it exceeds 20 characters */}
+                            <span title={file.name}>
+                                {file.name.length > 25 ? `${file.name.slice(0, 25)}...` : file.name}
+                            </span>
+                           
+                            <Button
+                                variant="ghost"
+                                onClick={removeSelectedFile}
+                                className="hover:text-red-500 transition-colors duration-200"
+                                
+                            >
+                                ✕
+                            </Button>
+                        </>
+                    ) : (
+                        <Input type="file" onChange={handleFileChange} />
+                    )}
                 </div>
-                </>
+                );
             default:
                 return null;
         }
     };
+
 
     console.log("Props received in HomeworkSubmissionForm:", {
         studentId,
@@ -187,7 +221,7 @@ export default function HomeworkSubmissionForm({ studentId, studentCurrentModule
             </div>
             {renderSubmissionField()}
             <div className="hw-submit-btn py-3 mx-2">
-                <Button onClick={handleSubmit}>Submit</Button>
+                <Button onClick={handleSubmit} disabled={isSubmitDisabled}>Submit</Button>
             </div>
         </div>
         </>

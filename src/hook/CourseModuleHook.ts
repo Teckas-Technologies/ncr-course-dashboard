@@ -15,7 +15,8 @@ export const useFetchCourseModules = () => {
                 if (!response.ok) throw new Error('Network response was not ok');
                 const modules:Module[] = await response.json();
                 console.log(" Modules : ", modules)
-                setCourseModules(modules)
+                setCourseModules(modules);
+                return modules; 
             } catch (err) {
                 console.error('Error fetching modules:', err);
                 setError("Error fetching modules!");
@@ -30,7 +31,7 @@ export const useFetchCourseModules = () => {
         }, []);
        
   
-    return { courseModules, loading, error };
+    return { courseModules, loading, error,fetchCourseModules };
 };
 
 export const useSaveCourseModule = () => {
