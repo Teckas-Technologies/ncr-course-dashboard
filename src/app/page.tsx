@@ -1,12 +1,12 @@
-'use client';
+"use client";
 import Banner from "@/components/Banner";
 import CourseCard from "@/components/CourseCard";
 import TopBar from "@/components/TopBar";
 import WelcomeCard from "@/components/WelcomeCard";
 import CourseOverview from "@/components/CourseOverview";
 import ProgressComp from "@/components/Progress";
-import SocialMedia from "@/components/SocialMedia"
-import { useEffect, useState,useContext } from "react";
+import SocialMedia from "@/components/SocialMedia";
+import { useEffect, useState, useContext } from "react";
 import { NearContext } from "@/wallet/walletSelector";
 import { Button } from "@/components/ui/button";
 import { useFetchStudentById } from "@/hook/StudentHook";
@@ -15,82 +15,134 @@ import { Module, Student } from "@/types/types";
 import { Skeleton } from "@/components/ui/skeleton";
 import Loader from "@/components/Loader";
 
-
 export default function Home() {
+  const { courseModules, error, loading } = useFetchCourseModules();
+  const [currentModuleIndex, setCurrentModuleIndex] = useState(0);
+  const [currentLessonIndex, setCurrentLessonIndex] = useState(0);
+  const { wallet, signedAccountId } = useContext(NearContext);
+  const { fetchStudentById } = useFetchStudentById();
+  const [student, setStudent] = useState<Student | null | undefined>(null);
+  const [clickNext, setClickNext] = useState(false);
+  const[updateCard,setUpdateCard] = useState(false);
+  const [showSubmitModal, setShowSubmitModal] = useState(false);//
+  const totalLessons = courseModules?.reduce(
+    (total: number, theModule: any) => total + theModule.lessons.length,
+    0
+  );
+  let progress = 0;
+  if (totalLessons) {
+    let completedLessons: number = student?.homework.length || 0;
+    progress = Math.round((completedLessons / totalLessons) * 100);
+  }
+  let currentModule = 0;
+  let currentLesson = 0;
+  if (student) {
+    currentModule = student?.currentModule + 1;
+    currentLesson = student?.currentLesson + 1;
+  }
+  const completedHomework =
+    student?.homework.filter((lesson) => lesson.completed).length || 0;
+  const [selectedLesson, setSelectedLesson] = useState({
+    moduleTitle:
+      courseModules && courseModules.length > 0
+        ? courseModules[0]?.title || ""
+        : "",
+    lessonTitle:
+      courseModules &&
+      courseModules.length > 0 &&
+      courseModules[0]?.lessons.length > 0
+        ? courseModules[0]?.lessons[0]?.title || ""
+        : "",
+    description:
+      courseModules && courseModules.length > 0
+        ? courseModules[0]?.description || ""
+        : "",
+    content:
+      courseModules &&
+      courseModules.length > 0 &&
+      courseModules[0]?.lessons.length > 0
+        ? courseModules[0]?.lessons[0]?.content || ""
+        : "",
+  });
 
-    const { courseModules, error, loading } = useFetchCourseModules();
-    const [ currentModuleIndex, setCurrentModuleIndex] = useState(0);
-    const [currentLessonIndex, setCurrentLessonIndex] = useState(0);
-    const { wallet, signedAccountId } = useContext(NearContext);
-    const { fetchStudentById } = useFetchStudentById();
-    const [ student, setStudent ] =useState<Student | null | undefined>(null);
-    const [clickNext, setClickNext] = useState(false);
-    const totalLessons = courseModules?.reduce((total: number, theModule: any) => total + theModule.lessons.length, 0);
-    let progress = 0;
-    if (totalLessons) {
-        let completedLessons: number = student?.homework.length || 0;
-        progress = Math.round((completedLessons / totalLessons) * 100);
-    }
-    let currentModule=0;
-    let currentLesson=0;
-    if(student){
-      currentModule = student?.currentModule + 1
-      currentLesson = student?.currentLesson + 1
-    }
-    const completedHomework = student?.homework.filter(lesson => lesson.completed).length || 0;
-    const [selectedLesson, setSelectedLesson] = useState({
-      moduleTitle: courseModules && courseModules.length > 0 ? courseModules[0]?.title || "" : "",
-      lessonTitle: courseModules && courseModules.length > 0 && courseModules[0]?.lessons.length > 0 ? courseModules[0]?.lessons[0]?.title || "" : "",
-      description: courseModules && courseModules.length > 0 ? courseModules[0]?.description || "" : "",
-      content: courseModules && courseModules.length > 0 && courseModules[0]?.lessons.length > 0 ? courseModules[0]?.lessons[0]?.content || "" : "",
-    });
-    
-
-    useEffect(()=> {
-      // if(signedAccountId) {
-        if(signedAccountId) {
-          fetchStudentById(signedAccountId.toString()).then((res)=> {
-            setStudent(res);
-          });
-        }
-      // }
-    }, [signedAccountId,clickNext]);
-
-    useEffect(() => {
-      updateSelectedLesson(currentModuleIndex, currentLessonIndex);
-    }, [currentModuleIndex, currentLessonIndex]);
-
-
-    const updateSelectedLesson = (moduleIndex: number, lessonIndex: number) => {
-      const theModule: Module | null = courseModules ? courseModules[moduleIndex] : null;
-      const lesson = theModule?.lessons[lessonIndex];
-      setSelectedLesson({
-        moduleTitle: theModule ? theModule.title : "",
-        lessonTitle: lesson ? lesson.title : "",
-        description: theModule ? theModule.description : "",
-        content: lesson ? lesson.content : "",
+  useEffect(() => {
+    // if(signedAccountId) {
+    if (signedAccountId) {
+      fetchStudentById(signedAccountId.toString()).then((res) => {
+        setStudent(res);
       });
-      setCurrentModuleIndex(moduleIndex);
-      setCurrentLessonIndex(lessonIndex);
-    };
-    
+    }
+    // }
+  }, [signedAccountId, clickNext,updateCard]);
+  console.log("update-----",updateCard);
+  
 
+  useEffect(() => {
+    updateSelectedLesson(currentModuleIndex, currentLessonIndex);
+  }, [currentModuleIndex, currentLessonIndex]);
 
+  const updateSelectedLesson = (moduleIndex: number, lessonIndex: number) => {
+    const theModule: Module | null = courseModules
+      ? courseModules[moduleIndex]
+      : null;
+    const lesson = theModule?.lessons[lessonIndex];
+    setSelectedLesson({
+      moduleTitle: theModule ? theModule.title : "",
+      lessonTitle: lesson ? lesson.title : "",
+      description: theModule ? theModule.description : "",
+      content: lesson ? lesson.content : "",
+    });
+    setCurrentModuleIndex(moduleIndex);
+    setCurrentLessonIndex(lessonIndex);
+  };
+  const handleSubmitSuccess = () => {
+    setShowSubmitModal(false); // Close the modal after successful submission
+   
+  };
   return (
     <>
-      <TopBar/>
-      <Banner totalModules={courseModules?.length} totalLessons={totalLessons} />
+      <TopBar />
+      <Banner
+        totalModules={courseModules?.length}
+        totalLessons={totalLessons}
+      />
       <div className="main-page">
         <div className="flex flex-col md:flex-row gap-4">
           <div className="hidden md:block w-full md:w-3/12">
-            {signedAccountId && student ? <ProgressComp value={progress} currentModule={currentModule } currentLesson={currentLesson} homework={completedHomework} /> 
-            : <ProgressComp value={progress} currentModule={0} currentLesson={0} homework={completedHomework} /> }
+            {signedAccountId && student ? (
+              <ProgressComp
+                value={progress}
+                currentModule={currentModule}
+                currentLesson={currentLesson}
+                homework={completedHomework}
+              />
+            ) : (
+              <ProgressComp
+                value={progress}
+                currentModule={0}
+                currentLesson={0}
+                homework={completedHomework}
+              />
+            )}
             <SocialMedia />
           </div>
           <div className="w-full md:w-9/12 grid grid-cols-1 gap-4">
             <CourseOverview />
-            {courseModules?.length ? <CourseCard setSelectedLesson={setSelectedLesson} updateSelectedLesson={updateSelectedLesson} student={student} courseModules={courseModules} setClickNext={setClickNext}
-                  clcikNext={clickNext}/> : <Loader/> }
+            {courseModules?.length ? (
+              <CourseCard
+                setSelectedLesson={setSelectedLesson}
+                updateSelectedLesson={updateSelectedLesson}
+                student={student}
+                courseModules={courseModules}
+                setClickNext={setClickNext}
+                clickNext={clickNext}
+                handleSubmitSuccess={handleSubmitSuccess}
+                setUpdateCard={setUpdateCard}
+                updateCard={updateCard}
+              />
+            ) : (
+              <Loader />
+            )}
           </div>
         </div>
       </div>

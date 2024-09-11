@@ -35,7 +35,9 @@ export default function CoursePage() {
   const { wallet, signedAccountId } = useContext(NearContext);
   const { fetchStudentById } = useFetchStudentById();
   const [student, setStudent] = useState<Student | null | undefined>(null);
-  const [clcikNext, setClickNext] = useState(false);
+  const [clickNext, setClickNext] = useState(false);
+  const[updateCard,setUpdateCard] = useState(false);
+  const [showSubmitModal, setShowSubmitModal] = useState(false);
   const totalLessons = courseModules?.reduce(
     (total: number, theModule: any) => total + theModule.lessons.length,
     0
@@ -85,8 +87,9 @@ export default function CoursePage() {
         setStudent(res);
       });
     }
-  },[signedAccountId,clcikNext]);//[signedAccountId, clcikNext]
-  console.log("click >>", clcikNext);
+  }, [signedAccountId, clickNext]); //[signedAccountId, clickNext]
+  console.log("click >>", clickNext);
+  console.log("update-----",updateCard);
   const updateSelectedLesson = (moduleIndex: number, lessonIndex: number) => {
     const theModule: Module | null = courseModules
       ? courseModules[moduleIndex]
@@ -137,7 +140,10 @@ export default function CoursePage() {
       currentLessonIndex ===
         courseModules[currentModuleIndex].lessons.length - 1;
   }
-
+  const handleSubmitSuccess = () => {
+    setShowSubmitModal(false); 
+   
+  };
   return (
     <>
       <TopBar />
@@ -160,7 +166,10 @@ export default function CoursePage() {
                   student={student}
                   courseModules={courseModules}
                   setClickNext={setClickNext}
-                  clcikNext={clcikNext}
+                  clickNext={clickNext}
+                  handleSubmitSuccess={handleSubmitSuccess}
+                  setUpdateCard={setUpdateCard}
+                  updateCard={updateCard}
                 />
               </div>
               <div className="w-full md:w-9/12 grid grid-cols-1 gap-4">
@@ -169,7 +178,11 @@ export default function CoursePage() {
                   courseModules={courseModules}
                   currentModuleIndex={currentModuleIndex}
                   currentLessonIndex={currentLessonIndex}
-                 
+                  setClickNext={setClickNext}
+                  clickNext={clickNext}
+                  handleSubmitSuccess={handleSubmitSuccess}
+                  setUpdateCard={setUpdateCard}
+                  updateCard={updateCard}
                 />
 
                 <Course
@@ -180,7 +193,13 @@ export default function CoursePage() {
                   isLastLesson={isLastLesson}
                   courseModules={courseModules}
                   student={student}
-                  
+                  setClickNext={setClickNext}
+                  clickNext={clickNext}
+                  setUpdateCard={setUpdateCard}
+                  updateCard={updateCard}
+                  showSubmitModal={showSubmitModal}
+                  setShowSubmitModal={setShowSubmitModal}
+                  handleSubmitSuccess={handleSubmitSuccess}
                 />
               </div>
             </div>
