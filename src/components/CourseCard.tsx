@@ -29,8 +29,11 @@ interface CourseCardProps {
   updateSelectedLesson: (moduleIndex: number, lessonIndex: number) => void;
   student: Student | null | undefined;
   courseModules: Module[] | null;
-  setClickNext:(value:boolean)=>void;
-  clcikNext: boolean;
+  setClickNext: (value: boolean) => void;
+  clickNext: boolean;
+  handleSubmitSuccess: () => void;
+  setUpdateCard:(value: boolean) => void;
+  updateCard:boolean;
 }
 
 export default function CourseCard({
@@ -39,7 +42,10 @@ export default function CourseCard({
   student,
   courseModules,
   setClickNext,
-  clcikNext
+  clickNext,
+  handleSubmitSuccess,
+  setUpdateCard,
+  updateCard
 }: CourseCardProps) {
   const { wallet, signedAccountId } = useContext(NearContext);
   const [showPopup, setShowPopup] = useState(false);
@@ -82,7 +88,7 @@ export default function CourseCard({
     lessonIndex: number
   ) => {
     if (lessonIndex === 0 && moduleIndex === 0) {
-      return true; 
+      return true;
     }
     const prevModuleIndex = lessonIndex === 0 ? moduleIndex - 1 : moduleIndex;
     const prevLessonIndex =
@@ -110,18 +116,15 @@ export default function CourseCard({
     if (!isPreviousLessonCompleted(moduleIndex, lessonIndex)) {
       event.preventDefault();
 
-      
       const prevModuleIndex = lessonIndex === 0 ? moduleIndex - 1 : moduleIndex;
       const prevLessonIndex =
         lessonIndex === 0
           ? courseModules![prevModuleIndex].lessons.length - 1
           : lessonIndex - 1;
 
-     
       const prevLessonTitle =
         courseModules![prevModuleIndex].lessons[prevLessonIndex].title;
 
-     
       toast({
         title: "Incomplete Homework",
         description: `Please complete the lesson "${prevLessonTitle}" homework before start this Lesson.`,
@@ -165,7 +168,7 @@ export default function CourseCard({
                           (hw) =>
                             hw.moduleIndex === moduleIndex &&
                             hw.lessonIndex === lessonIndex &&
-                            hw.completed 
+                            hw.completed
                         );
 
                       const homeworkKey = `${moduleIndex}-${lessonIndex}`;
@@ -190,7 +193,7 @@ export default function CourseCard({
                               ) ? (
                                 <>
                                   <Link
-                                    href="/course"
+                                    href={`/course?module=${moduleIndex}&lesson=${lessonIndex}`}
                                     className="reference-link"
                                     onClick={handleNavigation}
                                   >
@@ -231,13 +234,16 @@ export default function CourseCard({
                                             currentLesson={lessonIndex}
                                             courseModules={courseModules}
                                             setClickNext={setClickNext}
-                                            clcikNext={clcikNext}
+                                            clickNext={clickNext}
+                                            setUpdateCard={setUpdateCard}
+                                            updateCard={updateCard}
                                             handleHomeworkSubmit={() =>
                                               handleHomeworkSubmit(
                                                 moduleIndex,
                                                 lessonIndex
                                               )
                                             }
+                                            handleSubmitSuccess={handleSubmitSuccess}
                                           />
                                         </AccordionContent>
                                       </AccordionItem>

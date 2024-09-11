@@ -20,7 +20,8 @@ import {
 } from "./ui/card";
 import { Module, SelectedLesson, Student } from "@/types/types";
 import { useUpdateStudent } from "@/hook/StudentHook";
-import { useToast } from "./ui/use-toast"; // Import useToast for notification
+import { useToast } from "./ui/use-toast";
+import HomeworkSubmissionForm from "./HomeworkSubmissionForm";
 
 interface CourseProps {
   selectedLesson: SelectedLesson;
@@ -30,7 +31,13 @@ interface CourseProps {
   isLastLesson: boolean;
   courseModules: Module[];
   student: Student | null | undefined;
-  
+  setClickNext:(value:boolean)=>void;
+  clickNext: boolean;
+  setUpdateCard:(value: boolean) => void;
+  updateCard:boolean;
+  showSubmitModal:boolean;
+  handleSubmitSuccess:()=>void;
+  setShowSubmitModal:(value:boolean)=>void;
 }
 
 export default function Course({
@@ -41,7 +48,13 @@ export default function Course({
   isLastLesson,
   courseModules,
   student,
- 
+  setClickNext,
+  clickNext,
+  setUpdateCard,
+  updateCard,
+  showSubmitModal,
+  handleSubmitSuccess,
+  setShowSubmitModal
 }: CourseProps) {
   const router = useRouter();
   const finish = useRef<HTMLButtonElement>(null);
@@ -52,7 +65,22 @@ export default function Course({
   const [courseCompleted, setCourseCompleted] = useState(false);
   const [completedLessons, setCompletedLessons] = useState(0);
   const { updateStudent } = useUpdateStudent();
-  const { toast } = useToast(); 
+  const { toast } = useToast();
+  let progress = 0;
+  if (totalLessons) {
+    let completedLessons: number = student?.homework.length || 0;
+    progress = Math.round((completedLessons / totalLessons) * 100);
+  }
+  const [submittedHomework, setSubmittedHomework] = useState<{
+    [key: string]: boolean;
+  }>({});
+
+  const handleHomeworkSubmit = (moduleIndex: number, lessonIndex: number) => {
+    setSubmittedHomework((prev) => ({
+      ...prev,
+      [`${moduleIndex}-${lessonIndex}`]: true,
+    }));
+  };
 
   useEffect(() => {
     const completedCount =
@@ -107,11 +135,36 @@ export default function Course({
     console.log("hw completed?", isHomeworkCompleted);
 
     if (!isHomeworkCompleted) {
+      // toast({
+      //   title: "Incomplete Homework",
+      //   description:
+      //     "Please submit the homework for this lesson before proceeding to the next one.",
+      //   action: (
+      //     <Button onClick={() => setShowSubmitModal(true)}>
+      //       Submit Homework
+      //     </Button>
+      //   ),
+      // });
       toast({
-        title: "Incomplete Homework",
-        description:
-          "Please submit the homework for this lesson before proceeding to the next one.",
+        title: "Incomplete Homework", 
+        description: (
+          <div className="flex flex-col">
+            <div>
+              <p>
+                Please submit the homework for this lesson before proceeding to
+                the next one.
+              </p>
+            </div>
+            <Button
+              onClick={() => setShowSubmitModal(true)}
+              className="self-center mb-2 text-xs mt-4 w-32" 
+            >
+              Submit Homework
+            </Button>
+          </div>
+        ), 
       });
+
       return;
     }
 
@@ -130,8 +183,17 @@ export default function Course({
     }
   };
   const handleThankYouClick = () => {
-    router.push("/"); 
+    router.push("/");
   };
+
+  const moduleIndex = courseModules.findIndex(
+    (module) => module.title === selectedLesson.moduleTitle
+  );
+  const lessonIndex = courseModules[moduleIndex]?.lessons.findIndex(
+    (lesson) => lesson.title === selectedLesson.lessonTitle
+  );
+  
+  
   return (
     <>
       <div className="course-learn-page pt-4">
@@ -165,6 +227,40 @@ export default function Course({
               )}
             </div>
           </CardContent>
+          {/* Homework Submission Modal */}
+          <AlertDialog open={showSubmitModal} onOpenChange={setShowSubmitModal}>
+            <AlertDialogContent>
+              <AlertDialogHeader>
+                <AlertDialogTitle>Submit Homework</AlertDialogTitle>
+              </AlertDialogHeader>
+              <AlertDialogDescription>
+                Please submit the homework for the current lesson.
+              </AlertDialogDescription>
+              <HomeworkSubmissionForm
+                studentId={student ? student.id : ""}
+                studentCurrentModule={student ? student.currentModule : 0}
+                studentCurrentLesson={student ? student.currentModule : 0}
+                studentProgress={progress}
+                currentModule={moduleIndex}
+                currentLesson={lessonIndex}
+                courseModules={courseModules}
+                setClickNext={setClickNext}
+                clickNext={clickNext}
+                setUpdateCard={setUpdateCard}
+                updateCard={updateCard}
+                handleHomeworkSubmit={() =>
+                  handleHomeworkSubmit(moduleIndex, lessonIndex)
+                  
+                }
+                handleSubmitSuccess={handleSubmitSuccess}
+              />
+              <AlertDialogFooter>
+                <AlertDialogAction onClick={() => setShowSubmitModal(false)}>
+                  Close
+                </AlertDialogAction>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialog>
           <AlertDialog>
             <AlertDialogTrigger asChild>
               <Button ref={finish} style={{ display: "none" }}>

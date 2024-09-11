@@ -19,6 +19,11 @@ interface HomeworkSubmissionMobileMenuProps {
   courseModules: Module[] | null;
   currentModuleIndex: number;
   currentLessonIndex: number;
+  setClickNext:(value:boolean)=>void;
+  clickNext: boolean;
+  handleSubmitSuccess: () => void;
+  setUpdateCard:(value: boolean) => void;
+  updateCard:boolean;
 }
 
 export default function HomeworkSubmissionMobileMenu({
@@ -26,9 +31,14 @@ export default function HomeworkSubmissionMobileMenu({
   courseModules,
   currentModuleIndex,
   currentLessonIndex,
+  setClickNext,
+  clickNext,
+  handleSubmitSuccess,
+  setUpdateCard,
+  updateCard
 }: HomeworkSubmissionMobileMenuProps) {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const [clickNext, setClickNext] = useState(false);
+ 
   const isHomeworkCompleted =
     student &&
     student.homework.some(
@@ -85,7 +95,10 @@ export default function HomeworkSubmissionMobileMenu({
                   courseModules={courseModules}
                   handleHomeworkSubmit={handleHomeworkSubmit}
                   setClickNext={setClickNext}
-                  clcikNext={clickNext}
+                  clickNext={clickNext}
+                  handleSubmitSuccess={handleSubmitSuccess}
+                  setUpdateCard={setUpdateCard}
+                  updateCard={updateCard}
                 />
               </div>
             )}
