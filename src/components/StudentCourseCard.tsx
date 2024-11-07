@@ -78,7 +78,7 @@ export default function StudentCourseCard({courseModules, student}: CourseModule
                     })}
                 </Accordion>
             ) : (
-                <div style={{ textAlign: 'center', color: '#df3276', margin: '20px 0', fontSize: '18px', 
+                <div style={{ textAlign: 'center', color: '#008080', margin: '20px 0', fontSize: '18px', 
                     fontWeight: 'bold'  }}>
                     No homework submitted yet.
                 </div>

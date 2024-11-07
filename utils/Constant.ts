@@ -4,7 +4,8 @@ export const adminId = [
   "fungible_rhmor.testnet",
   "sharmi_blessyy.testnet",
   "finite_sylar.testnet",
-  "qhpar_pulse.testnet"
+  "qhpar_pulse.testnet",
+  "kosh-cerf.testnet"
 ];
 export const proxyContractAddress =
   process.env.NEXT_PUBLIC_PROXY_MINTER_CONTRACT_ADDRESS ||

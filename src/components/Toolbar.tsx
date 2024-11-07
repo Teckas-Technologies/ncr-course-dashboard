@@ -18,6 +18,7 @@ import {
   LinkIcon,
   CheckIcon,
   PencilIcon,
+  YoutubeIcon,
 } from "lucide-react";
 import {
   Tooltip,
@@ -69,8 +70,12 @@ export function Toolbar({
   const [linkUrl, setLinkUrl] = useState("");
   const [linkPosition, setLinkPosition] = useState({ top: 0, left: 0 });
 
+  const [showTYLinkDialog, setShowYTLinkDialog] = useState(false);
+  const [YTLinkUrl, setYTLinkUrl] = useState("");
+
   const [isDisabled, setIsDisabled] = useState(disabled);
   const [isUrlValid, setIsUrlValid] = useState(false);
+  const [isYTUrlValid, setIsYTUrlValid] = useState(false);
 
   useEffect(() => {
     setIsDisabled(disabled);
@@ -121,6 +126,34 @@ export function Toolbar({
     setLinkUrl(url);
     setIsUrlValid(url.startsWith("https://"));
   };
+
+  const addVideo = () => {
+    setShowYTLinkDialog(!showTYLinkDialog);
+  };
+
+  const handleYTLinkSubmit = () => {
+    if (editor && YTLinkUrl.trim() !== "") {
+      const embedUrl = YTLinkUrl.replace("watch?v=", "embed/");
+      editor
+        .chain()
+        .focus()
+        .setYoutubeVideo({ src: embedUrl })
+        .run();
+      setYTLinkUrl("");
+    }
+    setShowYTLinkDialog(false);
+  };
+
+  const handleYTLinkCancel = () => {
+    setShowYTLinkDialog(false);
+  };
+
+  const handleYTUrlChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const url = e.target.value;
+    setYTLinkUrl(url);
+    setIsYTUrlValid(url.startsWith("https://"));
+  };
+
   if (!editor) {
     return null;
   }
@@ -419,6 +452,23 @@ export function Toolbar({
                 </TooltipContent>
               </Tooltip>
             </TooltipProvider>
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Toggle
+                    size="sm"
+                    className={editor.isActive("link") ? "bg-gray-300" : ""}
+                    pressed={editor.isActive("link")}
+                    onPressedChange={() => toolbar && !isDisabled && addVideo()}
+                  >
+                    <YoutubeIcon className="h-4 w-4" />
+                  </Toggle>
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p>Youtube</p>
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
           </>
         )}
       </div>
@@ -529,8 +579,55 @@ export function Toolbar({
               </TooltipContent>
             </Tooltip>
           </TooltipProvider>
+          <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Toggle
+                    size="sm"
+                    className={editor.isActive("link") ? "bg-gray-300" : ""}
+                    pressed={editor.isActive("link")}
+                    onPressedChange={() => toolbar && !isDisabled && addVideo()}
+                  >
+                    <YoutubeIcon className="h-4 w-4" />
+                  </Toggle>
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p>Youtube</p>
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
         </div>
       )}
+
+      <AlertDialog open={showTYLinkDialog}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Enter the video URL</AlertDialogTitle>
+          </AlertDialogHeader>
+          <FormItem className="py-2">
+            <FormControl>
+              <Input
+                type="text"
+                placeholder="Enter the youtube video URL here..."
+                value={YTLinkUrl}
+                onChange={handleYTUrlChange}
+              />
+            </FormControl>
+            <FormMessage />
+          </FormItem>
+          <AlertDialogFooter>
+            <AlertDialogCancel onClick={handleYTLinkCancel}>
+              Cancel
+            </AlertDialogCancel>
+            <AlertDialogAction
+              onClick={handleYTLinkSubmit}
+              disabled={!isYTUrlValid}
+            >
+              Add URL
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
 
       <AlertDialog open={showLinkDialog}>
         <AlertDialogContent>

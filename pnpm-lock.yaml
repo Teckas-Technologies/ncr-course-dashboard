@@ -152,6 +152,9 @@ importers:
       '@tiptap/extension-table-row':
         specifier: ^2.4.0
         version: 2.6.6(@tiptap/core@2.6.6(@tiptap/pm@2.6.6))
+      '@tiptap/extension-youtube':
+        specifier: ^2.9.1
+        version: 2.9.1(@tiptap/core@2.6.6(@tiptap/pm@2.6.6))
       '@tiptap/pm':
         specifier: ^2.4.0
         version: 2.6.6
@@ -1831,6 +1834,11 @@ packages:
     resolution: {integrity: sha512-e84uILnRzNzcwK1DVQNpXVmBG1Cq3BJipTOIDl1LHifOok7MBjhI/X+/NR0bd3N2t6gmDTWi63+4GuJ5EeDmsg==}
     peerDependencies:
       '@tiptap/core': ^2.6.6
+
+  '@tiptap/extension-youtube@2.9.1':
+    resolution: {integrity: sha512-wGclckWIXCzzGMb2yN2LsfCEiJu2pMZaR6eRhHCiZWuewZeXNvlYIo73xNnR7JvwyLynwEA/VEb0jw4HMhOnrQ==}
+    peerDependencies:
+      '@tiptap/core': ^2.7.0
 
   '@tiptap/pm@2.6.6':
     resolution: {integrity: sha512-56FGLPn3fwwUlIbLs+BO21bYfyqP9fKyZQbQyY0zWwA/AG2kOwoXaRn7FOVbjP6CylyWpFJnpRRmgn694QKHEg==}
@@ -7110,6 +7118,10 @@ snapshots:
     dependencies:
       '@tiptap/core': 2.6.6(@tiptap/pm@2.6.6)
 
+  '@tiptap/extension-youtube@2.9.1(@tiptap/core@2.6.6(@tiptap/pm@2.6.6))':
+    dependencies:
+      '@tiptap/core': 2.6.6(@tiptap/pm@2.6.6)
+
   '@tiptap/pm@2.6.6':
     dependencies:
       prosemirror-changeset: 2.2.1
@@ -8065,7 +8077,7 @@ snapshots:
       eslint: 8.57.0
       eslint-import-resolver-node: 0.3.9
       eslint-import-resolver-typescript: 3.6.1(@typescript-eslint/parser@7.2.0(eslint@8.57.0)(typescript@5.5.4))(eslint-import-resolver-node@0.3.9)(eslint-plugin-import@2.29.1(eslint@8.57.0))(eslint@8.57.0)
-      eslint-plugin-import: 2.29.1(@typescript-eslint/parser@7.2.0(eslint@8.57.0)(typescript@5.5.4))(eslint-import-resolver-typescript@3.6.1(@typescript-eslint/parser@7.2.0(eslint@8.57.0)(typescript@5.5.4))(eslint-import-resolver-node@0.3.9)(eslint-plugin-import@2.29.1(eslint@8.57.0))(eslint@8.57.0))(eslint@8.57.0)
+      eslint-plugin-import: 2.29.1(@typescript-eslint/parser@7.2.0(eslint@8.57.0)(typescript@5.5.4))(eslint-import-resolver-typescript@3.6.1)(eslint@8.57.0)
       eslint-plugin-jsx-a11y: 6.9.0(eslint@8.57.0)
       eslint-plugin-react: 7.35.0(eslint@8.57.0)
       eslint-plugin-react-hooks: 4.6.2(eslint@8.57.0)
@@ -8089,7 +8101,7 @@ snapshots:
       enhanced-resolve: 5.17.1
       eslint: 8.57.0
       eslint-module-utils: 2.8.1(@typescript-eslint/parser@7.2.0(eslint@8.57.0)(typescript@5.5.4))(eslint-import-resolver-node@0.3.9)(eslint-import-resolver-typescript@3.6.1(@typescript-eslint/parser@7.2.0(eslint@8.57.0)(typescript@5.5.4))(eslint-import-resolver-node@0.3.9)(eslint-plugin-import@2.29.1(eslint@8.57.0))(eslint@8.57.0))(eslint@8.57.0)
-      eslint-plugin-import: 2.29.1(@typescript-eslint/parser@7.2.0(eslint@8.57.0)(typescript@5.5.4))(eslint-import-resolver-typescript@3.6.1(@typescript-eslint/parser@7.2.0(eslint@8.57.0)(typescript@5.5.4))(eslint-import-resolver-node@0.3.9)(eslint-plugin-import@2.29.1(eslint@8.57.0))(eslint@8.57.0))(eslint@8.57.0)
+      eslint-plugin-import: 2.29.1(@typescript-eslint/parser@7.2.0(eslint@8.57.0)(typescript@5.5.4))(eslint-import-resolver-typescript@3.6.1)(eslint@8.57.0)
       fast-glob: 3.3.2
       get-tsconfig: 4.7.6
       is-core-module: 2.15.0
@@ -8111,7 +8123,7 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  eslint-plugin-import@2.29.1(@typescript-eslint/parser@7.2.0(eslint@8.57.0)(typescript@5.5.4))(eslint-import-resolver-typescript@3.6.1(@typescript-eslint/parser@7.2.0(eslint@8.57.0)(typescript@5.5.4))(eslint-import-resolver-node@0.3.9)(eslint-plugin-import@2.29.1(eslint@8.57.0))(eslint@8.57.0))(eslint@8.57.0):
+  eslint-plugin-import@2.29.1(@typescript-eslint/parser@7.2.0(eslint@8.57.0)(typescript@5.5.4))(eslint-import-resolver-typescript@3.6.1)(eslint@8.57.0):
     dependencies:
       array-includes: 3.1.8
       array.prototype.findlastindex: 1.2.5

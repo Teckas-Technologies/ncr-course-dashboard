@@ -9,6 +9,7 @@ import TableRow from "@tiptap/extension-table-row";
 import TableCell from "@tiptap/extension-table-cell";
 import TableHeader from "@tiptap/extension-table-header";
 import Link from "@tiptap/extension-link";
+import Youtube from "@tiptap/extension-youtube";
 import { useEffect, useState } from "react";
 
 export default function TipTap({
@@ -28,6 +29,7 @@ export default function TipTap({
 }) {
   const [isEditorEditable, setEditorEditable] = useState(!disabled);
   const [toolBar, setToolBar] = useState(false);
+  const [dynamicWidth, setDynamicWidth] = useState(window.innerWidth * 0.8);
   const editor = useEditor({
     extensions: [
       StarterKit.configure({
@@ -80,6 +82,14 @@ export default function TipTap({
         },
         openOnClick: false,
       }),
+      Youtube.configure({
+        controls: false,
+        nocookie: true,
+        allowFullscreen: true,
+        HTMLAttributes: {
+          style: "width: 100%; height:auto; aspect-ratio: 16/9; pointer-events: auto;"
+        }
+      }),
     ],
     content: content,
     editable: isEditorEditable,
@@ -118,6 +128,7 @@ export default function TipTap({
       setIsEditable(editor.isEditable);
     }
   }, [editor?.isEditable, editor]);
+  console.log(`${dynamicWidth},${window.innerWidth}`)
 
   const setEditable = () => {
     setEditorEditable(true);
