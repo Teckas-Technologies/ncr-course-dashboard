@@ -205,18 +205,25 @@ export default function TopBar() {
         <div className="main-header-logo-icon">
           <div className="hamburger" onClick={() => setIsOpen(!isOpen)}>
             {isOpen ? (
-              <XIcon style={{ color: "#fff", height: "42px", width: "52px" }} />
+              <XIcon style={{ color: "#008080", height: "42px", width: "52px" }} />
             ) : (
               <MenuIcon
-                style={{ color: "#fff", height: "42px", width: "52px" }}
+                style={{ color: "#008080", height: "42px", width: "52px" }}
               />
             )}{" "}
           </div>
-          <h2 style={{ fontWeight: 700, fontSize: 25, color: "#fff" }}>
+          {/* <h2 style={{ fontWeight: 700, fontSize: 25, color: "#fff" }}>
             <Link href="/" style={{ color: "#fff", textDecoration: "none" }}>
               <span style={{ color: "#DF3276" }}> NCR</span> Course
             </Link>
-          </h2>
+          </h2> */}
+          <div className="logo-holder md:w-[5rem] md:h-[5rem] w-[4rem] h-[4rem]">
+            <img src="/images/ncr-logo.png" alt="ncr course" className="w-full h-full object-cover" />
+          </div>
+          <div className="name flex md:flex-row flex-col md:gap-1 gap-0 justify-center">
+            <h2 className="md:text-xl text-lg md:font-bold font-semibold leading-tight" style={{color: "#008080"}}>NCR</h2>
+            <span className="md:text-xl text-lg md:font-semibold font-semibold leading-tight">Course</span>
+          </div>
         </div>
         <div className="header-right">
           <div className="profile-pic">
@@ -229,7 +236,7 @@ export default function TopBar() {
                 key={index}
                 className={`nav-link ${pathname === menu.path ? "active" : ""}`}
               >
-                {menu.name}
+                <h2 className="">{menu.name}</h2>
               </Link>
             ))}
             {signedAccountId && (
@@ -268,7 +275,7 @@ export default function TopBar() {
               <div className="flex items-center gap-2">
                 {/* <p className="text-white">{activeAccountId}</p> */}
                 <button
-                  className="px-4 py-2 flex action-btn rounded"
+                  className="px-4 py-2 flex action-btn rounded-3xl"
                   style={{
                     width: "auto",
                     display: "flex",
@@ -276,7 +283,8 @@ export default function TopBar() {
                     gap: 8,
                     fontSize: 14,
                     fontWeight: 400,
-                    backgroundColor: "#fff",
+                    backgroundColor: "#ffffff",
+                    border: "1.5px solid #008080"
                   }}
                   onClick={handleSignout}
                 >
@@ -294,7 +302,7 @@ export default function TopBar() {
               </div>
             ) : (
               <button
-                className="px-4 py-2 flex action-btn rounded"
+                className="px-4 py-2 flex action-btn rounded-3xl"
                 style={{
                   width: "auto",
                   display: "flex",
@@ -302,7 +310,8 @@ export default function TopBar() {
                   gap: 8,
                   fontSize: 14,
                   fontWeight: 400,
-                  backgroundColor: "#fff",
+                  backgroundColor: "#ffffff",
+                    border: "1.5px solid #008080"
                 }}
                 onClick={handleSignIn}
               >
@@ -414,7 +423,7 @@ export default function TopBar() {
           <AlertDialogFooter className="sm:justify-center">
             <AlertDialogAction
               onClick={handleMint}
-              className="bg-[#df3276] text-white px-4 py-2 rounded-md"
+              className="bg-[#008080] text-white px-4 py-2 rounded-md"
             >
               Register
             </AlertDialogAction>
@@ -440,7 +449,7 @@ export default function TopBar() {
           <AlertDialogFooter className="sm:justify-center">
             <AlertDialogAction
               onClick={handleClose}
-              className="bg-[#df3276] text-white px-4 py-2 rounded-md"
+              className="bg-[#008080] text-white px-4 py-2 rounded-md"
             >
               Get Started
             </AlertDialogAction>

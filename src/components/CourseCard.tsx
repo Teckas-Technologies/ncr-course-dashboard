@@ -278,7 +278,7 @@ export default function CourseCard({
           <AlertDialogFooter className="sm:justify-center">
             <AlertDialogAction
               onClick={handleSignIn}
-              className="bg-[#df3276] text-white px-4 py-2 rounded-md"
+              className="bg-[#008080] text-white px-4 py-2 rounded-md"
             >
               Sign In
             </AlertDialogAction>
