@@ -1,14 +1,14 @@
 "use client"
 import React, { useState, useEffect } from 'react';
 import { Wallet,NearContext } from '@/wallet/walletSelector';
-import { network } from '../../utils/Constant';
+import { network, nftContrctAddress } from '../../utils/Constant';
 
 export const WalletProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [wallet, setWallet] = useState<Wallet>();
   const [signedAccountId, setSignedAccountId] = useState<string>('');
 
   useEffect(() => {
-    const walletInstance = new Wallet({ networkId: network, createAccessKeyFor: 'test.testnet' });
+    const walletInstance = new Wallet({ networkId: network, createAccessKeyFor: nftContrctAddress });
     walletInstance.startUp(setSignedAccountId);
     setWallet(walletInstance);
   }, []);

@@ -143,7 +143,7 @@ export default function CourseCard({
   return (
     <>
       {courseModules && (
-        <Card className="course-card">
+        <Card className="course-card" id="syllabus">
           <CardHeader>
             <CardTitle className="course-content">
               <Notebook />
