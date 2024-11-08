@@ -13,7 +13,7 @@ export default function WelcomeCard() {
                 <CardDescription>Lean More About NCR Course</CardDescription>
             </CardHeader>
             <div className="welcome-card-action">
-                <Link href="https://hackmd.io/@doulos819/NRC#NEAR-Certified-Researcher-Course-Syllabus" target="_blank"><ArrowRightIcon className="syllabus-icon"/></Link>
+                <Link href="/#syllabus"><ArrowRightIcon className="syllabus-icon"/></Link>
             </div>
         </Card>
         </>

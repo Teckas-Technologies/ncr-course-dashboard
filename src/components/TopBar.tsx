@@ -20,10 +20,9 @@ import { useFetchStudentById, useSaveStudent } from "@/hook/StudentHook";
 import { Student } from "@/types/types";
 import { useFetchCourseModules } from "@/hook/CourseModuleHook";
 import { usePathname } from "next/navigation";
-import { adminId } from "../../utils/Constant";
+import { adminId, network } from "../../utils/Constant";
 import MintComponent from "../../utils/useMint";
 import { useAccountIds } from "@/hook/AccountIdHook";
-import { proxyContractAddress } from "../../utils/Constant";
 
 import {
   AlertDialog,
@@ -143,7 +142,7 @@ export default function TopBar() {
               console.log("Transaction hash already exists in the database.");
             } else {
               const senderId = signedAccountId;
-              const rpcUrl = "https://rpc.testnet.near.org";
+              const rpcUrl = `https://rpc.${network}.near.org`;
               const txnStatus = await getTxnStatus(txnHash, senderId, rpcUrl);
               console.log("Transaction Status:", txnStatus);
 
@@ -217,13 +216,15 @@ export default function TopBar() {
               <span style={{ color: "#DF3276" }}> NCR</span> Course
             </Link>
           </h2> */}
-          <div className="logo-holder md:w-[5rem] md:h-[5rem] w-[4rem] h-[4rem]">
-            <img src="/images/ncr-logo.png" alt="ncr course" className="w-full h-full object-cover" />
-          </div>
-          <div className="name flex md:flex-row flex-col md:gap-1 gap-0 justify-center">
-            <h2 className="md:text-xl text-lg md:font-bold font-semibold leading-tight" style={{color: "#008080"}}>NCR</h2>
-            <span className="md:text-xl text-lg md:font-semibold font-semibold leading-tight">Course</span>
-          </div>
+          <Link href={"/"} className="flex items-center">
+            <div className="logo-holder md:w-[5rem] md:h-[5rem] w-[4rem] h-[4rem]">
+              <img src="/images/ncr-logo.png" alt="ncr course" className="w-full h-full object-cover" />
+            </div>
+            <div className="name flex md:flex-row flex-col md:gap-1 gap-0 justify-center">
+              <h2 className="md:text-xl text-lg md:font-bold font-semibold leading-tight" style={{ color: "#008080" }}>NCR</h2>
+              <span className="md:text-xl text-lg md:font-semibold font-semibold leading-tight">Course</span>
+            </div>
+          </Link>
         </div>
         <div className="header-right">
           <div className="profile-pic">
@@ -250,9 +251,8 @@ export default function TopBar() {
             {signedAccountId && adminId.includes(signedAccountId) && (
               <Link
                 href="/facilitator"
-                className={`nav-link ${
-                  pathname === "/facilitator" ? "active" : ""
-                }`}
+                className={`nav-link ${pathname === "/facilitator" ? "active" : ""
+                  }`}
               >
                 Facilitator
               </Link>
@@ -260,9 +260,8 @@ export default function TopBar() {
             {signedAccountId ? (
               <Link
                 href="/profile"
-                className={`nav-link ${
-                  pathname === "/profile" ? "active" : ""
-                }`}
+                className={`nav-link ${pathname === "/profile" ? "active" : ""
+                  }`}
               >
                 Profile
               </Link>
@@ -311,7 +310,7 @@ export default function TopBar() {
                   fontSize: 14,
                   fontWeight: 400,
                   backgroundColor: "#ffffff",
-                    border: "1.5px solid #008080"
+                  border: "1.5px solid #008080"
                 }}
                 onClick={handleSignIn}
               >
@@ -346,7 +345,7 @@ export default function TopBar() {
                 </Link>
               </div>
             ))}
-             {signedAccountId && (
+            {signedAccountId && (
               <div className="side-bar-list">
                 <Link href="/course">
                   <div className="menu-item">
@@ -405,7 +404,7 @@ export default function TopBar() {
       </div>
       {/* AlertDialog component */}
       <AlertDialog open={showAlert} onOpenChange={setShowAlert}>
-        <AlertDialogTrigger asChild>
+        <AlertDialogTrigger asChild className="hidden">
           <div className="inline-block cursor-pointer">
             <button className="bg-blue-500 text-white px-4 py-2 rounded">
               Open Dialog
@@ -431,7 +430,7 @@ export default function TopBar() {
         </AlertDialogContent>
       </AlertDialog>
       <AlertDialog open={showSuccessPopup} onOpenChange={setShowSuccessPopup}>
-        <AlertDialogTrigger asChild>
+        <AlertDialogTrigger asChild className="hidden">
           <div className="inline-block cursor-pointer">
             <button className="bg-blue-500 text-white px-4 py-2 rounded">
               Open Dialog

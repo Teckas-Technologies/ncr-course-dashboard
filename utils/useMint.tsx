@@ -1,5 +1,5 @@
 import { useContext, useState } from "react";
-import { proxyContractAddress } from "./Constant";
+import { nftContrctAddress, proxyContractAddress } from "./Constant";
 import { uploadReference } from "@mintbase-js/storage";
 import { NearContext, Wallet } from "@/wallet/walletSelector";
 
@@ -34,7 +34,7 @@ const MintComponent = () => {
         method: "mint",
         args: {
           metadata: JSON.stringify(metadata),
-          nft_contract_id: "ncrcoursencr.mintspace2.testnet",
+          nft_contract_id: nftContrctAddress,
         },
         gas: "200000000000000",
         deposit: "10000000000000000000000",
@@ -58,16 +58,16 @@ const MintComponent = () => {
 
     try {
       const refObject = {
-        title: "NCR",
-        description: "nft",
+        title: "Understand The Fundamentals of Blockchain, Web3, and NEAR Protocol",
+        description: "Near Research Collective",
         media:
-          "https://arweave.net/WPQbUMWSZhGtINES3qDsAKvFfVzrygHUhI9DQYhmUg0",
+          "https://arweave.net/yrSD0k6u5LilOxX9nsivajsLMWK9QSF8Jn5bJOz6uRQ",
       };
       const uploadedData = await uploadReferenceObject(refObject);
       const metadata = {
         reference: uploadedData?.id,
-        title: "NCR",
-        description: "nft",
+        title: "Understand The Fundamentals of Blockchain, Web3, and NEAR Protocol",
+        description: "Near Research Collective",
       };
       await performTransaction(wallet, metadata);
     } catch (error: any) {
