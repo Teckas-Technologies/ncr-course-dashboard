@@ -1,6 +1,8 @@
 import { NetworkId } from "@/types/types";
 export const adminId = [
-  "ncr-course.near"
+  "ncr-course.near",
+  "lyric-ezran.near",
+  "golden_comet.near"
 ];
 
 // 0.drop.proxy.mintbase.testnet
